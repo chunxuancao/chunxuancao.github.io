@@ -62,7 +62,7 @@ social:
 favicon: /img/favicon.png
 
 avatar:
-  img: /img/48297729_生成奶龙黑色JK照.png
+  img: /img/butterfly-icon.png
   effect: false
 
 # Disable all banner images
@@ -289,7 +289,7 @@ aside:
     category: true
   card_author:
     enable: true
-    description: 爬虫工程师 | 二次元爱好者 | 技术宅
+    description: 爬虫工程师
     button:
       enable: true
       icon: fab fa-github
@@ -297,7 +297,7 @@ aside:
       link: https://github.com/chunxuancao
   card_announcement:
     enable: true
-    content: 欢迎来到喵轩的技术博客~ 这里有爬虫接单经验、反爬技巧、JS逆向教程，还有二次元看板娘陪你哦！🌸
+    content: 欢迎
   card_recent_post:
     enable: true
     # If set 0 will show all
