@@ -5,7 +5,7 @@ category: JS逆向
 tags: "[AST, Babel, 解混淆, 抽象语法树, 困难]"
 difficulty: 困难
 summary: AST抽象语法树基础，Babel使用教程，自动化解混淆脚本编写，批量处理混淆代码
-cover: https://aka.doubaocdn.com/s/hGInNt9mVQ
+cover: https://aka.doubaocdn.com/s/YBJ6k9RnZp
 ---
 
 ## 适用场景

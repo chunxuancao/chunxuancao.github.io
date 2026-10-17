@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[BeautifulSoup, 网页解析, 基础, 新手入门]"
 difficulty: 入门
 summary: BeautifulSoup4解析HTML完全教程，标签查找、属性提取、CSS选择器、遍历文档树，爬虫数据提取必备
-cover: https://aka.doubaocdn.com/s/O6gCURn1QP
+cover: https://aka.doubaocdn.com/s/ERoiQvJaT8
 ---
 
 ## 适用场景

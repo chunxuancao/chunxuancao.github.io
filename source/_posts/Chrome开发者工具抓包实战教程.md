@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[Chrome, 开发者工具, 抓包, 调试]"
 difficulty: 入门
 summary: Chrome DevTools完全教程，Network面板、XHR过滤、请求分析、Cookie查看，爬虫工程师必备技能
-cover: https://aka.doubaocdn.com/s/vhUWfBUaC5
+cover: https://aka.doubaocdn.com/s/tmnx3OOywV
 ---
 
 ## 适用场景

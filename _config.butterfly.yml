@@ -99,7 +99,7 @@ footer_img: false
 # Website Background
 # Can set it to color, image URL or an array containing colors and/or image URLs
 # If an array is provided, a random background will be selected from the array on each load
-background: "#1a1228"
+background: "https://aka.doubaocdn.com/s/bd6ID2NuWr"
 
 cover:
   # Disable the cover or not

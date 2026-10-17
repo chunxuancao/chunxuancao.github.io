@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[Playwright, 自动化, 浏览器, 动态渲染]"
 difficulty: 简单
 summary: Playwright入门教程，比Selenium更快更稳定，支持多浏览器、自动等待、网络拦截，现代爬虫首选
-cover: https://aka.doubaocdn.com/s/YVRENKc2Cv
+cover: https://aka.doubaocdn.com/s/KcakJaQWiU
 ---
 
 ## 适用场景

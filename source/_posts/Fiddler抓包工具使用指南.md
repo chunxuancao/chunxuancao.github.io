@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[Fiddler, 抓包, 调试, 代理]"
 difficulty: 简单
 summary: Fiddler抓包工具完全教程，HTTP/HTTPS抓包、请求修改、响应篡改、断点调试，爬虫分析接口必备
-cover: https://aka.doubaocdn.com/s/5cChyuzAUq
+cover: https://aka.doubaocdn.com/s/WzWc6Im1pr
 ---
 
 ## 适用场景

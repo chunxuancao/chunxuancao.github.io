@@ -5,7 +5,7 @@ category: JS逆向
 tags: "[JS逆向, 混淆, 入门, 调试]"
 difficulty: 中等
 summary: JS逆向入门教程，混淆代码识别、调试环境搭建、分析思路，爬虫进阶的核心技能
-cover: https://aka.doubaocdn.com/s/4CcxUKyx0b
+cover: https://aka.doubaocdn.com/s/32ad8RvLwD
 ---
 
 ## 适用场景

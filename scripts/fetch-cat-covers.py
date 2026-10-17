@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-喵喵小码 · 猫图封面自动生成器
-==============================
+喵喵小码 · 动漫风猫系封面自动生成器
+====================================
 功能：
   1. 扫描 source/_posts/ 下所有文章
-  2. 从免费猫图API爬取一张猫图（cataas.com / TheCatAPI）
-  3. 用PIL统一处理成猫系毛绒绒风格（深紫蓝滤镜 + 橙色边框 + 圆角）
+  2. 从 DiceBear API 获取动漫风格头像（adventurer/lorelei 等）
+  3. 用PIL统一处理成白色毛绒绒猫系风格（米白背景 + 粉橙边框 + 猫耳 + 圆角）
   4. 保存到 source/images/cat-covers/
   5. 自动更新文章 front matter 中的 cover 字段
 
@@ -31,34 +31,30 @@ BLOG_ROOT = Path(__file__).parent.parent
 POSTS_DIR = BLOG_ROOT / "source" / "_posts"
 OUTPUT_DIR = BLOG_ROOT / "source" / "images" / "cat-covers"
 
-# 猫系主题色
-CAT_BG = (26, 18, 40)        # 深紫蓝背景
-CAT_ACCENT = (255, 157, 92)  # 橙色强调
-CAT_ACCENT2 = (255, 185, 128)
-CAT_FUR = (232, 133, 74)
+# 白色毛绒绒主题色
+CAT_BG = (255, 248, 240)       # 米白背景
+CAT_BG2 = (253, 243, 231)      # 浅米黄
+CAT_ACCENT = (255, 157, 92)    # 橙色强调
+CAT_ACCENT2 = (255, 185, 128)  # 浅橙
+CAT_PINK = (255, 196, 214)     # 粉色
+CAT_PINK2 = (255, 168, 192)    # 深粉
+CAT_FUR = (232, 133, 74)       # 毛橙
+CAT_TEXT = (74, 55, 40)        # 深棕文字
 
-# 图片尺寸（Hexo文章封面推荐比例）
+# 图片尺寸
 COVER_WIDTH = 800
 COVER_HEIGHT = 500
+AVATAR_SIZE = 320  # 动漫头像大小
 
-# 猫图API列表（按优先级，失败自动切换）
-CAT_APIS = [
-    # cataas.com - 完全免费无需key
-    {"name": "cataas", "url": "https://cataas.com/cat?width={w}&height={h}", "json": False},
-    # TheCatAPI - 免费无需key（有速率限制）
-    {"name": "thecatapi", "url": "https://api.thecatapi.com/v1/images/search?limit=1", "json": True},
-    # placekitten - 备用
-    {"name": "placekitten", "url": "https://placekitten.com/{w}/{h}", "json": False},
+# DiceBear 动漫风格列表（随机选择，增加多样性）
+DICEBEAR_STYLES = [
+    "adventurer",      # 冒险者 - 动漫风人物
+    "lorelei",         # 萝莉风
+    "fun-emoji",       # 有趣emoji
+    "personas",        # 人格风
+    "micah",           # micah风
+    "adventurer-neutral",  # 中性冒险者
 ]
-
-# 分类对应的emoji（用于生成时加在图片上）
-CATEGORY_EMOJI = {
-    "反爬技巧": "🛡️",
-    "JS逆向": "🔍",
-    "环境配置": "⚙️",
-    "接单经验": "💰",
-    "工具推荐": "🧰",
-}
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
@@ -68,7 +64,7 @@ HEADERS = {
 
 # ── 工具函数 ──────────────────────────────────────────
 def parse_front_matter(content):
-    """解析Hexo front matter，返回(dict, body_start_pos)"""
+    """解析Hexo front matter"""
     if not content.startswith("---"):
         return {}, 0
     end = content.find("---", 3)
@@ -81,39 +77,33 @@ def parse_front_matter(content):
     for line in fm_text.split("\n"):
         if line.strip().startswith("#") or not line.strip():
             continue
-        # 列表项
         if line.strip().startswith("- ") and current_key:
             if current_list is None:
                 current_list = []
                 fm[current_key] = current_list
             current_list.append(line.strip()[2:].strip().strip('"\''))
             continue
-        # key: value
         m = re.match(r"^(\w[\w-]*):\s*(.*)$", line)
         if m:
             key, val = m.group(1), m.group(2).strip()
             current_key = key
             current_list = None
             if val:
-                # 去掉引号
                 val = val.strip('"\'')
-                # 布尔值
                 if val.lower() == "true":
                     val = True
                 elif val.lower() == "false":
                     val = False
                 fm[key] = val
             else:
-                fm[key] = None  # 可能是列表
+                fm[key] = None
     return fm, end + 3
 
 
 def update_front_matter(content, updates):
-    """更新front matter中的字段，返回新内容"""
+    """更新front matter"""
     fm, body_start = parse_front_matter(content)
     fm.update(updates)
-
-    # 重新构建front matter
     lines = ["---"]
     for key, val in fm.items():
         if isinstance(val, list):
@@ -125,143 +115,181 @@ def update_front_matter(content, updates):
         elif val is None:
             lines.append(f"{key}:")
         else:
-            # 值包含特殊字符时加引号
             if any(c in str(val) for c in [':', '#', '[', ']', '{', '}', ',', '&', '*', '?', '|', '<', '>', '=', '!', '%', '@', '`']):
                 lines.append(f'{key}: "{val}"')
             else:
                 lines.append(f"{key}: {val}")
     lines.append("---")
-    lines.append("")  # 空行分隔
-
+    lines.append("")
     body = content[body_start:].lstrip("\n")
     return "\n".join(lines) + "\n" + body
 
 
-def fetch_cat_image(api_idx=0):
-    """从猫图API获取一张猫图，返回PIL Image或None"""
-    if api_idx >= len(CAT_APIS):
-        return None
+def fetch_anime_avatar(seed):
+    """从DiceBear获取动漫风格头像，返回PIL Image"""
+    # 用seed选择风格，保证同一篇文章每次生成风格一致
+    style_idx = int(hashlib.md5(seed.encode()).hexdigest(), 16) % len(DICEBEAR_STYLES)
+    style = DICEBEAR_STYLES[style_idx]
 
-    api = CAT_APIS[api_idx]
-    print(f"  尝试 {api['name']}...", end=" ", flush=True)
+    url = f"https://api.dicebear.com/7.x/{style}/png?seed={seed}&size={AVATAR_SIZE}&backgroundColor=ffd5dc,ffdfbf,c0aede,b6e3f4,d1d4f9"
 
-    try:
-        if api["json"]:
-            # JSON API：先获取图片URL再下载
-            resp = requests.get(api["url"], headers=HEADERS, timeout=15)
+    for attempt in range(3):
+        try:
+            print(f"  尝试 {style} (attempt {attempt+1})...", end=" ", flush=True)
+            resp = requests.get(url, headers=HEADERS, timeout=20)
             resp.raise_for_status()
-            data = resp.json()
-            if not data or "url" not in data[0]:
-                raise ValueError("无图片URL")
-            img_url = data[0]["url"]
-            resp = requests.get(img_url, headers=HEADERS, timeout=15)
-            resp.raise_for_status()
-        else:
-            # 直接返回图片
-            url = api["url"].format(w=COVER_WIDTH, h=COVER_HEIGHT)
-            resp = requests.get(url, headers=HEADERS, timeout=15)
-            resp.raise_for_status()
-
-        # 保存到临时文件再打开（避免内存问题）
-        tmp_path = OUTPUT_DIR / f"_tmp_{int(time.time())}_{random.randint(1000,9999)}.jpg"
-        tmp_path.write_bytes(resp.content)
-        img = Image.open(tmp_path).convert("RGB")
-        tmp_path.unlink(missing_ok=True)
-        print("OK")
-        return img
-
-    except Exception as e:
-        print(f"失败 ({e})")
-        return fetch_cat_image(api_idx + 1)
+            tmp_path = OUTPUT_DIR / f"_tmp_{int(time.time())}_{random.randint(1000,9999)}.png"
+            tmp_path.write_bytes(resp.content)
+            img = Image.open(tmp_path).convert("RGBA")
+            tmp_path.unlink(missing_ok=True)
+            print("OK")
+            return img
+        except Exception as e:
+            print(f"失败 ({e})")
+            # 换一种风格重试
+            style = random.choice(DICEBEAR_STYLES)
+            url = f"https://api.dicebear.com/7.x/{style}/png?seed={seed}{attempt}&size={AVATAR_SIZE}&backgroundColor=ffd5dc,ffdfbf,c0aede,b6e3f4,d1d4f9"
+            time.sleep(1)
+    return None
 
 
-def process_cat_image(img, category=""):
-    """将猫图处理成猫系毛绒绒封面风格"""
-    # 1. 裁剪到目标比例（居中裁剪）
-    src_w, src_h = img.size
-    target_ratio = COVER_WIDTH / COVER_HEIGHT
-    src_ratio = src_w / src_h
+def draw_cat_ears(draw, cx, cy, size, color):
+    """在头像上方画一对猫耳"""
+    ear_w = size * 0.35
+    ear_h = size * 0.45
+    # 左耳
+    left_ear = [
+        (cx - size * 0.35, cy - size * 0.1),
+        (cx - size * 0.15, cy - size * 0.55),
+        (cx - size * 0.02, cy - size * 0.15),
+    ]
+    # 右耳
+    right_ear = [
+        (cx + size * 0.35, cy - size * 0.1),
+        (cx + size * 0.15, cy - size * 0.55),
+        (cx + size * 0.02, cy - size * 0.15),
+    ]
+    draw.polygon(left_ear, fill=color)
+    draw.polygon(right_ear, fill=color)
+    # 内耳（粉色）
+    inner_color = CAT_PINK
+    inner_left = [
+        (cx - size * 0.28, cy - size * 0.12),
+        (cx - size * 0.17, cy - size * 0.42),
+        (cx - size * 0.08, cy - size * 0.15),
+    ]
+    inner_right = [
+        (cx + size * 0.28, cy - size * 0.12),
+        (cx + size * 0.17, cy - size * 0.42),
+        (cx + size * 0.08, cy - size * 0.15),
+    ]
+    draw.polygon(inner_left, fill=inner_color)
+    draw.polygon(inner_right, fill=inner_color)
 
-    if src_ratio > target_ratio:
-        # 太宽，裁左右
-        new_w = int(src_h * target_ratio)
-        left = (src_w - new_w) // 2
-        img = img.crop((left, 0, left + new_w, src_h))
-    else:
-        # 太高，裁上下
-        new_h = int(src_w / target_ratio)
-        top = (src_h - new_h) // 2
-        img = img.crop((0, top, src_w, top + new_h))
 
-    # 2. 缩放到目标尺寸
-    img = img.resize((COVER_WIDTH, COVER_HEIGHT), Image.LANCZOS)
-
-    # 3. 加深紫蓝色调（叠加半透明色层）
-    overlay = Image.new("RGB", (COVER_WIDTH, COVER_HEIGHT), CAT_BG)
-    img = Image.blend(img, overlay, 0.35)
-
-    # 4. 增强对比度和饱和度，让猫更突出
-    enhancer = ImageEnhance.Contrast(img)
-    img = enhancer.enhance(1.15)
-    enhancer = ImageEnhance.Color(img)
-    img = enhancer.enhance(1.2)
-
-    # 5. 轻微毛绒质感（高斯模糊+原图叠加）
-    blurred = img.filter(ImageFilter.GaussianBlur(radius=1.2))
-    img = Image.blend(img, blurred, 0.15)
-
-    # 6. 橙色渐变边框
-    draw = ImageDraw.Draw(img)
-    border_w = 6
-    # 外边框
-    for i in range(border_w):
-        alpha_color = tuple(
-            int(CAT_ACCENT[j] + (CAT_ACCENT2[j] - CAT_ACCENT[j]) * (i / border_w))
-            for j in range(3)
-        )
-        draw.rectangle(
-            [i, i, COVER_WIDTH - 1 - i, COVER_HEIGHT - 1 - i],
-            outline=alpha_color,
-            width=1,
-        )
-
-    # 7. 四角圆角遮罩
-    mask = Image.new("L", (COVER_WIDTH, COVER_HEIGHT), 0)
-    mask_draw = ImageDraw.Draw(mask)
-    radius = 24
-    mask_draw.rounded_rectangle([0, 0, COVER_WIDTH - 1, COVER_HEIGHT - 1], radius=radius, fill=255)
-    # 创建圆角背景
+def process_anime_cover(avatar, category=""):
+    """将动漫头像处理成白色毛绒绒封面"""
+    # 1. 创建米白渐变背景
     bg = Image.new("RGB", (COVER_WIDTH, COVER_HEIGHT), CAT_BG)
-    bg.paste(img, (0, 0), mask)
-    img = bg
+    bg_draw = ImageDraw.Draw(bg)
+    # 渐变背景
+    for y in range(COVER_HEIGHT):
+        ratio = y / COVER_HEIGHT
+        r = int(CAT_BG[0] + (CAT_BG2[0] - CAT_BG[0]) * ratio)
+        g = int(CAT_BG[1] + (CAT_BG2[1] - CAT_BG[1]) * ratio)
+        b = int(CAT_BG[2] + (CAT_BG2[2] - CAT_BG[2]) * ratio)
+        bg_draw.line([(0, y), (COVER_WIDTH, y)], fill=(r, g, b))
 
-    # 8. 底部渐变暗化（放文字用）
-    gradient = Image.new("L", (COVER_WIDTH, 120), 0)
-    grad_draw = ImageDraw.Draw(gradient)
-    for y in range(120):
-        alpha = int(180 * (y / 120))
-        grad_draw.line([(0, y), (COVER_WIDTH, y)], fill=alpha)
-    dark_overlay = Image.new("RGB", (COVER_WIDTH, 120), (0, 0, 0))
-    img.paste(dark_overlay, (0, COVER_HEIGHT - 120), gradient)
+    # 2. 添加毛绒噪点纹理
+    noise = Image.effect_noise((COVER_WIDTH, COVER_HEIGHT), 15).convert("L")
+    noise_rgb = Image.merge("RGB", (noise, noise, noise))
+    bg = Image.blend(bg, noise_rgb, 0.04)
 
-    # 9. 分类emoji水印（右下角）
-    emoji = CATEGORY_EMOJI.get(category, "🐱")
-    # 用文字绘制emoji（PIL对emoji支持有限，用简单圆形代替）
-    # 这里画一个橙色圆形+白色猫爪印
-    cx, cy = COVER_WIDTH - 60, COVER_HEIGHT - 55
-    draw = ImageDraw.Draw(img)
-    draw.ellipse([cx - 28, cy - 28, cx + 28, cy + 28], fill=CAT_ACCENT)
-    # 猫爪印（简化：一个大圆+四个小圆）
-    paw_color = CAT_BG
-    draw.ellipse([cx - 10, cy - 4, cx + 10, cy + 14], fill=paw_color)
-    for dx, dy in [(-16, -12), (-6, -18), (6, -18), (16, -12)]:
-        draw.ellipse([cx + dx - 5, cy + dy - 5, cx + dx + 5, cy + dy + 5], fill=paw_color)
+    # 3. 背景装饰：漂浮的猫爪印和星星
+    deco_draw = ImageDraw.Draw(bg)
+    random.seed(hash(category) % 10000)
+    for _ in range(12):
+        px = random.randint(30, COVER_WIDTH - 30)
+        py = random.randint(30, COVER_HEIGHT - 30)
+        size = random.randint(8, 20)
+        # 简单猫爪印
+        deco_draw.ellipse([px - size//2, py - size//2, px + size//2, py + size//2],
+                          fill=(*CAT_PINK, 30) if False else CAT_PINK)
+        for dx, dy in [(-size, -size//2), (-size//3, -size), (size//3, -size), (size, -size//2)]:
+            deco_draw.ellipse([px + dx - size//4, py + dy - size//4, px + dx + size//4, py + dy + size//4],
+                              fill=CAT_PINK)
+    random.seed()  # 重置
 
-    return img
+    # 4. 调整头像大小并粘贴到中央
+    avatar = avatar.resize((AVATAR_SIZE, AVATAR_SIZE), Image.LANCZOS)
+    # 头像圆形裁剪
+    mask = Image.new("L", (AVATAR_SIZE, AVATAR_SIZE), 0)
+    mask_draw = ImageDraw.Draw(mask)
+    mask_draw.ellipse([0, 0, AVATAR_SIZE - 1, AVATAR_SIZE - 1], fill=255)
+
+    # 头像白色圆形背景（毛绒圈）
+    circle_bg_size = AVATAR_SIZE + 40
+    circle_bg = Image.new("RGBA", (circle_bg_size, circle_bg_size), (0, 0, 0, 0))
+    circle_draw = ImageDraw.Draw(circle_bg)
+    # 外圈毛绒（多层）
+    for i in range(8, 0, -1):
+        alpha = 40 + i * 15
+        offset = i * 3
+        circle_draw.ellipse(
+            [offset, offset, circle_bg_size - 1 - offset, circle_bg_size - 1 - offset],
+            fill=(255, 255, 255, alpha)
+        )
+    # 主白色圆
+    circle_draw.ellipse([20, 20, circle_bg_size - 21, circle_bg_size - 21], fill=(255, 255, 255, 230))
+
+    # 粘贴圆形背景
+    cx = COVER_WIDTH // 2
+    cy = COVER_HEIGHT // 2 + 10
+    bg.paste(circle_bg, (cx - circle_bg_size // 2, cy - circle_bg_size // 2), circle_bg)
+
+    # 粘贴头像
+    avatar_pos = (cx - AVATAR_SIZE // 2, cy - AVATAR_SIZE // 2)
+    bg.paste(avatar, avatar_pos, mask)
+
+    # 5. 在头像上方画猫耳
+    ear_draw = ImageDraw.Draw(bg)
+    draw_cat_ears(ear_draw, cx, cy - AVATAR_SIZE // 2 + 20, AVATAR_SIZE * 0.9, CAT_ACCENT)
+
+    # 6. 粉橙渐变边框
+    border_w = 6
+    for i in range(border_w):
+        ratio = i / border_w
+        r = int(CAT_PINK[0] + (CAT_ACCENT[0] - CAT_PINK[0]) * ratio)
+        g = int(CAT_PINK[1] + (CAT_ACCENT[1] - CAT_PINK[1]) * ratio)
+        b = int(CAT_PINK[2] + (CAT_ACCENT[2] - CAT_PINK[2]) * ratio)
+        bg_draw = ImageDraw.Draw(bg)
+        bg_draw.rectangle(
+            [i, i, COVER_WIDTH - 1 - i, COVER_HEIGHT - 1 - i],
+            outline=(r, g, b), width=1
+        )
+
+    # 7. 圆角遮罩
+    mask_round = Image.new("L", (COVER_WIDTH, COVER_HEIGHT), 0)
+    mask_round_draw = ImageDraw.Draw(mask_round)
+    mask_round_draw.rounded_rectangle([0, 0, COVER_WIDTH - 1, COVER_HEIGHT - 1], radius=24, fill=255)
+    final_bg = Image.new("RGB", (COVER_WIDTH, COVER_HEIGHT), CAT_BG)
+    final_bg.paste(bg, (0, 0), mask_round)
+    bg = final_bg
+
+    # 8. 右下角猫爪印
+    paw_draw = ImageDraw.Draw(bg)
+    paw_cx, paw_cy = COVER_WIDTH - 55, COVER_HEIGHT - 50
+    paw_color = CAT_ACCENT
+    paw_draw.ellipse([paw_cx - 22, paw_cy - 22, paw_cx + 22, paw_cy + 22], fill=paw_color)
+    paw_inner = CAT_BG
+    paw_draw.ellipse([paw_cx - 14, paw_cy - 10, paw_cx + 14, paw_cy + 16], fill=paw_inner)
+    for dx, dy in [(-18, -16), (-7, -22), (7, -22), (18, -16)]:
+        paw_draw.ellipse([paw_cx + dx - 6, paw_cy + dy - 6, paw_cx + dx + 6, paw_cy + dy + 6], fill=paw_inner)
+
+    return bg
 
 
 def get_article_category(fm):
-    """从front matter获取分类名"""
     cats = fm.get("categories", [])
     if isinstance(cats, list) and cats:
         return cats[0]
@@ -271,13 +299,11 @@ def get_article_category(fm):
 
 
 def generate_cover_name(md_path, fm):
-    """生成封面文件名：分类-标题hash.jpg"""
     category = get_article_category(fm) or "misc"
     title = fm.get("title", md_path.stem)
     h = hashlib.md5(title.encode()).hexdigest()[:8]
-    # 清理分类名中的特殊字符
     safe_cat = re.sub(r"[^\w\u4e00-\u9fff]", "", category)
-    return f"{safe_cat}-{h}.jpg"
+    return f"anime-{safe_cat}-{h}.jpg"
 
 
 def main():
@@ -285,12 +311,11 @@ def main():
     dry_run = "--dry-run" in sys.argv
 
     print("=" * 60)
-    print("🐱 喵喵小码 · 猫图封面自动生成器")
+    print("🐱 喵喵小码 · 动漫风猫系封面生成器")
     print("=" * 60)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 扫描所有文章
     md_files = sorted(POSTS_DIR.glob("*.md"))
     print(f"\n📂 找到 {len(md_files)} 篇文章\n")
 
@@ -302,50 +327,48 @@ def main():
         title = fm.get("title", md_path.stem)
         category = get_article_category(fm)
 
-        # 检查是否已有cover
-        existing_cover = fm.get("cover", "")
         cover_name = generate_cover_name(md_path, fm)
         cover_path = OUTPUT_DIR / cover_name
 
+        existing_cover = fm.get("cover", "")
         if existing_cover and not force and cover_path.exists():
-            print(f"[{idx}/{len(md_files)}] ⏭️  跳过（已有封面）: {title}")
+            print(f"[{idx}/{len(md_files)}] ⏭️  跳过: {title}")
             results["skip"].append(title)
             continue
 
-        print(f"[{idx}/{len(md_files)}] 🐱 处理: {title} [{category}]")
+        print(f"[{idx}/{len(md_files)}] 🎨 生成: {title} [{category}]")
 
         if dry_run:
             print(f"    [dry-run] 将保存为: {cover_name}")
             results["success"].append(title)
             continue
 
-        # 获取猫图
-        img = fetch_cat_image()
-        if img is None:
-            print(f"    ❌ 所有API都失败了，跳过")
+        # 获取动漫头像
+        seed = hashlib.md5(title.encode()).hexdigest()[:12]
+        avatar = fetch_anime_avatar(seed)
+        if avatar is None:
+            print(f"    ❌ 获取头像失败，跳过")
             results["fail"].append(title)
             continue
 
-        # 处理图片
+        # 处理封面
         try:
-            processed = process_cat_image(img, category)
-            processed.save(cover_path, "JPEG", quality=85, optimize=True)
+            cover = process_anime_cover(avatar, category)
+            cover.save(cover_path, "JPEG", quality=88, optimize=True)
             print(f"    ✅ 保存: images/cat-covers/{cover_name}")
         except Exception as e:
-            print(f"    ❌ 图片处理失败: {e}")
+            print(f"    ❌ 处理失败: {e}")
             results["fail"].append(title)
             continue
 
-        # 更新文章front matter
+        # 更新文章
         cover_url = f"/images/cat-covers/{cover_name}"
         new_content = update_front_matter(content, {"cover": cover_url})
         md_path.write_text(new_content, encoding="utf-8")
         print(f"    📝 更新cover: {cover_url}")
 
         results["success"].append(title)
-
-        # 礼貌延迟，避免被API封
-        time.sleep(random.uniform(0.8, 1.8))
+        time.sleep(random.uniform(0.3, 0.8))
 
     # 汇总
     print("\n" + "=" * 60)
@@ -359,7 +382,7 @@ def main():
         for t in results["fail"]:
             print(f"    - {t}")
     print(f"\n  封面图目录: {OUTPUT_DIR}")
-    print(f"  封面图数量: {len(list(OUTPUT_DIR.glob('*.jpg')))}")
+    print(f"  封面图数量: {len(list(OUTPUT_DIR.glob('anime-*.jpg')))}")
     print("=" * 60)
 
 

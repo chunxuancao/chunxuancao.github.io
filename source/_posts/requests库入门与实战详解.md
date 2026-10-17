@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[requests, HTTP, 基础, 新手入门]"
 difficulty: 入门
 summary: requests库完全入门教程，GET/POST请求、请求头、Cookie、Session、文件上传、异常处理，爬虫最基础的库
-cover: https://aka.doubaocdn.com/s/54ZuWDXe2T
+cover: https://aka.doubaocdn.com/s/3DyQMGKAem
 ---
 
 ## 适用场景
