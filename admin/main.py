@@ -950,6 +950,8 @@ def _read_yaml_value(filepath, key_path):
             if stripped.startswith(f"{keys[found_keys]}:") and indent == current_indent:
                 found_keys += 1
                 current_indent = indent + 2
+            elif found_keys > 0 and indent < current_indent - 2:
+                break
         else:
             # 匹配最后一个key
             if stripped.startswith(f"{keys[-1]}:") and indent == current_indent:
@@ -957,8 +959,8 @@ def _read_yaml_value(filepath, key_path):
                 if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
                     val = val[1:-1]
                 return val
-            # 如果遇到同级或更高级别的其他key，说明没找到
-            if indent <= current_indent and not stripped.startswith(f"{keys[-1]}:"):
+            # 遇到更高级别的key，说明已经出了父key的范围
+            if indent < current_indent:
                 break
     return ""
 
@@ -990,15 +992,21 @@ def _write_yaml_value(filepath, key_path, new_value):
         indent = len(line) - len(stripped)
 
         if found_keys < len(keys) - 1:
+            # 还在找父级key
             if stripped.startswith(f"{keys[found_keys]}:") and indent == current_indent:
                 found_keys += 1
                 current_indent = indent + 2
+            # 如果遇到更高级别的key，说明父key不存在
+            elif found_keys > 0 and indent < current_indent - 2:
+                break
         else:
+            # 已经找到父key，正在找子key
             if stripped.startswith(f"{keys[-1]}:") and indent == current_indent:
                 lines[i] = f"{' ' * indent}{keys[-1]}: {new_value}"
                 filepath.write_text('\n'.join(lines), encoding="utf-8")
                 return True
-            if indent <= current_indent and not stripped.startswith(f"{keys[-1]}:"):
+            # 遇到更高级别的key，说明已经出了父key的范围
+            if indent < current_indent:
                 break
     return False
 
@@ -1023,13 +1031,17 @@ class SiteSettings(BaseModel):
 @app.get("/api/settings")
 def get_settings():
     """读取站点设置"""
+    # 首页分页用 index_generator.per_page，优先读这个
+    index_per_page = _read_yaml_value(MAIN_CONFIG, "index_generator.per_page")
+    global_per_page = _read_yaml_value(MAIN_CONFIG, "per_page")
+    per_page_val = index_per_page or global_per_page or "10"
     return {
         "title": _read_yaml_value(MAIN_CONFIG, "title"),
         "subtitle": _read_yaml_value(MAIN_CONFIG, "subtitle"),
         "description": _read_yaml_value(MAIN_CONFIG, "description"),
         "author": _read_yaml_value(MAIN_CONFIG, "author"),
         "language": _read_yaml_value(MAIN_CONFIG, "language"),
-        "per_page": int(_read_yaml_value(MAIN_CONFIG, "per_page") or 10),
+        "per_page": int(per_page_val),
         "avatar": _read_yaml_value(THEME_CONFIG, "avatar.img"),
         "author_description": _read_yaml_value(THEME_CONFIG, "aside.card_author.description"),
         "follow_icon": _read_yaml_value(THEME_CONFIG, "aside.card_author.button.icon"),
@@ -1049,7 +1061,9 @@ def save_settings(settings: SiteSettings):
     results["description"] = _write_yaml_value(MAIN_CONFIG, "description", settings.description)
     results["author"] = _write_yaml_value(MAIN_CONFIG, "author", settings.author)
     results["language"] = _write_yaml_value(MAIN_CONFIG, "language", settings.language)
-    results["per_page"] = _write_yaml_value(MAIN_CONFIG, "per_page", str(settings.per_page))
+    # 分页：同时改首页分页(index_generator.per_page)和全局分页(per_page)
+    results["per_page"] = _write_yaml_value(MAIN_CONFIG, "index_generator.per_page", str(settings.per_page))
+    _write_yaml_value(MAIN_CONFIG, "per_page", str(settings.per_page))
     # 主题配置
     results["avatar"] = _write_yaml_value(THEME_CONFIG, "avatar.img", settings.avatar)
     results["author_description"] = _write_yaml_value(THEME_CONFIG, "aside.card_author.description", settings.author_description)
