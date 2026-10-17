@@ -8,7 +8,7 @@ tags:
   - 反爬
   - requests
   - 新手入门
-cover: https://aka.doubaocdn.com/s/bRn0bBucIJ
+cover: /img/48297729_生成奶龙黑色JK照.png
 ---
 ## 适用场景
 

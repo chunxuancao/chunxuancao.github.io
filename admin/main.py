@@ -134,10 +134,17 @@ def _git_blob_hash(content):
     return hashlib.sha1(header + data).hexdigest()
 
 
+# 全局配置
+AUTO_SYNC_ENABLED = True  # 单文件自动同步开关
+
+
 def push_single_file(github_path, content, commit_message=""):
     """单文件推送到GitHub（轻量级，不走完整部署流程）
     返回 (success, message)
     """
+    # 如果关闭了自动同步，直接返回成功但不推送
+    if not AUTO_SYNC_ENABLED:
+        return True, "自动同步已关闭，文件仅保存在本地"
     try:
         if not commit_message:
             commit_message = f"🐱 更新: {github_path}"
@@ -1093,6 +1100,21 @@ def save_settings(settings: SiteSettings):
         "synced": sync_results,
         "message": f"已保存 {success_count}/{len(results)} 项设置，已同步到远端"
     }
+
+
+# ========== 自动同步开关 ==========
+@app.get("/api/auto-sync")
+def get_auto_sync_status():
+    """获取自动同步状态"""
+    return {"enabled": AUTO_SYNC_ENABLED}
+
+
+@app.post("/api/auto-sync")
+def set_auto_sync_status(data: dict):
+    """设置自动同步状态"""
+    global AUTO_SYNC_ENABLED
+    AUTO_SYNC_ENABLED = data.get("enabled", True)
+    return {"enabled": AUTO_SYNC_ENABLED, "message": "自动同步已开启" if AUTO_SYNC_ENABLED else "自动同步已关闭，文件仅保存在本地"}
 
 
 # ========== 图片上传 ==========

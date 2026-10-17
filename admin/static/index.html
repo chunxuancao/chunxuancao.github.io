@@ -60,6 +60,8 @@
     cursor: pointer;
     transition: all 0.3s;
     box-shadow: 0 4px 12px rgba(255,154,158,0.3);
+    user-select: none;
+    -webkit-user-select: none;
   }
   .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,154,158,0.4); }
   .btn-gradient:active { transform: translateY(0); }
@@ -73,6 +75,8 @@
     cursor: pointer;
     transition: all 0.3s;
     font-weight: 500;
+    user-select: none;
+    -webkit-user-select: none;
   }
   .btn-ghost:hover { border-color: var(--cat-pink); color: var(--cat-pink); background: white; }
 
@@ -113,6 +117,8 @@
     transition: all 0.2s;
     color: var(--cat-brown);
     font-weight: 500;
+    user-select: none;
+    -webkit-user-select: none;
   }
   .nav-item:hover { background: rgba(255,154,158,0.1); }
   .nav-item.active {
@@ -261,7 +267,7 @@
 
       <!-- 导航 -->
       <nav class="flex-1 space-y-1">
-        <div class="nav-item active" @click="currentView = 'list'">
+        <div class="nav-item" :class="{active: currentView === 'list'}" @click="currentView = 'list'">
           <i class="fa fa-file-text-o w-5"></i>
           <span>文章列表</span>
         </div>
@@ -278,7 +284,7 @@
           <span>站点设置</span>
         </div>
         <div class="nav-item" :class="{active: currentView === 'images'}" @click="currentView = 'images'; loadImages()">
-          <i class="fa fa-images w-5"></i>
+          <i class="fa fa-picture-o w-5"></i>
           <span>图片管理</span>
         </div>
       </nav>
@@ -298,6 +304,26 @@
             <div class="stat-number">{{ stats.total_tags }}</div>
             <div class="stat-label">标签</div>
           </div>
+        </div>
+      </div>
+
+      <!-- 工具区 -->
+      <div class="fluffy-card p-3 mb-3">
+        <!-- 自动同步开关 -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa fa-cloud-upload" style="color: var(--cat-pink);"></i>
+            <span class="text-sm" style="color: var(--cat-brown);">自动同步</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" v-model="autoSyncEnabled" @change="toggleAutoSync" class="sr-only peer">
+            <div class="w-10 h-5 rounded-full transition-all"
+                 :style="autoSyncEnabled ? 'background: linear-gradient(135deg, #ffb6c1, #ff8fa3);' : 'background: #ddd;'">
+            </div>
+            <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform"
+                 :style="autoSyncEnabled ? 'transform: translateX(20px);' : 'transform: translateX(0);'">
+            </div>
+          </label>
         </div>
       </div>
 
@@ -943,6 +969,8 @@ createApp({
     const showDeleteImageModal = ref(false);
     const deleteImageTarget = ref(null);
     const deletingImage = ref(false);
+    // 自动同步
+    const autoSyncEnabled = ref(true);
 
     // 编辑器
     const editingFilename = ref('');
@@ -978,11 +1006,11 @@ createApp({
 
     // Toast
     const toast = reactive({ show: false, message: '', type: 'success' });
-    const showToast = (message, type = 'success') => {
+    const showToast = (message, type = 'success', duration = 5000) => {
       toast.message = message;
       toast.type = type;
       toast.show = true;
-      setTimeout(() => { toast.show = false; }, 3000);
+      setTimeout(() => { toast.show = false; }, duration);
     };
 
     // API 封装（支持超时）
@@ -1086,7 +1114,7 @@ createApp({
           method: 'POST',
           body: JSON.stringify(settings.value)
         }, 15000);
-        showToast(res.message || '设置已保存，部署后生效', 'success');
+        showToast('设置已保存并同步到远端，GitHub Actions正在构建（约1-2分钟），构建完成后强制刷新线上博客即可看到效果', 'success', 5000);
       } catch (e) {
         showToast('保存失败: ' + e.message, 'error');
       }
@@ -1129,7 +1157,7 @@ createApp({
       if (!file) return;
       const url = await uploadImage(file);
       if (url) {
-        editForm.value.cover = url;
+        editForm.cover = url;
         showToast('封面上传成功', 'success');
       }
       event.target.value = '';
@@ -1159,7 +1187,7 @@ createApp({
       if (imagePickerTarget.value === 'avatar') {
         settings.value.avatar = img.url;
       } else if (imagePickerTarget.value === 'cover') {
-        editForm.value.cover = img.url;
+        editForm.cover = img.url;
       }
       showImagePicker.value = false;
       showToast('已选择图片', 'success');
@@ -1214,6 +1242,20 @@ createApp({
       deletingImage.value = false;
       showDeleteImageModal.value = false;
       deleteImageTarget.value = null;
+    };
+
+    // 切换自动同步
+    const toggleAutoSync = async () => {
+      try {
+        const res = await api('/api/auto-sync', {
+          method: 'POST',
+          body: JSON.stringify({ enabled: autoSyncEnabled.value })
+        });
+        showToast(res.message || (autoSyncEnabled.value ? '自动同步已开启' : '自动同步已关闭'), 'success');
+      } catch (e) {
+        autoSyncEnabled.value = !autoSyncEnabled.value; // 回滚
+        showToast('操作失败: ' + e.message, 'error');
+      }
     };
 
     // 新建文章
@@ -1556,6 +1598,8 @@ createApp({
       loadPosts();
       loadMeta();
       loadSettings();
+      // 获取自动同步状态
+      api('/api/auto-sync').then(r => { autoSyncEnabled.value = r.enabled; }).catch(() => {});
     });
 
     return {
@@ -1565,6 +1609,7 @@ createApp({
       settings, savingSettings,
       showImagePicker, imagePickerTarget, uploadedImages, imagesLoading,
       showDeleteImageModal, deleteImageTarget, deletingImage,
+      autoSyncEnabled,
       editingFilename, editForm, editorContainer,
       showDeleteModal, deleteTarget,
       showDeployModal, deploying, deployProgress, deployStage,
@@ -1577,7 +1622,8 @@ createApp({
       openRenameModal, openMergeModal, confirmDeleteItem, executeItemAction,
       loadSettings, saveSettings, uploadAvatar, uploadCover,
       loadImages, openImagePicker, selectImage,
-      formatSize, uploadManageImage, copyImageUrl, confirmDeleteImage, doDeleteImage
+      formatSize, uploadManageImage, copyImageUrl, confirmDeleteImage, doDeleteImage,
+      toggleAutoSync
     };
   }
 }).mount('#app');
