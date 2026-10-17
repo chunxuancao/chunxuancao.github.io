@@ -1280,6 +1280,87 @@ def delete_image(filename: str):
         return {"status": "deleted", "synced": False, "sync_error": str(e)[:200], "message": "本地已删除，远端同步失败"}
 
 
+# ========== 样式自定义配置 ==========
+STYLE_CONFIG_FILE = BLOG_ROOT / "source" / "css" / "custom-style.json"
+CUSTOM_CSS_FILE = BLOG_ROOT / "source" / "css" / "custom-style.css"
+
+DEFAULT_STYLE = {
+    "postTitleColor": "#4a3728",
+    "postTextColor": "#4a3728",
+    "accentColor": "#ff9d5c",
+    "bgColor": "#fff8f0",
+    "cardBgColor": "rgba(255,255,255,0.72)"
+}
+
+
+def generate_custom_css(style):
+    """根据配置生成自定义CSS"""
+    return f"""/* 喵喵小码 · 自定义样式（后台生成，请勿手动编辑） */
+:root{{
+  --cat-text: {style['postTextColor']};
+  --cat-accent: {style['accentColor']};
+  --cat-bg-deep: {style['bgColor']};
+  --butterfly-card-bg: {style['cardBgColor']} !important;
+}}
+#post .post-title,
+#post .post-bg .post-title,
+#post .article-header .post-title{{
+  color: {style['postTitleColor']} !important;
+}}
+.post-content{{
+  color: {style['postTextColor']} !important;
+}}
+a, .article-title:hover, #post .post-meta a:hover{{
+  color: {style['accentColor']} !important;
+}}
+"""
+
+
+@app.get("/api/style-config")
+def get_style_config():
+    """读取样式配置"""
+    if STYLE_CONFIG_FILE.exists():
+        try:
+            import json
+            return json.loads(STYLE_CONFIG_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return DEFAULT_STYLE.copy()
+
+
+@app.post("/api/style-config")
+def save_style_config(style: dict):
+    """保存样式配置，生成CSS并推送到远端"""
+    import json
+    # 合并默认值
+    merged = DEFAULT_STYLE.copy()
+    merged.update({k: v for k, v in style.items() if k in DEFAULT_STYLE})
+
+    # 保存JSON配置
+    STYLE_CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    STYLE_CONFIG_FILE.write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 生成CSS
+    css_content = generate_custom_css(merged)
+    CUSTOM_CSS_FILE.write_text(css_content, encoding="utf-8")
+
+    # 推送到远端
+    sync_results = {}
+    try:
+        ok, msg = push_single_file("source/css/custom-style.css", css_content, "🐱 更新自定义样式")
+        sync_results["custom-style.css"] = ok
+    except Exception as e:
+        sync_results["custom-style.css"] = False
+        sync_results["error"] = str(e)[:200]
+
+    return {
+        "status": "success",
+        "config": merged,
+        "synced": sync_results,
+        "message": "样式已保存，GitHub Actions构建后生效"
+    }
+
+
 # ========== 静态文件 ==========
 app.mount("/static", StaticFiles(directory=ADMIN_DIR / "static"), name="static")
 # 挂载博客图片目录，供后台预览
