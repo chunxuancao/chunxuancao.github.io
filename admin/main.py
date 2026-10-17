@@ -343,22 +343,15 @@ class _DeployCancelled(Exception):
 
 
 # ========== 部署API ==========
-class DeployRequest(BaseModel):
-    mode: str = "full"  # fast / full / posts_only
-
-
 @app.post("/api/deploy/start")
-def deploy_start(req: DeployRequest = DeployRequest()):
-    """启动部署（异步）
-    mode: fast=快速部署(只推修改过的文件,不删除) / full=完整同步(全推+删除) / posts_only=仅推文章
-    """
-    mode = req.mode if req.mode in ("fast", "full", "posts_only") else "full"
+def deploy_start():
+    """启动部署（异步，完整同步：推送全部 + 删除远端多余文件）"""
     if not _deploy_lock.acquire(blocking=False):
         return {"status": "busy", "message": "已有部署任务正在运行"}
-    # 启动工作线程
-    thread = threading.Thread(target=_deploy_worker, args=(mode,), daemon=True)
+    # 启动工作线程，固定用full模式
+    thread = threading.Thread(target=_deploy_worker, args=("full",), daemon=True)
     thread.start()
-    return {"status": "started", "message": f"部署已启动（{mode}模式）"}
+    return {"status": "started", "message": "部署已启动"}
 
 
 @app.get("/api/deploy/status")
