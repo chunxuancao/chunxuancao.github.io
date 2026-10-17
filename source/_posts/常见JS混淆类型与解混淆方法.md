@@ -5,7 +5,7 @@ category: JS逆向
 tags: "[混淆, 解混淆, obfuscator, JS逆向]"
 difficulty: 中等
 summary: 常见JS混淆类型识别，变量混淆、字符串加密、控制流平坦化、死代码，以及对应的解混淆方法
-cover: https://aka.doubaocdn.com/s/UKMR9eKuPk
+cover: https://aka.doubaocdn.com/s/qh6Fo7mUqm
 ---
 
 ## 适用场景

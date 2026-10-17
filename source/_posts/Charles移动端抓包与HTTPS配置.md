@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[Charles, 抓包, 移动端, HTTPS, 代理]"
 difficulty: 简单
 summary: Charles抓包工具教程，重点讲解移动端APP抓包、HTTPS证书配置、SSL代理设置，APP爬虫必备
-cover: https://aka.doubaocdn.com/s/5a5NK5Und1
+cover: https://aka.doubaocdn.com/s/4O7EuMIVQz
 ---
 
 ## 适用场景

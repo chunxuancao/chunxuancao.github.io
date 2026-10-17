@@ -5,7 +5,7 @@ category: 工具推荐
 tags: "[Python, 爬虫库, 工具推荐, 入门]"
 difficulty: 入门
 summary: Python爬虫开发常用库汇总，请求库、解析库、自动化库、异步库对比，选择合适的工具提高效率
-cover: https://aka.doubaocdn.com/s/R76h9XwlST
+cover: https://aka.doubaocdn.com/s/aaOEwJtD7S
 ---
 
 ## 适用场景

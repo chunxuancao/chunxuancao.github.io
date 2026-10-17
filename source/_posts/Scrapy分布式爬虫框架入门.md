@@ -5,7 +5,7 @@ category: 工具推荐
 tags: "[Scrapy, 框架, 分布式, 中等]"
 difficulty: 中等
 summary: Scrapy爬虫框架入门教程，项目结构、Spider编写、中间件、管道、分布式部署，中大型爬虫首选
-cover: https://aka.doubaocdn.com/s/nSMTs994Me
+cover: https://aka.doubaocdn.com/s/TTyh6Y5WpA
 ---
 
 ## 适用场景

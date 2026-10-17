@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[Python, 环境搭建, Windows, 新手入门]"
 difficulty: 入门
 summary: 从零开始搭建Python爬虫开发环境，包括Python安装、pip配置、虚拟环境、常用库安装，适合完全零基础的新手
-cover: https://aka.doubaocdn.com/s/Uh7X77dvFE
+cover: https://aka.doubaocdn.com/s/lV61sQMtxZ
 ---
 
 ## 适用场景
