@@ -1,16 +1,31 @@
 /* ===== 二次元动漫风自定义样式 ===== */
 
-/* 全局背景 - 渐变粉紫 */
+/* 全局背景 - 高冷二次元少女 */
 body {
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ffdde1 100%);
-  background-attachment: fixed;
+  background: url('https://aka.doubaocdn.com/s/MBIVoPIvAj') center center / cover no-repeat fixed;
   min-height: 100vh;
+}
+
+/* 背景遮罩，让文字更清晰 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* 夜间模式背景 */
 [data-theme='dark'] body {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  background-attachment: fixed;
+  background: url('https://aka.doubaocdn.com/s/MBIVoPIvAj') center center / cover no-repeat fixed;
+}
+
+[data-theme='dark'] body::before {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 /* 卡片毛玻璃效果 */
