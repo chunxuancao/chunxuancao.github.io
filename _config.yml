@@ -5,7 +5,7 @@
 # Site
 title: 喵喵小码
 subtitle: 爬虫接单经验与技术分享
-description: 分享爬虫技术、反爬破解、JS逆向、接单经验，帮助新手快速上手
+description: 分享爬虫技术
 keywords: 爬虫,Python,反爬,JS逆向,接单
 author: 喵轩
 language: zh-CN
@@ -60,7 +60,7 @@ prismjs:
 # order_by: Posts order. (Order by date descending by default)
 index_generator:
   path: ''
-  per_page: 12
+  per_page: 5
   order_by: -date
 
 # Category & Tag
@@ -83,7 +83,7 @@ updated_option: 'mtime'
 
 # Pagination
 ## Set per_page to 0 to disable pagination
-per_page: 12
+per_page: 5
 pagination_dir: page
 
 # Include / Exclude file(s)
