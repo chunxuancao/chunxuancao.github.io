@@ -5,7 +5,7 @@ category: 反爬技巧
 tags: "[User-Agent, 反爬, requests, 新手入门]"
 difficulty: 简单
 summary: 最常见的反爬机制之一，通过检测User-Agent识别爬虫，本文介绍如何识别和绕过
-cover: https://aka.doubaocdn.com/s/uLEW2MV0a6
+cover: https://aka.doubaocdn.com/s/R60Un6qSJD
 ---
 
 ## 适用场景

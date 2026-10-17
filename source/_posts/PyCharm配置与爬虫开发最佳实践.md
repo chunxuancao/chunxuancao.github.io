@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[PyCharm, IDE, 开发工具, 新手入门]"
 difficulty: 入门
 summary: PyCharm爬虫开发环境配置，包括解释器设置、代码模板、调试技巧、插件推荐，提升开发效率
-cover: https://aka.doubaocdn.com/s/hYjMe7d9Ig
+cover: https://aka.doubaocdn.com/s/dZIiFgacd2
 ---
 
 ## 适用场景

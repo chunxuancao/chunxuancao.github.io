@@ -5,7 +5,7 @@ category: 反爬技巧
 tags: "[Token, JWT, 登录态, 认证, 中等]"
 difficulty: 中等
 summary: Token认证机制、JWT结构分析、Token刷新策略、登录态维护，现代APP和网站常用的认证方式
-cover: https://aka.doubaocdn.com/s/E8m7yr62tQ
+cover: https://aka.doubaocdn.com/s/nOakVLPT1u
 ---
 
 ## 适用场景

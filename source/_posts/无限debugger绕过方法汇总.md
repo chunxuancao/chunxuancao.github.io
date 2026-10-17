@@ -5,7 +5,7 @@ category: JS逆向
 tags: "[debugger, 反调试, 绕过, JS逆向]"
 difficulty: 中等
 summary: 无限debugger原理，多种绕过方法，Never pause here、定时器Hook、AST删除，反调试技巧汇总
-cover: https://aka.doubaocdn.com/s/aoMEYYTvS7
+cover: https://aka.doubaocdn.com/s/dXXrEmJwYT
 ---
 
 ## 适用场景

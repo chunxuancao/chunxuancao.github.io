@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[XPath, lxml, 网页解析, 基础]"
 difficulty: 简单
 summary: XPath语法与lxml库使用教程，比BeautifulSoup更快的解析方式，爬虫数据提取进阶必备
-cover: https://aka.doubaocdn.com/s/1qEUVFTATG
+cover: https://aka.doubaocdn.com/s/9XKOICK3Vv
 ---
 
 ## 适用场景

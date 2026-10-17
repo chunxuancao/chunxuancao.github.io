@@ -5,7 +5,7 @@ category: JS逆向
 tags: "[Chrome, 断点调试, DevTools, 技巧]"
 difficulty: 中等
 summary: Chrome开发者工具断点调试高级技巧，条件断点、日志断点、DOM断点、事件断点，JS逆向必备技能
-cover: https://aka.doubaocdn.com/s/S5ES2J4uKk
+cover: https://aka.doubaocdn.com/s/7AYeyYUQfn
 ---
 
 ## 适用场景

@@ -5,7 +5,7 @@ category: 环境配置
 tags: "[Selenium, 自动化, 浏览器, 动态渲染]"
 difficulty: 简单
 summary: Selenium4环境搭建与基础操作，驱动配置、元素定位、等待机制、无头模式，处理JS渲染页面必备
-cover: https://aka.doubaocdn.com/s/ALzIW1fCpG
+cover: https://aka.doubaocdn.com/s/w5TBZfEzz4
 ---
 
 ## 适用场景

@@ -5,7 +5,7 @@ category: 反爬技巧
 tags: "[MD5, SHA, 哈希, 签名, JS逆向, 中等]"
 difficulty: 中等
 summary: MD5/SHA哈希算法原理、签名参数分析、盐值查找、Python复现，最常见的接口签名算法
-cover: https://aka.doubaocdn.com/s/Gy5Tvtbqol
+cover: https://aka.doubaocdn.com/s/FlKHRNrH5Q
 ---
 
 ## 适用场景

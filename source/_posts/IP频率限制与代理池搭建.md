@@ -5,7 +5,7 @@ category: 反爬技巧
 tags: "[代理池, IP代理, 频率限制, 反爬, 中等]"
 difficulty: 中等
 summary: IP封禁原理、代理选择、代理池搭建、IP轮换策略，大规模爬虫必备的反封禁技术
-cover: https://aka.doubaocdn.com/s/w2z7I8VpIo
+cover: https://aka.doubaocdn.com/s/pyZ9IdA9ko
 ---
 
 ## 适用场景

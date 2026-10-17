@@ -46,14 +46,11 @@ COVER_WIDTH = 800
 COVER_HEIGHT = 500
 AVATAR_SIZE = 320  # 动漫头像大小
 
-# DiceBear 动漫风格列表（随机选择，增加多样性）
-DICEBEAR_STYLES = [
-    "adventurer",      # 冒险者 - 动漫风人物
-    "lorelei",         # 萝莉风
-    "fun-emoji",       # 有趣emoji
-    "personas",        # 人格风
-    "micah",           # micah风
-    "adventurer-neutral",  # 中性冒险者
+# 猫图API（真实猫图，后续用PIL动漫化处理）
+CAT_APIS = [
+    {"name": "cataas", "url": "https://cataas.com/cat?width={w}&height={h}", "json": False},
+    {"name": "thecatapi", "url": "https://api.thecatapi.com/v1/images/search?limit=1", "json": True},
+    {"name": "placekitten", "url": "https://placekitten.com/{w}/{h}", "json": False},
 ]
 
 HEADERS = {
@@ -125,32 +122,39 @@ def update_front_matter(content, updates):
     return "\n".join(lines) + "\n" + body
 
 
-def fetch_anime_avatar(seed):
-    """从DiceBear获取动漫风格头像，返回PIL Image"""
-    # 用seed选择风格，保证同一篇文章每次生成风格一致
-    style_idx = int(hashlib.md5(seed.encode()).hexdigest(), 16) % len(DICEBEAR_STYLES)
-    style = DICEBEAR_STYLES[style_idx]
+def fetch_cat_image(api_idx=0):
+    """从猫图API获取真实猫图，返回PIL Image"""
+    if api_idx >= len(CAT_APIS):
+        return None
 
-    url = f"https://api.dicebear.com/7.x/{style}/png?seed={seed}&size={AVATAR_SIZE}&backgroundColor=ffd5dc,ffdfbf,c0aede,b6e3f4,d1d4f9"
+    api = CAT_APIS[api_idx]
+    print(f"  尝试 {api['name']}...", end=" ", flush=True)
 
-    for attempt in range(3):
-        try:
-            print(f"  尝试 {style} (attempt {attempt+1})...", end=" ", flush=True)
-            resp = requests.get(url, headers=HEADERS, timeout=20)
+    try:
+        if api["json"]:
+            resp = requests.get(api["url"], headers=HEADERS, timeout=15)
             resp.raise_for_status()
-            tmp_path = OUTPUT_DIR / f"_tmp_{int(time.time())}_{random.randint(1000,9999)}.png"
-            tmp_path.write_bytes(resp.content)
-            img = Image.open(tmp_path).convert("RGBA")
-            tmp_path.unlink(missing_ok=True)
-            print("OK")
-            return img
-        except Exception as e:
-            print(f"失败 ({e})")
-            # 换一种风格重试
-            style = random.choice(DICEBEAR_STYLES)
-            url = f"https://api.dicebear.com/7.x/{style}/png?seed={seed}{attempt}&size={AVATAR_SIZE}&backgroundColor=ffd5dc,ffdfbf,c0aede,b6e3f4,d1d4f9"
-            time.sleep(1)
-    return None
+            data = resp.json()
+            if not data or "url" not in data[0]:
+                raise ValueError("无图片URL")
+            img_url = data[0]["url"]
+            resp = requests.get(img_url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        else:
+            url = api["url"].format(w=COVER_WIDTH, h=COVER_HEIGHT)
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+
+        tmp_path = OUTPUT_DIR / f"_tmp_{int(time.time())}_{random.randint(1000,9999)}.jpg"
+        tmp_path.write_bytes(resp.content)
+        img = Image.open(tmp_path).convert("RGB")
+        tmp_path.unlink(missing_ok=True)
+        print("OK")
+        return img
+
+    except Exception as e:
+        print(f"失败 ({e})")
+        return fetch_cat_image(api_idx + 1)
 
 
 def draw_cat_ears(draw, cx, cy, size, color):
@@ -187,12 +191,30 @@ def draw_cat_ears(draw, cx, cy, size, color):
     draw.polygon(inner_right, fill=inner_color)
 
 
-def process_anime_cover(avatar, category=""):
-    """将动漫头像处理成白色毛绒绒封面"""
+def animefy_cat(img):
+    """将真实猫图动漫化处理：颜色量化 + 边缘增强 + 平滑"""
+    # 1. 中值滤波去噪
+    img = img.filter(ImageFilter.MedianFilter(size=3))
+    # 2. 颜色量化到24色（动漫色块效果）
+    img = img.quantize(colors=24, method=Image.Quantize.MEDIANCUT).convert("RGB")
+    # 3. 边缘增强
+    img = img.filter(ImageFilter.EDGE_ENHANCE_MORE)
+    # 4. 轻微平滑，让色块更柔和
+    img = img.filter(ImageFilter.SMOOTH)
+    # 5. 提升饱和度，让颜色更鲜艳
+    enhancer = ImageEnhance.Color(img)
+    img = enhancer.enhance(1.3)
+    # 6. 提升对比度
+    enhancer = ImageEnhance.Contrast(img)
+    img = enhancer.enhance(1.1)
+    return img
+
+
+def process_anime_cover(cat_img, category=""):
+    """将真实猫图动漫化后，处理成白色毛绒绒封面"""
     # 1. 创建米白渐变背景
     bg = Image.new("RGB", (COVER_WIDTH, COVER_HEIGHT), CAT_BG)
     bg_draw = ImageDraw.Draw(bg)
-    # 渐变背景
     for y in range(COVER_HEIGHT):
         ratio = y / COVER_HEIGHT
         r = int(CAT_BG[0] + (CAT_BG2[0] - CAT_BG[0]) * ratio)
@@ -201,90 +223,88 @@ def process_anime_cover(avatar, category=""):
         bg_draw.line([(0, y), (COVER_WIDTH, y)], fill=(r, g, b))
 
     # 2. 添加毛绒噪点纹理
-    noise = Image.effect_noise((COVER_WIDTH, COVER_HEIGHT), 15).convert("L")
+    noise = Image.effect_noise((COVER_WIDTH, COVER_HEIGHT), 12).convert("L")
     noise_rgb = Image.merge("RGB", (noise, noise, noise))
-    bg = Image.blend(bg, noise_rgb, 0.04)
+    bg = Image.blend(bg, noise_rgb, 0.03)
 
-    # 3. 背景装饰：漂浮的猫爪印和星星
+    # 3. 背景装饰：漂浮的猫爪印
     deco_draw = ImageDraw.Draw(bg)
     random.seed(hash(category) % 10000)
-    for _ in range(12):
+    for _ in range(10):
         px = random.randint(30, COVER_WIDTH - 30)
         py = random.randint(30, COVER_HEIGHT - 30)
-        size = random.randint(8, 20)
-        # 简单猫爪印
-        deco_draw.ellipse([px - size//2, py - size//2, px + size//2, py + size//2],
-                          fill=(*CAT_PINK, 30) if False else CAT_PINK)
-        for dx, dy in [(-size, -size//2), (-size//3, -size), (size//3, -size), (size, -size//2)]:
-            deco_draw.ellipse([px + dx - size//4, py + dy - size//4, px + dx + size//4, py + dy + size//4],
-                              fill=CAT_PINK)
-    random.seed()  # 重置
+        s = random.randint(6, 16)
+        deco_draw.ellipse([px - s//2, py - s//2, px + s//2, py + s//2], fill=CAT_PINK)
+        for dx, dy in [(-s, -s//2), (-s//3, -s), (s//3, -s), (s, -s//2)]:
+            deco_draw.ellipse([px+dx-s//4, py+dy-s//4, px+dx+s//4, py+dy+s//4], fill=CAT_PINK)
+    random.seed()
 
-    # 4. 调整头像大小并粘贴到中央
-    avatar = avatar.resize((AVATAR_SIZE, AVATAR_SIZE), Image.LANCZOS)
-    # 头像圆形裁剪
-    mask = Image.new("L", (AVATAR_SIZE, AVATAR_SIZE), 0)
-    mask_draw = ImageDraw.Draw(mask)
-    mask_draw.ellipse([0, 0, AVATAR_SIZE - 1, AVATAR_SIZE - 1], fill=255)
+    # 4. 动漫化猫图
+    # 裁剪到4:3比例（居中）
+    src_w, src_h = cat_img.size
+    target_ratio = 4 / 3
+    src_ratio = src_w / src_h
+    if src_ratio > target_ratio:
+        new_w = int(src_h * target_ratio)
+        left = (src_w - new_w) // 2
+        cat_img = cat_img.crop((left, 0, left + new_w, src_h))
+    else:
+        new_h = int(src_w / target_ratio)
+        top = (src_h - new_h) // 2
+        cat_img = cat_img.crop((0, top, src_w, top + new_h))
 
-    # 头像白色圆形背景（毛绒圈）
-    circle_bg_size = AVATAR_SIZE + 40
-    circle_bg = Image.new("RGBA", (circle_bg_size, circle_bg_size), (0, 0, 0, 0))
-    circle_draw = ImageDraw.Draw(circle_bg)
-    # 外圈毛绒（多层）
-    for i in range(8, 0, -1):
-        alpha = 40 + i * 15
-        offset = i * 3
-        circle_draw.ellipse(
-            [offset, offset, circle_bg_size - 1 - offset, circle_bg_size - 1 - offset],
-            fill=(255, 255, 255, alpha)
-        )
-    # 主白色圆
-    circle_draw.ellipse([20, 20, circle_bg_size - 21, circle_bg_size - 21], fill=(255, 255, 255, 230))
+    # 缩放到合适大小（占封面75%宽度）
+    cat_w = int(COVER_WIDTH * 0.72)
+    cat_h = int(cat_w * 3 / 4)
+    cat_img = cat_img.resize((cat_w, cat_h), Image.LANCZOS)
 
-    # 粘贴圆形背景
+    # 动漫化
+    cat_img = animefy_cat(cat_img)
+
+    # 5. 猫图白色毛绒边框
+    border_pad = 12
+    framed_w = cat_w + border_pad * 2
+    framed_h = cat_h + border_pad * 2
+    framed = Image.new("RGB", (framed_w, framed_h), (255, 255, 255))
+    framed.paste(cat_img, (border_pad, border_pad))
+    # 圆角
+    mask_round = Image.new("L", (framed_w, framed_h), 0)
+    mask_draw = ImageDraw.Draw(mask_round)
+    mask_draw.rounded_rectangle([0, 0, framed_w-1, framed_h-1], radius=18, fill=255)
+    framed_bg = Image.new("RGB", (framed_w, framed_h), CAT_BG)
+    framed_bg.paste(framed, (0, 0), mask_round)
+    framed = framed_bg
+
+    # 6. 粘贴到封面中央
     cx = COVER_WIDTH // 2
-    cy = COVER_HEIGHT // 2 + 10
-    bg.paste(circle_bg, (cx - circle_bg_size // 2, cy - circle_bg_size // 2), circle_bg)
+    cy = COVER_HEIGHT // 2
+    bg.paste(framed, (cx - framed_w // 2, cy - framed_h // 2))
 
-    # 粘贴头像
-    avatar_pos = (cx - AVATAR_SIZE // 2, cy - AVATAR_SIZE // 2)
-    bg.paste(avatar, avatar_pos, mask)
-
-    # 5. 在头像上方画猫耳
-    ear_draw = ImageDraw.Draw(bg)
-    draw_cat_ears(ear_draw, cx, cy - AVATAR_SIZE // 2 + 20, AVATAR_SIZE * 0.9, CAT_ACCENT)
-
-    # 6. 粉橙渐变边框
-    border_w = 6
+    # 7. 粉橙渐变外边框
+    border_w = 5
     for i in range(border_w):
         ratio = i / border_w
         r = int(CAT_PINK[0] + (CAT_ACCENT[0] - CAT_PINK[0]) * ratio)
         g = int(CAT_PINK[1] + (CAT_ACCENT[1] - CAT_PINK[1]) * ratio)
         b = int(CAT_PINK[2] + (CAT_ACCENT[2] - CAT_PINK[2]) * ratio)
         bg_draw = ImageDraw.Draw(bg)
-        bg_draw.rectangle(
-            [i, i, COVER_WIDTH - 1 - i, COVER_HEIGHT - 1 - i],
-            outline=(r, g, b), width=1
-        )
+        bg_draw.rectangle([i, i, COVER_WIDTH-1-i, COVER_HEIGHT-1-i], outline=(r,g,b), width=1)
 
-    # 7. 圆角遮罩
-    mask_round = Image.new("L", (COVER_WIDTH, COVER_HEIGHT), 0)
-    mask_round_draw = ImageDraw.Draw(mask_round)
-    mask_round_draw.rounded_rectangle([0, 0, COVER_WIDTH - 1, COVER_HEIGHT - 1], radius=24, fill=255)
-    final_bg = Image.new("RGB", (COVER_WIDTH, COVER_HEIGHT), CAT_BG)
-    final_bg.paste(bg, (0, 0), mask_round)
-    bg = final_bg
+    # 8. 整体圆角
+    mask_final = Image.new("L", (COVER_WIDTH, COVER_HEIGHT), 0)
+    mask_draw = ImageDraw.Draw(mask_final)
+    mask_draw.rounded_rectangle([0, 0, COVER_WIDTH-1, COVER_HEIGHT-1], radius=24, fill=255)
+    final = Image.new("RGB", (COVER_WIDTH, COVER_HEIGHT), CAT_BG)
+    final.paste(bg, (0, 0), mask_final)
+    bg = final
 
-    # 8. 右下角猫爪印
+    # 9. 右下角猫爪印
     paw_draw = ImageDraw.Draw(bg)
-    paw_cx, paw_cy = COVER_WIDTH - 55, COVER_HEIGHT - 50
-    paw_color = CAT_ACCENT
-    paw_draw.ellipse([paw_cx - 22, paw_cy - 22, paw_cx + 22, paw_cy + 22], fill=paw_color)
-    paw_inner = CAT_BG
-    paw_draw.ellipse([paw_cx - 14, paw_cy - 10, paw_cx + 14, paw_cy + 16], fill=paw_inner)
-    for dx, dy in [(-18, -16), (-7, -22), (7, -22), (18, -16)]:
-        paw_draw.ellipse([paw_cx + dx - 6, paw_cy + dy - 6, paw_cx + dx + 6, paw_cy + dy + 6], fill=paw_inner)
+    paw_cx, paw_cy = COVER_WIDTH - 50, COVER_HEIGHT - 45
+    paw_draw.ellipse([paw_cx-18, paw_cy-18, paw_cx+18, paw_cy+18], fill=CAT_ACCENT)
+    paw_draw.ellipse([paw_cx-11, paw_cy-8, paw_cx+11, paw_cy+12], fill=CAT_BG)
+    for dx, dy in [(-14, -13), (-5, -18), (5, -18), (14, -13)]:
+        paw_draw.ellipse([paw_cx+dx-5, paw_cy+dy-5, paw_cx+dx+5, paw_cy+dy+5], fill=CAT_BG)
 
     return bg
 
@@ -303,7 +323,7 @@ def generate_cover_name(md_path, fm):
     title = fm.get("title", md_path.stem)
     h = hashlib.md5(title.encode()).hexdigest()[:8]
     safe_cat = re.sub(r"[^\w\u4e00-\u9fff]", "", category)
-    return f"anime-{safe_cat}-{h}.jpg"
+    return f"cat-{safe_cat}-{h}.jpg"
 
 
 def main():
@@ -343,17 +363,16 @@ def main():
             results["success"].append(title)
             continue
 
-        # 获取动漫头像
-        seed = hashlib.md5(title.encode()).hexdigest()[:12]
-        avatar = fetch_anime_avatar(seed)
-        if avatar is None:
-            print(f"    ❌ 获取头像失败，跳过")
+        # 获取真实猫图
+        cat_img = fetch_cat_image()
+        if cat_img is None:
+            print(f"    ❌ 获取猫图失败，跳过")
             results["fail"].append(title)
             continue
 
-        # 处理封面
+        # 处理封面（动漫化）
         try:
-            cover = process_anime_cover(avatar, category)
+            cover = process_anime_cover(cat_img, category)
             cover.save(cover_path, "JPEG", quality=88, optimize=True)
             print(f"    ✅ 保存: images/cat-covers/{cover_name}")
         except Exception as e:

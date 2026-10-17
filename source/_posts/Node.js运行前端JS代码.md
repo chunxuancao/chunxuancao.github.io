@@ -5,7 +5,7 @@ category: JS逆向
 tags: "[Node.js, 扣代码, vm, 执行JS, 中等]"
 difficulty: 中等
 summary: 在Node.js中运行前端JS代码的方法，vm沙箱、eval、模块导出，扣代码后执行加密函数
-cover: https://aka.doubaocdn.com/s/ZOdKjaUAzS
+cover: https://aka.doubaocdn.com/s/ScI9a3o4Uk
 ---
 
 ## 适用场景

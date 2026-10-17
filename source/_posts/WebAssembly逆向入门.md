@@ -5,7 +5,7 @@ category: JS逆向
 tags: "[WebAssembly, WASM, 逆向, 困难]"
 difficulty: 困难
 summary: WebAssembly基础概念，wasm模块分析，函数调用，反编译工具，新一代的代码保护技术
-cover: https://aka.doubaocdn.com/s/VcXvSLU0ZM
+cover: https://aka.doubaocdn.com/s/A2vOdwU3PY
 ---
 
 ## 适用场景

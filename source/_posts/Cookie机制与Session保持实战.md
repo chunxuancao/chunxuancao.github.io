@@ -5,7 +5,7 @@ category: 反爬技巧
 tags: "[Cookie, Session, 登录态, 反爬, 入门]"
 difficulty: 入门
 summary: Cookie工作原理、Session保持、登录态维护、Cookie池搭建，需要登录的爬虫必备技能
-cover: https://aka.doubaocdn.com/s/tiXJOnoAVx
+cover: https://aka.doubaocdn.com/s/1Ht8spUmCQ
 ---
 
 ## 适用场景
