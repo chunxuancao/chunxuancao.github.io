@@ -12,7 +12,7 @@ language: zh-CN
 timezone: 'Asia/Shanghai'
 
 # URL
-url: https://chouxuelengqing.gitee.io/blog
+url: https://chunxuancao.github.io/blog
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -101,6 +101,6 @@ theme: butterfly
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://gitee.com/chouxuelengqing/blog.git
-  branch: master
+  repo: https://github.com/chunxuancao/blog.git
+  branch: gh-pages
   message: '博客更新: {{ now("YYYY-MM-DD HH:mm:ss") }}'
