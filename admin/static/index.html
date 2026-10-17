@@ -622,6 +622,52 @@
               <textarea class="cat-input" rows="3" v-model="settings.announcement" placeholder="欢迎来到我的博客..."></textarea>
               <p class="text-xs mt-2" style="color: #a09080;">显示在侧边栏公告卡片中</p>
             </div>
+
+            <!-- 主题样式 -->
+            <div class="fluffy-card p-6">
+              <h3 class="text-lg font-bold mb-4 flex items-center gap-2" style="color: var(--cat-brown);">
+                <i class="fa fa-paint-brush"></i> 主题样式
+              </h3>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">文章标题颜色</label>
+                  <div class="flex items-center gap-2">
+                    <input type="color" v-model="styleConfig.postTitleColor" class="w-10 h-10 rounded cursor-pointer border-2" style="border-color: #ffd6e0;">
+                    <input type="text" class="cat-input flex-1 text-sm" v-model="styleConfig.postTitleColor">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">正文颜色</label>
+                  <div class="flex items-center gap-2">
+                    <input type="color" v-model="styleConfig.postTextColor" class="w-10 h-10 rounded cursor-pointer border-2" style="border-color: #ffd6e0;">
+                    <input type="text" class="cat-input flex-1 text-sm" v-model="styleConfig.postTextColor">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">强调色</label>
+                  <div class="flex items-center gap-2">
+                    <input type="color" v-model="styleConfig.accentColor" class="w-10 h-10 rounded cursor-pointer border-2" style="border-color: #ffd6e0;">
+                    <input type="text" class="cat-input flex-1 text-sm" v-model="styleConfig.accentColor">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">背景色</label>
+                  <div class="flex items-center gap-2">
+                    <input type="color" v-model="styleConfig.bgColor" class="w-10 h-10 rounded cursor-pointer border-2" style="border-color: #ffd6e0;">
+                    <input type="text" class="cat-input flex-1 text-sm" v-model="styleConfig.bgColor">
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 flex gap-2">
+                <button class="btn-gradient flex items-center gap-2" @click="saveStyleConfig" :disabled="savingStyle">
+                  <i class="fa fa-save"></i> {{ savingStyle ? '保存中...' : '保存样式' }}
+                </button>
+                <button class="btn-ghost flex items-center gap-2" @click="resetStyleConfig">
+                  <i class="fa fa-undo"></i> 恢复默认
+                </button>
+              </div>
+              <p class="text-xs mt-3" style="color: #a09080;">保存后自动推送到远端，GitHub Actions构建后生效</p>
+            </div>
           </div>
         </div>
       </div>
@@ -971,6 +1017,15 @@ createApp({
     const deletingImage = ref(false);
     // 自动同步
     const autoSyncEnabled = ref(true);
+    // 主题样式配置
+    const styleConfig = reactive({
+      postTitleColor: '#4a3728',
+      postTextColor: '#4a3728',
+      accentColor: '#ff9d5c',
+      bgColor: '#fff8f0',
+      cardBgColor: 'rgba(255,255,255,0.72)'
+    });
+    const savingStyle = ref(false);
 
     // 编辑器
     const editingFilename = ref('');
@@ -1258,6 +1313,43 @@ createApp({
       }
     };
 
+    // 加载样式配置
+    const loadStyleConfig = async () => {
+      try {
+        const res = await api('/api/style-config');
+        Object.assign(styleConfig, res);
+      } catch (e) {
+        // 用默认值
+      }
+    };
+
+    // 保存样式配置
+    const saveStyleConfig = async () => {
+      savingStyle.value = true;
+      try {
+        const res = await api('/api/style-config', {
+          method: 'POST',
+          body: JSON.stringify(styleConfig)
+        });
+        showToast(res.message || '样式已保存', 'success', 5000);
+      } catch (e) {
+        showToast('保存失败: ' + e.message, 'error');
+      }
+      savingStyle.value = false;
+    };
+
+    // 恢复默认样式
+    const resetStyleConfig = () => {
+      Object.assign(styleConfig, {
+        postTitleColor: '#4a3728',
+        postTextColor: '#4a3728',
+        accentColor: '#ff9d5c',
+        bgColor: '#fff8f0',
+        cardBgColor: 'rgba(255,255,255,0.72)'
+      });
+      showToast('已恢复默认样式，记得点保存哦', 'info');
+    };
+
     // 新建文章
     const newPost = () => {
       editingFilename.value = '';
@@ -1388,25 +1480,34 @@ createApp({
       };
 
       try {
+        let res;
         if (editingFilename.value) {
-          await api(`/api/posts/${encodeURIComponent(editingFilename.value)}`, {
+          res = await api(`/api/posts/${encodeURIComponent(editingFilename.value)}`, {
             method: 'PUT',
             body: JSON.stringify(payload)
           });
-          showToast('文章已保存');
+          if (andDeploy) {
+            showToast('文章已保存并推送到远端，GitHub Actions正在构建（约1-2分钟后线上生效）', 'success', 5000);
+          } else {
+            showToast('文章已保存');
+          }
         } else {
-          const res = await api('/api/posts', {
+          res = await api('/api/posts', {
             method: 'POST',
             body: JSON.stringify(payload)
           });
           editingFilename.value = res.filename;
-          showToast('新文章已创建');
+          if (andDeploy) {
+            showToast('新文章已创建并推送到远端，GitHub Actions正在构建（约1-2分钟后线上生效）', 'success', 5000);
+          } else {
+            showToast('新文章已创建');
+          }
         }
-        if (andDeploy) {
-          await deploy();
-        }
+        // 保存后刷新列表（不跳转，留在编辑器）
+        loadPosts();
+        loadMeta();
       } catch (e) {
-        showToast('保存失败', 'error');
+        showToast('保存失败: ' + e.message, 'error');
       }
     };
 
@@ -1598,6 +1699,7 @@ createApp({
       loadPosts();
       loadMeta();
       loadSettings();
+      loadStyleConfig();
       // 获取自动同步状态
       api('/api/auto-sync').then(r => { autoSyncEnabled.value = r.enabled; }).catch(() => {});
     });
@@ -1609,7 +1711,7 @@ createApp({
       settings, savingSettings,
       showImagePicker, imagePickerTarget, uploadedImages, imagesLoading,
       showDeleteImageModal, deleteImageTarget, deletingImage,
-      autoSyncEnabled,
+      autoSyncEnabled, styleConfig, savingStyle,
       editingFilename, editForm, editorContainer,
       showDeleteModal, deleteTarget,
       showDeployModal, deploying, deployProgress, deployStage,
@@ -1623,7 +1725,7 @@ createApp({
       loadSettings, saveSettings, uploadAvatar, uploadCover,
       loadImages, openImagePicker, selectImage,
       formatSize, uploadManageImage, copyImageUrl, confirmDeleteImage, doDeleteImage,
-      toggleAutoSync
+      toggleAutoSync, loadStyleConfig, saveStyleConfig, resetStyleConfig
     };
   }
 }).mount('#app');
