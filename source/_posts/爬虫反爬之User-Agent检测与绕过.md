@@ -1,13 +1,15 @@
 ---
-title: 爬虫反爬之User-Agent检测与绕过
+title: 爬虫反爬之User-Agent检测、绕过
 date: "2026-10-17 18:54:37"
-category: 反爬技巧
-tags: "[User-Agent, 反爬, requests, 新手入门]"
-difficulty: 简单
-summary: 最常见的反爬机制之一，通过检测User-Agent识别爬虫，本文介绍如何识别和绕过
+categories:
+  - 反爬技巧
+tags:
+  - User-Agent
+  - 反爬
+  - requests
+  - 新手入门
 cover: https://aka.doubaocdn.com/s/bRn0bBucIJ
 ---
-
 ## 适用场景
 
 几乎所有网站都会做User-Agent检测，这是最基础也是最常见的反爬手段。当你遇到以下情况时，大概率是UA被检测了：
