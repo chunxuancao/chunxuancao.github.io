@@ -123,9 +123,20 @@ def _collect_deploy_files():
     return files
 
 
-def _deploy_worker():
-    """部署工作线程"""
+def _git_blob_hash(content):
+    """计算GitHub blob hash（用于对比文件是否修改）"""
+    import hashlib
+    data = content.encode("utf-8")
+    header = f"blob {len(data)}\0".encode("utf-8")
+    return hashlib.sha1(header + data).hexdigest()
+
+
+def _deploy_worker(mode="full"):
+    """部署工作线程
+    mode: fast=快速部署(只推修改过的文件,不删除) / full=完整同步(全推+删除) / posts_only=仅推文章
+    """
     global _deploy_state
+    mode_names = {"fast": "快速部署", "full": "完整同步", "posts_only": "仅推送文章"}
     try:
         _deploy_state["running"] = True
         _deploy_state["cancelled"] = False
@@ -138,6 +149,8 @@ def _deploy_worker():
 
         if not GITHUB_AVAILABLE:
             raise Exception("GitHub配置文件不存在，请检查 tools/local_config.py")
+
+        _deploy_log(f"📦 部署模式: {mode_names.get(mode, mode)}")
 
         # 阶段1: 获取分支信息 (5%)
         _deploy_set_progress(2, "获取当前分支信息")
@@ -159,46 +172,73 @@ def _deploy_worker():
         # 阶段2: 收集文件 (10%)
         _deploy_set_progress(8, "收集待推送文件")
         files_to_push = _collect_deploy_files()
-        _deploy_log(f"待推送文件: {len(files_to_push)} 个")
+
+        # 根据模式过滤文件
+        if mode == "posts_only":
+            files_to_push = [f for f in files_to_push if f["path"].startswith("source/_posts/")]
+            _deploy_log(f"仅推送文章模式，筛选后: {len(files_to_push)} 个文件")
+        elif mode == "fast":
+            # 快速模式：获取远端文件hash，只推送有修改的
+            _deploy_log("快速模式：对比远端文件hash，仅推送修改过的文件...")
+            remote_tree = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/trees/{tree_sha}?recursive=1",
+                                       headers=GITHUB_HEADERS, timeout=30)
+            remote_tree.raise_for_status()
+            remote_hashes = {item["path"]: item.get("sha") for item in remote_tree.json().get("tree", []) if item.get("type") == "blob"}
+
+            changed_files = []
+            for f in files_to_push:
+                local_hash = _git_blob_hash(f["content"])
+                remote_hash = remote_hashes.get(f["path"])
+                if remote_hash != local_hash:
+                    changed_files.append(f)
+            files_to_push = changed_files
+            _deploy_log(f"快速模式：发现 {len(files_to_push)} 个文件有修改")
+        else:
+            _deploy_log(f"完整同步模式：待推送 {len(files_to_push)} 个文件")
 
         if _deploy_check_cancel():
             raise _DeployCancelled()
 
         # 阶段3: 创建blobs (10%-70%)
-        _deploy_set_progress(10, f"创建文件blob (0/{len(files_to_push)})")
-        tree_items = []
-        for i, f in enumerate(files_to_push, 1):
+        if files_to_push:
+            _deploy_set_progress(10, f"创建文件blob (0/{len(files_to_push)})")
+            tree_items = []
+            for i, f in enumerate(files_to_push, 1):
+                if _deploy_check_cancel():
+                    raise _DeployCancelled()
+                content_b64 = base64.b64encode(f["content"].encode("utf-8")).decode("ascii")
+                r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/blobs",
+                                  headers=GITHUB_HEADERS,
+                                  json={"content": content_b64, "encoding": "base64"},
+                                  timeout=30)
+                if r.status_code != 201:
+                    raise Exception(f"文件 {f['path']} 创建blob失败: HTTP {r.status_code} - {r.text[:200]}")
+                blob_sha = r.json()["sha"]
+                tree_items.append({
+                    "path": f["path"],
+                    "mode": "100644",
+                    "type": "blob",
+                    "sha": blob_sha,
+                })
+                # 进度从10%到70%
+                progress = 10 + int(60 * i / len(files_to_push))
+                if i % 5 == 0 or i == len(files_to_push):
+                    _deploy_set_progress(progress, f"创建文件blob ({i}/{len(files_to_push)})")
+            _deploy_log(f"全部 {len(tree_items)} 个blob创建完成")
+        else:
+            tree_items = []
+            _deploy_log("没有文件需要推送，跳过blob创建")
+            _deploy_set_progress(70, "无文件变更")
+
+        # 阶段3.5: 同步删除远端多余文件 (仅full模式) (72%)
+        if mode == "full":
+            _deploy_set_progress(72, "检查远端待删除文件")
             if _deploy_check_cancel():
                 raise _DeployCancelled()
-            content_b64 = base64.b64encode(f["content"].encode("utf-8")).decode("ascii")
-            r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/blobs",
-                              headers=GITHUB_HEADERS,
-                              json={"content": content_b64, "encoding": "base64"},
-                              timeout=30)
-            if r.status_code != 201:
-                raise Exception(f"文件 {f['path']} 创建blob失败: HTTP {r.status_code} - {r.text[:200]}")
-            blob_sha = r.json()["sha"]
-            tree_items.append({
-                "path": f["path"],
-                "mode": "100644",
-                "type": "blob",
-                "sha": blob_sha,
-            })
-            # 进度从10%到70%
-            progress = 10 + int(60 * i / len(files_to_push))
-            if i % 5 == 0 or i == len(files_to_push):
-                _deploy_set_progress(progress, f"创建文件blob ({i}/{len(files_to_push)})")
 
-        _deploy_log(f"全部 {len(tree_items)} 个blob创建完成")
-
-        # 阶段3.5: 同步删除远端多余文件 (72%)
-        _deploy_set_progress(72, "检查远端待删除文件")
-        if _deploy_check_cancel():
-            raise _DeployCancelled()
-
-        # 递归获取远端当前tree中的所有文件
-        remote_tree = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/trees/{tree_sha}?recursive=1",
-                                   headers=GITHUB_HEADERS, timeout=30)
+            # 递归获取远端当前tree中的所有文件
+            remote_tree = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/trees/{tree_sha}?recursive=1",
+                                       headers=GITHUB_HEADERS, timeout=30)
         remote_tree.raise_for_status()
         remote_files = {item["path"] for item in remote_tree.json().get("tree", []) if item.get("type") == "blob"}
 
@@ -303,15 +343,22 @@ class _DeployCancelled(Exception):
 
 
 # ========== 部署API ==========
+class DeployRequest(BaseModel):
+    mode: str = "full"  # fast / full / posts_only
+
+
 @app.post("/api/deploy/start")
-def deploy_start():
-    """启动部署（异步）"""
+def deploy_start(req: DeployRequest = DeployRequest()):
+    """启动部署（异步）
+    mode: fast=快速部署(只推修改过的文件,不删除) / full=完整同步(全推+删除) / posts_only=仅推文章
+    """
+    mode = req.mode if req.mode in ("fast", "full", "posts_only") else "full"
     if not _deploy_lock.acquire(blocking=False):
         return {"status": "busy", "message": "已有部署任务正在运行"}
     # 启动工作线程
-    thread = threading.Thread(target=_deploy_worker, daemon=True)
+    thread = threading.Thread(target=_deploy_worker, args=(mode,), daemon=True)
     thread.start()
-    return {"status": "started", "message": "部署已启动"}
+    return {"status": "started", "message": f"部署已启动（{mode}模式）"}
 
 
 @app.get("/api/deploy/status")
@@ -456,10 +503,12 @@ def build_front_matter(fm):
 
 # ========== API 路由 ==========
 @app.get("/api/posts")
-def list_posts(category: str = "", tag: str = "", keyword: str = ""):
-    """获取文章列表，支持筛选"""
+def list_posts(category: str = "", tag: str = "", keyword: str = "", sort: str = "date_desc"):
+    """获取文章列表，支持筛选和排序
+    sort: date_desc=时间降序(默认) / date_asc=时间升序 / title=标题排序
+    """
     posts = []
-    for md in sorted(POSTS_DIR.glob("*.md"), reverse=True):
+    for md in POSTS_DIR.glob("*.md"):
         content = md.read_text(encoding="utf-8")
         fm, body = parse_front_matter(content)
 
@@ -485,6 +534,15 @@ def list_posts(category: str = "", tag: str = "", keyword: str = ""):
             "cover": fm.get("cover", ""),
             "excerpt": excerpt,
         })
+
+    # 排序
+    if sort == "date_asc":
+        posts.sort(key=lambda p: p.get("date", ""))
+    elif sort == "title":
+        posts.sort(key=lambda p: p.get("title", "").lower())
+    else:  # date_desc 默认
+        posts.sort(key=lambda p: p.get("date", ""), reverse=True)
+
     return posts
 
 
@@ -585,6 +643,138 @@ def list_tags():
         for t in fm.get("tags", []):
             tag_count[t] = tag_count.get(t, 0) + 1
     return [{"name": k, "count": v} for k, v in sorted(tag_count.items())]
+
+
+# ========== 分类/标签管理 ==========
+class RenameRequest(BaseModel):
+    old_name: str
+    new_name: str
+
+
+class MergeRequest(BaseModel):
+    from_name: str
+    to_name: str
+
+
+def _update_all_posts(transform_fn):
+    """遍历所有文章，用transform_fn(fm)修改front-matter，返回修改的文章数"""
+    count = 0
+    for md in POSTS_DIR.glob("*.md"):
+        content = md.read_text(encoding="utf-8")
+        fm, body = parse_front_matter(content)
+        original_cats = list(fm.get("categories", []))
+        original_tags = list(fm.get("tags", []))
+
+        transform_fn(fm)
+
+        # 只有真正修改了才写回
+        if fm.get("categories", []) != original_cats or fm.get("tags", []) != original_tags:
+            # 保留原始front-matter的其他字段，只更新categories/tags
+            new_content = build_front_matter(fm) + body
+            md.write_text(new_content, encoding="utf-8")
+            count += 1
+    return count
+
+
+@app.post("/api/categories/rename")
+def rename_category(req: RenameRequest):
+    """重命名分类（批量修改所有文章的category）"""
+    if not req.old_name or not req.new_name:
+        raise HTTPException(400, "分类名不能为空")
+    if req.old_name == req.new_name:
+        return {"updated": 0, "message": "新旧名称相同"}
+
+    def transform(fm):
+        cats = fm.get("categories", [])
+        fm["categories"] = [req.new_name if c == req.old_name else c for c in cats]
+
+    count = _update_all_posts(transform)
+    return {"updated": count, "message": f"已将 {count} 篇文章的分类从「{req.old_name}」改为「{req.new_name}」"}
+
+
+@app.post("/api/categories/merge")
+def merge_category(req: MergeRequest):
+    """合并分类（把from_name分类的文章都改成to_name）"""
+    if not req.from_name or not req.to_name:
+        raise HTTPException(400, "分类名不能为空")
+    if req.from_name == req.to_name:
+        return {"updated": 0, "message": "两个分类相同"}
+
+    def transform(fm):
+        cats = fm.get("categories", [])
+        # 把from改成to，并去重
+        new_cats = []
+        for c in cats:
+            nc = req.to_name if c == req.from_name else c
+            if nc not in new_cats:
+                new_cats.append(nc)
+        fm["categories"] = new_cats
+
+    count = _update_all_posts(transform)
+    return {"updated": count, "message": f"已将 {count} 篇文章从「{req.from_name}」合并到「{req.to_name}」"}
+
+
+@app.delete("/api/categories/{name}")
+def delete_category(name: str):
+    """删除分类（从所有文章中移除该分类）"""
+    if not name:
+        raise HTTPException(400, "分类名不能为空")
+
+    def transform(fm):
+        fm["categories"] = [c for c in fm.get("categories", []) if c != name]
+
+    count = _update_all_posts(transform)
+    return {"updated": count, "message": f"已从 {count} 篇文章中移除分类「{name}」"}
+
+
+@app.post("/api/tags/rename")
+def rename_tag(req: RenameRequest):
+    """重命名标签"""
+    if not req.old_name or not req.new_name:
+        raise HTTPException(400, "标签名不能为空")
+    if req.old_name == req.new_name:
+        return {"updated": 0, "message": "新旧名称相同"}
+
+    def transform(fm):
+        tags = fm.get("tags", [])
+        fm["tags"] = [req.new_name if t == req.old_name else t for t in tags]
+
+    count = _update_all_posts(transform)
+    return {"updated": count, "message": f"已将 {count} 篇文章的标签从「{req.old_name}」改为「{req.new_name}」"}
+
+
+@app.post("/api/tags/merge")
+def merge_tag(req: MergeRequest):
+    """合并标签"""
+    if not req.from_name or not req.to_name:
+        raise HTTPException(400, "标签名不能为空")
+    if req.from_name == req.to_name:
+        return {"updated": 0, "message": "两个标签相同"}
+
+    def transform(fm):
+        tags = fm.get("tags", [])
+        new_tags = []
+        for t in tags:
+            nt = req.to_name if t == req.from_name else t
+            if nt not in new_tags:
+                new_tags.append(nt)
+        fm["tags"] = new_tags
+
+    count = _update_all_posts(transform)
+    return {"updated": count, "message": f"已将 {count} 篇文章从「{req.from_name}」合并到「{req.to_name}」"}
+
+
+@app.delete("/api/tags/{name}")
+def delete_tag(name: str):
+    """删除标签（从所有文章中移除该标签）"""
+    if not name:
+        raise HTTPException(400, "标签名不能为空")
+
+    def transform(fm):
+        fm["tags"] = [t for t in fm.get("tags", []) if t != name]
+
+    count = _update_all_posts(transform)
+    return {"updated": count, "message": f"已从 {count} 篇文章中移除标签「{name}」"}
 
 
 @app.get("/api/stats")

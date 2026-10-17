@@ -264,32 +264,13 @@
           <i class="fa fa-file-text-o w-5"></i>
           <span>文章列表</span>
         </div>
-        <div class="nav-item" @click="showCategories = !showCategories">
+        <div class="nav-item" :class="{active: currentView === 'categories'}" @click="currentView = 'categories'; showDeployMenu = false">
           <i class="fa fa-folder-o w-5"></i>
           <span>分类管理</span>
-          <i class="fa fa-chevron-down ml-auto text-xs" :class="{'rotate-180': showCategories}"></i>
         </div>
-        <div v-if="showCategories" class="ml-8 space-y-1">
-          <div v-for="cat in categories" :key="cat.name"
-               class="text-sm py-1 px-2 rounded-lg cursor-pointer hover:bg-pink-50 flex justify-between"
-               :style="{color: filterCategory === cat.name ? '#d4727a' : '#8a7a6a'}"
-               @click="filterCategory = filterCategory === cat.name ? '' : cat.name; currentView='list'">
-            <span>{{ cat.name }}</span>
-            <span class="text-xs opacity-60">{{ cat.count }}</span>
-          </div>
-        </div>
-        <div class="nav-item" @click="showTags = !showTags">
+        <div class="nav-item" :class="{active: currentView === 'tags'}" @click="currentView = 'tags'; showDeployMenu = false">
           <i class="fa fa-tags w-5"></i>
-          <span>标签云</span>
-          <i class="fa fa-chevron-down ml-auto text-xs" :class="{'rotate-180': showTags}"></i>
-        </div>
-        <div v-if="showTags" class="ml-8 p-2">
-          <span v-for="tag in tags" :key="tag.name"
-                class="tag-pill cursor-pointer"
-                :style="{opacity: filterTag === tag.name ? 1 : 0.7}"
-                @click="filterTag = filterTag === tag.name ? '' : tag.name; currentView='list'">
-            {{ tag.name }} ({{ tag.count }})
-          </span>
+          <span>标签管理</span>
         </div>
       </nav>
 
@@ -311,29 +292,75 @@
         </div>
       </div>
 
-      <!-- 部署按钮 -->
-      <button class="btn-gradient w-full flex items-center justify-center gap-2" @click="deploy">
-        <i class="fa fa-rocket"></i>
-        <span>一键部署</span>
-      </button>
+      <!-- 部署按钮（下拉菜单） -->
+      <div class="relative">
+        <button class="btn-gradient w-full flex items-center justify-center gap-2" @click="showDeployMenu = !showDeployMenu">
+          <i class="fa fa-rocket"></i>
+          <span>一键部署</span>
+          <i class="fa fa-caret-down text-xs"></i>
+        </button>
+        <!-- 下拉菜单 -->
+        <div v-if="showDeployMenu" class="absolute bottom-full left-0 right-0 mb-2 fluffy-card p-2 z-50"
+             style="animation: slideUp 0.2s;">
+          <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-pink-50 transition flex items-start gap-3"
+                  @click="deploy('fast'); showDeployMenu = false">
+            <span class="text-xl">⚡</span>
+            <div>
+              <div class="font-bold text-sm" style="color: var(--cat-brown);">快速部署</div>
+              <div class="text-xs" style="color: #a09080;">只推送修改过的文件，不删除，最快</div>
+            </div>
+          </button>
+          <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-pink-50 transition flex items-start gap-3"
+                  @click="deploy('full'); showDeployMenu = false">
+            <span class="text-xl">🔄</span>
+            <div>
+              <div class="font-bold text-sm" style="color: var(--cat-brown);">完整同步</div>
+              <div class="text-xs" style="color: #a09080;">推送全部 + 删除远端多余文件</div>
+            </div>
+          </button>
+          <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-pink-50 transition flex items-start gap-3"
+                  @click="deploy('posts_only'); showDeployMenu = false">
+            <span class="text-xl">📝</span>
+            <div>
+              <div class="font-bold text-sm" style="color: var(--cat-brown);">仅推文章</div>
+              <div class="text-xs" style="color: #a09080;">只推送 source/_posts/ 下的文章</div>
+            </div>
+          </button>
+        </div>
+      </div>
     </aside>
 
     <!-- 主内容区 -->
-    <main class="flex-1 overflow-y-auto p-6 relative">
+    <main class="flex-1 overflow-y-auto p-6 relative" @click="showDeployMenu = false">
       <div class="paw-deco" style="top: 10%; right: 5%;">🐾</div>
       <div class="paw-deco" style="bottom: 20%; left: 3%; transform: rotate(-30deg);">🐾</div>
 
       <!-- 文章列表视图 -->
       <div v-if="currentView === 'list'">
         <!-- 顶部工具栏 -->
-        <div class="flex items-center gap-4 mb-6">
-          <div class="flex-1 relative">
+        <div class="flex items-center gap-3 mb-4 flex-wrap">
+          <div class="flex-1 relative min-w-[200px]">
             <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
             <input type="text" class="cat-input pl-11" placeholder="搜索文章标题或内容..."
                    v-model="searchKeyword" @input="loadPosts">
           </div>
-          <button class="btn-ghost flex items-center gap-2" @click="resetFilters" v-if="filterCategory || filterTag || searchKeyword">
-            <i class="fa fa-times"></i> 清除筛选
+          <!-- 分类筛选 -->
+          <select class="cat-input w-auto" v-model="filterCategory" @change="loadPosts" style="min-width: 120px;">
+            <option value="">全部分类</option>
+            <option v-for="cat in categories" :key="cat.name" :value="cat.name">{{ cat.name }} ({{ cat.count }})</option>
+          </select>
+          <!-- 标签筛选 -->
+          <select class="cat-input w-auto" v-model="filterTag" @change="loadPosts" style="min-width: 120px;">
+            <option value="">全部标签</option>
+            <option v-for="tag in tags" :key="tag.name" :value="tag.name">{{ tag.name }} ({{ tag.count }})</option>
+          </select>
+          <!-- 排序 -->
+          <button class="btn-ghost flex items-center gap-2" @click="toggleSort" :title="sortLabel">
+            <i class="fa" :class="sortIcon"></i>
+            <span class="text-sm">{{ sortLabel }}</span>
+          </button>
+          <button class="btn-ghost flex items-center gap-2" @click="resetFilters" v-if="hasActiveFilter">
+            <i class="fa fa-times"></i> 清除
           </button>
           <button class="btn-gradient flex items-center gap-2" @click="newPost">
             <i class="fa fa-plus"></i> 写新文章
@@ -341,10 +368,21 @@
         </div>
 
         <!-- 筛选提示 -->
-        <div v-if="filterCategory || filterTag" class="mb-4 flex items-center gap-2">
+        <div v-if="hasActiveFilter" class="mb-4 flex items-center gap-2 flex-wrap">
           <span class="text-sm" style="color: #a09080;">当前筛选:</span>
-          <span v-if="filterCategory" class="cat-pill">{{ filterCategory }}</span>
-          <span v-if="filterTag" class="tag-pill">{{ filterTag }}</span>
+          <span v-if="filterCategory" class="cat-pill cursor-pointer" @click="filterCategory=''; loadPosts()">
+            {{ filterCategory }} <i class="fa fa-times ml-1 text-xs"></i>
+          </span>
+          <span v-if="filterTag" class="tag-pill cursor-pointer" @click="filterTag=''; loadPosts()">
+            {{ filterTag }} <i class="fa fa-times ml-1 text-xs"></i>
+          </span>
+          <span v-if="searchKeyword" class="tag-pill cursor-pointer" style="background: #f0e8e0;" @click="searchKeyword=''; loadPosts()">
+            搜索: {{ searchKeyword }} <i class="fa fa-times ml-1 text-xs"></i>
+          </span>
+          <span class="text-sm ml-auto" style="color: #a09080;">共 {{ posts.length }} 篇文章</span>
+        </div>
+        <div v-else class="mb-4 text-right">
+          <span class="text-sm" style="color: #a09080;">共 {{ posts.length }} 篇文章</span>
         </div>
 
         <!-- 加载中 -->
@@ -395,6 +433,108 @@
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分类管理视图 -->
+      <div v-if="currentView === 'categories'">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold" style="color: var(--cat-brown);">📁 分类管理</h2>
+            <p class="text-sm mt-1" style="color: #a09080;">共 {{ categories.length }} 个分类，修改后需部署生效</p>
+          </div>
+          <button class="btn-ghost" @click="loadMeta"><i class="fa fa-refresh mr-1"></i>刷新</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div v-for="cat in categories" :key="cat.name" class="fluffy-card p-4">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">📂</span>
+                <span class="font-bold text-lg" style="color: var(--cat-brown);">{{ cat.name }}</span>
+              </div>
+              <span class="tag-pill" style="font-size: 12px;">{{ cat.count }} 篇</span>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <button class="btn-ghost text-xs flex-1" @click="openRenameModal('category', cat.name)">
+                <i class="fa fa-pencil mr-1"></i>重命名
+              </button>
+              <button class="btn-ghost text-xs flex-1" @click="openMergeModal('category', cat.name)">
+                <i class="fa fa-compress mr-1"></i>合并
+              </button>
+              <button class="btn-ghost text-xs" style="color: #d4727a;" @click="confirmDeleteItem('category', cat.name, cat.count)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div v-if="categories.length === 0" class="text-center py-20" style="color: #a09080;">
+          <i class="fa fa-folder-open-o text-5xl mb-4"></i>
+          <p>暂无分类</p>
+        </div>
+      </div>
+
+      <!-- 标签管理视图 -->
+      <div v-if="currentView === 'tags'">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold" style="color: var(--cat-brown);">🏷️ 标签管理</h2>
+            <p class="text-sm mt-1" style="color: #a09080;">共 {{ tags.length }} 个标签，修改后需部署生效</p>
+          </div>
+          <button class="btn-ghost" @click="loadMeta"><i class="fa fa-refresh mr-1"></i>刷新</button>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <div v-for="tag in tags" :key="tag.name" class="fluffy-card px-4 py-3 flex items-center gap-3" style="min-width: 200px;">
+            <span class="tag-pill" style="font-size: 14px;">{{ tag.name }}</span>
+            <span class="text-xs" style="color: #a09080;">{{ tag.count }} 篇</span>
+            <div class="flex gap-1 ml-auto">
+              <button class="action-btn" title="重命名" @click="openRenameModal('tag', tag.name)">
+                <i class="fa fa-pencil text-xs"></i>
+              </button>
+              <button class="action-btn" title="合并" @click="openMergeModal('tag', tag.name)">
+                <i class="fa fa-compress text-xs"></i>
+              </button>
+              <button class="action-btn" title="删除" style="color: #d4727a;" @click="confirmDeleteItem('tag', tag.name, tag.count)">
+                <i class="fa fa-trash text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div v-if="tags.length === 0" class="text-center py-20" style="color: #a09080;">
+          <i class="fa fa-tags text-5xl mb-4"></i>
+          <p>暂无标签</p>
+        </div>
+      </div>
+
+      <!-- 重命名/合并弹窗 -->
+      <div v-if="showItemModal" class="modal-overlay" @click.self="showItemModal = false">
+        <div class="modal-content fluffy-card p-6 w-[420px]">
+          <h3 class="text-lg font-bold mb-4" style="color: var(--cat-brown);">
+            {{ itemModalAction === 'rename' ? '重命名' : '合并' }}{{ itemModalType === 'category' ? '分类' : '标签' }}
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm mb-1" style="color: var(--cat-brown);">原名称</label>
+              <input type="text" v-model="itemModalFrom" disabled
+                     class="w-full px-3 py-2 rounded-xl border" style="background: #f5f0eb; color: #8a7a6a;">
+            </div>
+            <div>
+              <label class="block text-sm mb-1" style="color: var(--cat-brown);">
+                {{ itemModalAction === 'rename' ? '新名称' : '合并到（目标名称）' }}
+              </label>
+              <input type="text" v-model="itemModalTo" placeholder="请输入名称"
+                     class="w-full px-3 py-2 rounded-xl border focus:outline-none focus:border-pink-300"
+                     style="border-color: #e8ddd2;">
+            </div>
+            <p class="text-xs" style="color: #a09080;">
+              {{ itemModalAction === 'rename'
+                ? '将批量修改所有文章中的该' + (itemModalType === 'category' ? '分类' : '标签') + '名称'
+                : '将原' + (itemModalType === 'category' ? '分类' : '标签') + '下的所有文章移到目标' + (itemModalType === 'category' ? '分类' : '标签') }}
+            </p>
+          </div>
+          <div class="flex justify-end gap-2 mt-6">
+            <button class="btn-ghost" @click="showItemModal = false">取消</button>
+            <button class="btn-gradient" @click="executeItemAction" :disabled="!itemModalTo.trim()">确定</button>
           </div>
         </div>
       </div>
@@ -555,8 +695,7 @@ createApp({
     const searchKeyword = ref('');
     const filterCategory = ref('');
     const filterTag = ref('');
-    const showCategories = ref(false);
-    const showTags = ref(false);
+    const sortBy = ref('date_desc'); // date_desc / date_asc / title
 
     // 编辑器
     const editingFilename = ref('');
@@ -574,6 +713,7 @@ createApp({
     const showDeleteModal = ref(false);
     const deleteTarget = ref(null);
     const showDeployModal = ref(false);
+    const showDeployMenu = ref(false);
     const deploying = ref(false);
     const deployProgress = ref(0);
     const deployStage = ref('');
@@ -582,6 +722,13 @@ createApp({
     const cancelling = ref(false);
     const deployLogText = ref('');
     let deployPollTimer = null;
+
+    // 分类/标签管理弹窗
+    const showItemModal = ref(false);
+    const itemModalType = ref('category'); // category / tag
+    const itemModalAction = ref('rename'); // rename / merge
+    const itemModalFrom = ref('');
+    const itemModalTo = ref('');
 
     // Toast
     const toast = reactive({ show: false, message: '', type: 'success' });
@@ -625,6 +772,7 @@ createApp({
         if (searchKeyword.value) params.set('keyword', searchKeyword.value);
         if (filterCategory.value) params.set('category', filterCategory.value);
         if (filterTag.value) params.set('tag', filterTag.value);
+        if (sortBy.value) params.set('sort', sortBy.value);
         posts.value = await api(`/api/posts?${params}`);
       } catch (e) {
         showToast('加载文章失败', 'error');
@@ -646,8 +794,33 @@ createApp({
       searchKeyword.value = '';
       filterCategory.value = '';
       filterTag.value = '';
+      sortBy.value = 'date_desc';
       loadPosts();
     };
+
+    // 排序切换
+    const toggleSort = () => {
+      const order = ['date_desc', 'date_asc', 'title'];
+      const idx = order.indexOf(sortBy.value);
+      sortBy.value = order[(idx + 1) % order.length];
+      loadPosts();
+    };
+
+    const sortLabel = computed(() => {
+      if (sortBy.value === 'date_asc') return '时间升序';
+      if (sortBy.value === 'title') return '标题排序';
+      return '时间降序';
+    });
+
+    const sortIcon = computed(() => {
+      if (sortBy.value === 'date_asc') return 'fa-sort-amount-asc';
+      if (sortBy.value === 'title') return 'fa-sort-alpha-asc';
+      return 'fa-sort-amount-desc';
+    });
+
+    const hasActiveFilter = computed(() => {
+      return searchKeyword.value || filterCategory.value || filterTag.value;
+    });
 
     // 新建文章
     const newPost = () => {
@@ -794,7 +967,7 @@ createApp({
           showToast('新文章已创建');
         }
         if (andDeploy) {
-          await deploy();
+          await deploy('fast');
         }
       } catch (e) {
         showToast('保存失败', 'error');
@@ -820,11 +993,12 @@ createApp({
     };
 
     // 部署 - 异步启动 + 轮询进度
-    const deploy = async () => {
+    const deploy = async (mode = 'full') => {
       if (deploying.value) {
         showToast('已有部署正在运行，请稍候...', 'error');
         return;
       }
+      const modeNames = { fast: '快速部署', full: '完整同步', posts_only: '仅推送文章' };
       // 重置状态
       deploying.value = true;
       cancelling.value = false;
@@ -832,12 +1006,15 @@ createApp({
       deployStage.value = '初始化';
       deployResult.value = null;
       deployElapsed.value = 0;
-      deployLogText.value = '🚀 开始部署到 GitHub...\n';
+      deployLogText.value = `🚀 开始部署到 GitHub...（${modeNames[mode] || mode}）\n`;
       showDeployModal.value = true;
 
       try {
         // 启动部署
-        const res = await api('/api/deploy/start', { method: 'POST' }, 10000);
+        const res = await api('/api/deploy/start', {
+          method: 'POST',
+          body: JSON.stringify({ mode })
+        }, 10000);
         if (res.status === 'busy') {
           deployLogText.value += '⚠️ ' + (res.message || '已有部署在运行') + '\n';
           deploying.value = false;
@@ -923,6 +1100,68 @@ createApp({
       return '部署失败';
     });
 
+    // ========== 分类/标签管理 ==========
+    const openRenameModal = (type, name) => {
+      itemModalType.value = type;
+      itemModalAction.value = 'rename';
+      itemModalFrom.value = name;
+      itemModalTo.value = '';
+      showItemModal.value = true;
+    };
+
+    const openMergeModal = (type, name) => {
+      itemModalType.value = type;
+      itemModalAction.value = 'merge';
+      itemModalFrom.value = name;
+      itemModalTo.value = '';
+      showItemModal.value = true;
+    };
+
+    const confirmDeleteItem = (type, name, count) => {
+      const typeName = type === 'category' ? '分类' : '标签';
+      if (!confirm(`确定要删除${typeName}「${name}」吗？\n将从 ${count} 篇文章中移除该${typeName}，文章本身不会被删除。`)) {
+        return;
+      }
+      const url = type === 'category' ? `/api/categories/${encodeURIComponent(name)}` : `/api/tags/${encodeURIComponent(name)}`;
+      api(url, { method: 'DELETE' }, 15000).then(res => {
+        showToast(res.message || '删除成功');
+        loadMeta();
+        loadPosts();
+      }).catch(e => {
+        showToast('删除失败: ' + e.message, 'error');
+      });
+    };
+
+    const executeItemAction = () => {
+      const type = itemModalType.value;
+      const action = itemModalAction.value;
+      const from = itemModalFrom.value;
+      const to = itemModalTo.value.trim();
+      if (!to) return;
+
+      const typePath = type === 'category' ? 'categories' : 'tags';
+      let url, method, body;
+
+      if (action === 'rename') {
+        url = `/api/${typePath}/rename`;
+        method = 'POST';
+        body = JSON.stringify({ old_name: from, new_name: to });
+      } else {
+        url = `/api/${typePath}/merge`;
+        method = 'POST';
+        body = JSON.stringify({ from_name: from, to_name: to });
+      }
+
+      api(url, { method, body }, 15000).then(res => {
+        showToast(res.message || '操作成功');
+        showItemModal.value = false;
+        loadMeta();
+        loadPosts();
+      }).catch(e => {
+        showToast('操作失败: ' + e.message, 'error');
+      });
+    };
+
     onMounted(() => {
       loadPosts();
       loadMeta();
@@ -930,16 +1169,18 @@ createApp({
 
     return {
       currentView, posts, categories, tags, stats, loading,
-      searchKeyword, filterCategory, filterTag,
-      showCategories, showTags,
+      searchKeyword, filterCategory, filterTag, sortBy,
+      sortLabel, sortIcon, hasActiveFilter,
       editingFilename, editForm, editorContainer,
       showDeleteModal, deleteTarget,
-      showDeployModal, deploying, deployProgress, deployStage,
+      showDeployModal, showDeployMenu, deploying, deployProgress, deployStage,
       deployResult, deployElapsed, cancelling, deployLogText, deployTitle,
+      showItemModal, itemModalType, itemModalAction, itemModalFrom, itemModalTo,
       toast,
       loadPosts, resetFilters, newPost, editPost, backToList,
-      toggleCategory, toggleTag, savePost, confirmDelete, doDelete,
-      deploy, cancelDeploy, closeDeployModal
+      toggleCategory, toggleTag, toggleSort, savePost, confirmDelete, doDelete,
+      deploy, cancelDeploy, closeDeployModal,
+      openRenameModal, openMergeModal, confirmDeleteItem, executeItemAction
     };
   }
 }).mount('#app');
