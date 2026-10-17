@@ -62,7 +62,7 @@ social:
 favicon: /img/favicon.png
 
 avatar:
-  img: /img/butterfly-icon.png
+  img: /img/48297729_生成奶龙黑色JK照.png
   effect: false
 
 # Disable all banner images
@@ -297,7 +297,7 @@ aside:
       link: https://github.com/chunxuancao
   card_announcement:
     enable: true
-    content: 欢迎来到喵轩的技术博客~
+    content: 欢迎来到喵轩的技术博客~ 这里有爬虫接单经验、反爬技巧、JS逆向教程，还有二次元看板娘陪你哦！🌸
   card_recent_post:
     enable: true
     # If set 0 will show all
