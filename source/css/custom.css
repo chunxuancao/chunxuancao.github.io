@@ -1,0 +1,191 @@
+/* ===== 二次元动漫风自定义样式 ===== */
+
+/* 全局背景 - 渐变粉紫 */
+body {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ffdde1 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* 夜间模式背景 */
+[data-theme='dark'] body {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background-attachment: fixed;
+}
+
+/* 卡片毛玻璃效果 */
+#aside_content .card-widget,
+.recent-post-item,
+.article-sort-item,
+#post,
+#page,
+.flink-card-list .flink-card,
+#pagination .pagination {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(255, 105, 180, 0.15) !important;
+  transition: all 0.3s ease;
+}
+
+[data-theme='dark'] #aside_content .card-widget,
+[data-theme='dark'] .recent-post-item,
+[data-theme='dark'] #post,
+[data-theme='dark'] #page {
+  background: rgba(30, 30, 50, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 卡片悬浮效果 */
+.recent-post-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(255, 105, 180, 0.25) !important;
+}
+
+/* 主题色 - 粉色系 */
+:root {
+  --efu-main: #ff6b9d !important;
+  --efu-main-op: #ff6b9d1a !important;
+  --efu-main-op-deep: #ff6b9d33 !important;
+  --efu-main-none: #ff6b9d00 !important;
+  --efu-theme: #ff6b9d !important;
+}
+
+[data-theme='dark'] {
+  --efu-main: #ff8fab !important;
+  --efu-main-op: #ff8fab1a !important;
+  --efu-main-op-deep: #ff8fab33 !important;
+}
+
+/* 标题渐变文字 */
+#site-title,
+#site-subtitle,
+.post-title,
+.category-title,
+.tag-title {
+  background: linear-gradient(90deg, #ff6b9d, #c44dff, #6b8cff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 按钮圆角 */
+.btn,
+button,
+#to_comment,
+#post .post-copyright,
+#post .tag_share .post-meta__tag-list a {
+  border-radius: 20px !important;
+}
+
+/* 头像旋转效果 */
+.avatar-img img {
+  border-radius: 50%;
+  transition: transform 0.6s ease;
+}
+
+.avatar-img img:hover {
+  transform: rotate(360deg);
+}
+
+/* 文章封面圆角 */
+.recent-post-top .cover,
+.post-bg .cover {
+  border-radius: 16px 16px 0 0;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff6b9d, #c44dff);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff85b0, #d06fff);
+}
+
+/* 代码块样式 */
+#article-container pre,
+#article-container figure.highlight {
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 107, 157, 0.2) !important;
+}
+
+/* 引用块 */
+#article-container blockquote {
+  border-left: 4px solid #ff6b9d !important;
+  background: rgba(255, 107, 157, 0.08) !important;
+  border-radius: 0 12px 12px 0;
+}
+
+/* 表格 */
+#article-container table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#article-container table th {
+  background: linear-gradient(90deg, #ff6b9d, #c44dff) !important;
+  color: white !important;
+}
+
+/* 樱花画布 */
+#sakura-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* 看板娘容器 */
+#live2d-widget {
+  position: fixed;
+  bottom: 0;
+  left: 20px;
+  z-index: 9998;
+  pointer-events: none;
+}
+
+#live2d-widget canvas {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* 顶部导航毛玻璃 */
+#page-header.nav-fixed #nav,
+#page-header.not-top-img #nav {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+[data-theme='dark'] #page-header.nav-fixed #nav {
+  background: rgba(20, 20, 40, 0.7) !important;
+}
+
+/* 页脚 */
+#footer {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+[data-theme='dark'] #footer {
+  background: rgba(20, 20, 40, 0.5) !important;
+}
