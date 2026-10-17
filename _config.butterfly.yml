@@ -1,12 +1,5 @@
 # --------------------------------------
 # Hexo Butterfly Theme Configuration
-# If you have any questions, please refer to the documentation
-# Chinese: https://butterfly.js.org/
-# English: https://butterfly.js.org/en/
-# --------------------------------------
-
-# --------------------------------------
-# Navigation Settings
 # --------------------------------------
 
 nav:
@@ -27,10 +20,6 @@ menu:
   归档: /archives/ || fas fa-archive
   关于: /about/ || fas fa-user
 
-# --------------------------------------
-# Code Blocks Settings
-# --------------------------------------
-
 code_blocks:
   theme: light
   macStyle: false
@@ -42,10 +31,6 @@ code_blocks:
   fullpage: false
 
 social:
-
-# --------------------------------------
-# Image Settings
-# --------------------------------------
 
 favicon: /img/favicon.png
 
@@ -94,10 +79,6 @@ post_meta:
     tags: true
     label: true
 
-# --------------------------------------
-# Index page settings
-# --------------------------------------
-
 index_site_info_top:
 index_top_img_height:
 
@@ -113,10 +94,6 @@ index_layout: 3
 index_post_content:
   method: 3
   length: 500
-
-# --------------------------------------
-# Post Settings
-# --------------------------------------
 
 toc:
   post: true
@@ -157,10 +134,6 @@ noticeOutdate:
   message_prev: It has been
   message_next: days since the last update, the content of the article may be outdated.
 
-# --------------------------------------
-# Footer Settings
-# --------------------------------------
-
 footer:
   nav:
   owner:
@@ -170,10 +143,6 @@ footer:
     enable: true
     version: true
   custom_text:
-
-# --------------------------------------
-# Aside Settings
-# --------------------------------------
 
 aside:
   enable: true
@@ -195,7 +164,7 @@ aside:
       link: https://github.com/chunxuancao
   card_announcement:
     enable: true
-    content: 欢迎来到喵轩的技术博客~ 这里有爬虫接单经验、反爬技巧、JS逆向教程，还有二次元看板娘陪你哦！🌸
+    content: 欢迎来到喵轩的技术博客~ 这里有爬虫接单经验、反爬技巧、JS逆向教程！
   card_recent_post:
     enable: true
     limit: 5
@@ -239,10 +208,6 @@ aside:
     sort_order:
     runtime_date:
 
-# --------------------------------------
-# Bottom right button
-# --------------------------------------
-
 rightside_bottom:
 
 translate:
@@ -271,10 +236,6 @@ rightside_item_order:
 
 rightside_config_animation: true
 
-# --------------------------------------
-# Global Settings
-# --------------------------------------
-
 anchor:
   auto_update: false
   click_to_scroll: false
@@ -298,10 +259,6 @@ busuanzi:
   site_pv: true
   page_pv: true
 
-# --------------------------------------
-# Math
-# --------------------------------------
-
 math:
   use:
   per_page: true
@@ -311,10 +268,6 @@ math:
     tags: none
   katex:
     copy_tex: false
-
-# --------------------------------------
-# Search
-# --------------------------------------
 
 search:
   use:
@@ -335,20 +288,12 @@ search:
     indexName:
     option:
 
-# --------------------------------------
-# Share System
-# --------------------------------------
-
 share:
   use: sharejs
   sharejs:
     sites: facebook,x,wechat,weibo,qq
   addtoany:
     item: facebook,x,wechat,sina_weibo,facebook_messenger,email,copy_link
-
-# --------------------------------------
-# Comments System
-# --------------------------------------
 
 comments:
   use:
@@ -433,10 +378,6 @@ artalk:
   visitor: false
   option:
 
-# --------------------------------------
-# Chat Services
-# --------------------------------------
-
 chat:
   use:
   rightside_button: false
@@ -453,10 +394,6 @@ crisp:
 
 knocket:
   identifier:
-
-# --------------------------------------
-# Analysis
-# --------------------------------------
 
 baidu_analytics:
 google_analytics:
@@ -478,10 +415,6 @@ google_tag_manager:
   tag_id:
   domain:
 
-# --------------------------------------
-# Advertisement
-# --------------------------------------
-
 google_adsense:
   enable: false
   auto_ads: true
@@ -494,15 +427,7 @@ ad:
   aside:
   post:
 
-# --------------------------------------
-# Verification
-# --------------------------------------
-
 site_verification:
-
-# --------------------------------------
-# Beautify / Effect
-# --------------------------------------
 
 category_ui:
 tag_ui:
@@ -549,7 +474,6 @@ activate_power_mode:
   shake: true
   mobile: false
 
-# Background effects
 canvas_ribbon:
   enable: false
   size: 150
@@ -586,15 +510,7 @@ clickShowText:
   random: false
   mobile: false
 
-# --------------------------------------
-# Lightbox Settings
-# --------------------------------------
-
 lightbox:
-
-# --------------------------------------
-# Tag Plugins settings
-# --------------------------------------
 
 series:
   enable: false
@@ -633,10 +549,6 @@ note:
   border_radius: 3
   light_bg_offset: 0
 
-# --------------------------------------
-# Other Settings
-# --------------------------------------
-
 pjax:
   enable: false
   exclude:
@@ -674,7 +586,6 @@ structured_data:
 
 css_prefix: true
 
-# CDN Settings
 CDN:
   internal_provider: local
   third_party_provider: jsdelivr
@@ -682,10 +593,10 @@ CDN:
   custom_format:
   option:
 
-# ===== 自定义注入 - 二次元魔改 =====
-inject:
-  head:
-    - <link rel="stylesheet" href="/css/custom.css">
-  bottom:
-    - <script src="/js/sakura.js"></script>
-    - <script src="/js/live2d.js"></script>
+# ===== 自定义注入（暂时关闭，恢复默认主题） =====
+# inject:
+#   head:
+#     - <link rel="stylesheet" href="/css/custom.css">
+#   bottom:
+#     - <script src="/js/sakura.js"></script>
+#     - <script src="/js/live2d.js"></script>
