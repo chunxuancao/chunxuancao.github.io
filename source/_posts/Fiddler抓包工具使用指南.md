@@ -1,13 +1,17 @@
 ---
 title: Fiddler抓包工具使用指南
 date: "2026-10-17 10:20:00"
-category: 环境配置
-tags: "[Fiddler, 抓包, 调试, 代理]"
+categories:
+  - 环境配置
+tags:
+  - Fiddler
+  - 抓包
+  - 调试
+  - 代理
 difficulty: 简单
 summary: Fiddler抓包工具完全教程，HTTP/HTTPS抓包、请求修改、响应篡改、断点调试，爬虫分析接口必备
 cover: https://aka.doubaocdn.com/s/N0hVZVW1rz
 ---
-
 ## 适用场景
 
 Chrome开发者工具不够用，需要更强大的抓包功能，比如修改请求、篡改响应、设置断点、抓取HTTPS流量。Fiddler是Windows上最经典的抓包工具。

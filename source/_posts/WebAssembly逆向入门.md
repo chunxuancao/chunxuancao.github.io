@@ -1,13 +1,17 @@
 ---
 title: WebAssembly逆向入门
 date: "2026-10-17 15:00:00"
-category: JS逆向
-tags: "[WebAssembly, WASM, 逆向, 困难]"
+categories:
+  - JS逆向
+tags:
+  - WebAssembly
+  - WASM
+  - 逆向
+  - 困难
 difficulty: 困难
 summary: WebAssembly基础概念，wasm模块分析，函数调用，反编译工具，新一代的代码保护技术
 cover: https://aka.doubaocdn.com/s/Fok8UB7bVx
 ---
-
 ## 适用场景
 
 网站的加密逻辑放在了WebAssembly（wasm）模块里，JS里看不到具体实现。需要学习分析wasm模块，找到加密函数并调用。

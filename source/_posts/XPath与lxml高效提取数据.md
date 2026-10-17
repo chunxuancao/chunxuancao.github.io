@@ -1,13 +1,17 @@
 ---
 title: XPath与lxml高效提取数据
 date: "2026-10-17 09:40:00"
-category: 环境配置
-tags: "[XPath, lxml, 网页解析, 基础]"
+categories:
+  - 环境配置
+tags:
+  - XPath
+  - lxml
+  - 网页解析
+  - 基础
 difficulty: 简单
 summary: XPath语法与lxml库使用教程，比BeautifulSoup更快的解析方式，爬虫数据提取进阶必备
 cover: https://aka.doubaocdn.com/s/4LYSbwyuTb
 ---
-
 ## 适用场景
 
 BeautifulSoup速度不够快，或者需要更精确地定位元素。XPath是爬虫工程师最常用的解析方式，速度快、表达能力强。

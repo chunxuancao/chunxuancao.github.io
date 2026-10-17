@@ -1,13 +1,19 @@
 ---
 title: MD5与SHA签名逆向分析
 date: "2026-10-17 12:50:00"
-category: 反爬技巧
-tags: "[MD5, SHA, 哈希, 签名, JS逆向, 中等]"
+categories:
+  - 反爬技巧
+tags:
+  - MD5
+  - SHA
+  - 哈希
+  - 签名
+  - JS逆向
+  - 中等
 difficulty: 中等
 summary: MD5/SHA哈希算法原理、签名参数分析、盐值查找、Python复现，最常见的接口签名算法
 cover: https://aka.doubaocdn.com/s/Zsp6g16Q7g
 ---
-
 ## 适用场景
 
 接口有sign参数，是32位（MD5）或40位（SHA1）或64位（SHA256）的十六进制字符串。需要分析签名规则，找到盐值，用Python复现。

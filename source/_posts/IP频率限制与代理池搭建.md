@@ -1,13 +1,18 @@
 ---
 title: IP频率限制与代理池搭建
 date: "2026-10-17 11:20:00"
-category: 反爬技巧
-tags: "[代理池, IP代理, 频率限制, 反爬, 中等]"
+categories:
+  - 反爬技巧
+tags:
+  - 代理池
+  - IP代理
+  - 频率限制
+  - 反爬
+  - 中等
 difficulty: 中等
 summary: IP封禁原理、代理选择、代理池搭建、IP轮换策略，大规模爬虫必备的反封禁技术
 cover: https://aka.doubaocdn.com/s/ybj2G5zRPM
 ---
-
 ## 适用场景
 
 爬取速度快了就被封IP，返回403或者需要验证码。需要大量数据时，单IP根本不够用，必须用代理池轮换IP。

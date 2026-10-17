@@ -1,13 +1,17 @@
 ---
 title: Python爬虫常用库大全与对比
 date: "2026-10-17 17:10:00"
-category: 工具推荐
-tags: "[Python, 爬虫库, 工具推荐, 入门]"
+categories:
+  - 工具推荐
+tags:
+  - Python
+  - 爬虫库
+  - 工具推荐
+  - 入门
 difficulty: 入门
 summary: Python爬虫开发常用库汇总，请求库、解析库、自动化库、异步库对比，选择合适的工具提高效率
 cover: https://aka.doubaocdn.com/s/aaOEwJtD7S
 ---
-
 ## 适用场景
 
 开发爬虫时不知道该用什么库，或者想了解有哪些好用的工具可以提高效率。需要一份全面的爬虫库对比和推荐。

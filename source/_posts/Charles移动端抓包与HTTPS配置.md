@@ -1,13 +1,18 @@
 ---
 title: Charles移动端抓包与HTTPS配置
 date: "2026-10-17 10:30:00"
-category: 环境配置
-tags: "[Charles, 抓包, 移动端, HTTPS, 代理]"
+categories:
+  - 环境配置
+tags:
+  - Charles
+  - 抓包
+  - 移动端
+  - HTTPS
+  - 代理
 difficulty: 简单
 summary: Charles抓包工具教程，重点讲解移动端APP抓包、HTTPS证书配置、SSL代理设置，APP爬虫必备
 cover: https://aka.doubaocdn.com/s/4O7EuMIVQz
 ---
-
 ## 适用场景
 
 需要抓取手机APP的接口数据，分析APP的请求结构。Charles是跨平台抓包工具，Mac和Windows都能用，移动端抓包体验比Fiddler更好。

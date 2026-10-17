@@ -1,13 +1,18 @@
 ---
 title: Cookie机制与Session保持实战
 date: "2026-10-17 11:10:00"
-category: 反爬技巧
-tags: "[Cookie, Session, 登录态, 反爬, 入门]"
+categories:
+  - 反爬技巧
+tags:
+  - Cookie
+  - Session
+  - 登录态
+  - 反爬
+  - 入门
 difficulty: 入门
 summary: Cookie工作原理、Session保持、登录态维护、Cookie池搭建，需要登录的爬虫必备技能
 cover: https://aka.doubaocdn.com/s/OoTcXVR3RM
 ---
-
 ## 适用场景
 
 网站需要登录才能看到数据，或者不登录只能看少量内容。需要维护登录状态，批量爬取登录后的数据。

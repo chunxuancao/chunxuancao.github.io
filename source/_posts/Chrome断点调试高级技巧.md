@@ -1,13 +1,17 @@
 ---
 title: Chrome断点调试高级技巧
 date: "2026-10-17 13:40:00"
-category: JS逆向
-tags: "[Chrome, 断点调试, DevTools, 技巧]"
+categories:
+  - JS逆向
+tags:
+  - Chrome
+  - 断点调试
+  - DevTools
+  - 技巧
 difficulty: 中等
 summary: Chrome开发者工具断点调试高级技巧，条件断点、日志断点、DOM断点、事件断点，JS逆向必备技能
 cover: https://aka.doubaocdn.com/s/SBnTv29WRF
 ---
-
 ## 适用场景
 
 已经会基础的断点调试，但遇到混淆代码还是找不到关键逻辑。需要掌握更高级的断点技巧，快速定位加密函数。

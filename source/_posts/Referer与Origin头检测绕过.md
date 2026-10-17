@@ -1,13 +1,18 @@
 ---
 title: Referer与Origin头检测与绕过
 date: "2026-10-17 11:00:00"
-category: 反爬技巧
-tags: "[Referer, Origin, 请求头, 反爬, 入门]"
+categories:
+  - 反爬技巧
+tags:
+  - Referer
+  - Origin
+  - 请求头
+  - 反爬
+  - 入门
 difficulty: 入门
 summary: Referer和Origin请求头检测原理与绕过方法，防盗链、接口来源验证的处理技巧
 cover: https://aka.doubaocdn.com/s/AGIbrjazQe
 ---
-
 ## 适用场景
 
 请求带了正确的UA还是被拒绝，返回403或者"非法请求"。很多网站会检查Referer或Origin头，验证请求来源是否合法。

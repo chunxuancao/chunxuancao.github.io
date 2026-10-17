@@ -1,13 +1,17 @@
 ---
 title: Python爬虫环境搭建完整教程（Windows）
 date: "2026-10-17 09:00:00"
-category: 环境配置
-tags: "[Python, 环境搭建, Windows, 新手入门]"
+categories:
+  - 环境配置
+tags:
+  - Python
+  - 环境搭建
+  - Windows
+  - 新手入门
 difficulty: 入门
 summary: 从零开始搭建Python爬虫开发环境，包括Python安装、pip配置、虚拟环境、常用库安装，适合完全零基础的新手
 cover: https://aka.doubaocdn.com/s/lV61sQMtxZ
 ---
-
 ## 适用场景
 
 完全零基础的新手，刚接触爬虫，不知道从何开始。或者换了新电脑，需要重新搭建开发环境。

@@ -1,13 +1,17 @@
 ---
 title: Playwright现代自动化工具入门
 date: "2026-10-17 10:00:00"
-category: 环境配置
-tags: "[Playwright, 自动化, 浏览器, 动态渲染]"
+categories:
+  - 环境配置
+tags:
+  - Playwright
+  - 自动化
+  - 浏览器
+  - 动态渲染
 difficulty: 简单
 summary: Playwright入门教程，比Selenium更快更稳定，支持多浏览器、自动等待、网络拦截，现代爬虫首选
 cover: https://aka.doubaocdn.com/s/VCDNSL7kZ0
 ---
-
 ## 适用场景
 
 Selenium太慢或不稳定，需要更现代的浏览器自动化工具。Playwright是微软出品，支持Chrome、Firefox、Safari，自动等待，速度快。

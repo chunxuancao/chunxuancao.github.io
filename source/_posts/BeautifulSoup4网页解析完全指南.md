@@ -1,13 +1,17 @@
 ---
 title: BeautifulSoup4网页解析完全指南
 date: "2026-10-17 09:30:00"
-category: 环境配置
-tags: "[BeautifulSoup, 网页解析, 基础, 新手入门]"
+categories:
+  - 环境配置
+tags:
+  - BeautifulSoup
+  - 网页解析
+  - 基础
+  - 新手入门
 difficulty: 入门
 summary: BeautifulSoup4解析HTML完全教程，标签查找、属性提取、CSS选择器、遍历文档树，爬虫数据提取必备
 cover: https://aka.doubaocdn.com/s/xUAaEbz4pk
 ---
-
 ## 适用场景
 
 已经能用requests拿到HTML，但不知道怎么从中提取需要的数据。BeautifulSoup是最常用的HTML解析库，简单易学。

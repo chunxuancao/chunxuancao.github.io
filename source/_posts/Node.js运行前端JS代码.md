@@ -1,13 +1,18 @@
 ---
 title: Node.js运行前端JS代码
 date: "2026-10-17 14:30:00"
-category: JS逆向
-tags: "[Node.js, 扣代码, vm, 执行JS, 中等]"
+categories:
+  - JS逆向
+tags:
+  - Node.js
+  - 扣代码
+  - vm
+  - 执行JS
+  - 中等
 difficulty: 中等
 summary: 在Node.js中运行前端JS代码的方法，vm沙箱、eval、模块导出，扣代码后执行加密函数
 cover: https://aka.doubaocdn.com/s/J5UnPjoJSi
 ---
-
 ## 适用场景
 
 已经从网页中扣出了加密函数的JS代码，想在Node.js里运行它来生成签名或加密参数。需要掌握在Node.js中执行前端JS的方法。

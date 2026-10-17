@@ -172,6 +172,7 @@
   }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes progressPulse { 0%, 100% { width: 30%; } 50% { width: 80%; } }
   .modal-content { animation: slideUp 0.3s ease; }
 
   /* 猫爪印装饰 */
@@ -271,6 +272,14 @@
         <div class="nav-item" :class="{active: currentView === 'tags'}" @click="currentView = 'tags'">
           <i class="fa fa-tags w-5"></i>
           <span>标签管理</span>
+        </div>
+        <div class="nav-item" :class="{active: currentView === 'settings'}" @click="currentView = 'settings'">
+          <i class="fa fa-cog w-5"></i>
+          <span>站点设置</span>
+        </div>
+        <div class="nav-item" :class="{active: currentView === 'images'}" @click="currentView = 'images'; loadImages()">
+          <i class="fa fa-images w-5"></i>
+          <span>图片管理</span>
         </div>
       </nav>
 
@@ -475,6 +484,177 @@
         </div>
       </div>
 
+      <!-- 站点设置视图 -->
+      <div v-if="currentView === 'settings'">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold" style="color: var(--cat-brown);">⚙️ 站点设置</h2>
+            <p class="text-sm mt-1" style="color: #a09080;">修改博客基本信息和主题配置，保存后需部署生效</p>
+          </div>
+          <button class="btn-gradient flex items-center gap-2" @click="saveSettings" :disabled="savingSettings">
+            <i class="fa" :class="savingSettings ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+            {{ savingSettings ? '保存中...' : '保存设置' }}
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- 基本信息 -->
+          <div class="fluffy-card p-6">
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2" style="color: var(--cat-brown);">
+              <i class="fa fa-info-circle"></i> 基本信息
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">博客标题</label>
+                <input type="text" class="cat-input" v-model="settings.title" placeholder="喵喵小码">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">副标题</label>
+                <input type="text" class="cat-input" v-model="settings.subtitle" placeholder="爬虫接单经验与技术分享">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">站点描述</label>
+                <textarea class="cat-input" rows="2" v-model="settings.description" placeholder="分享爬虫技术..."></textarea>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">作者</label>
+                  <input type="text" class="cat-input" v-model="settings.author" placeholder="喵轩">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">语言</label>
+                  <input type="text" class="cat-input" v-model="settings.language" placeholder="zh-CN">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">每页文章数</label>
+                <input type="number" class="cat-input" v-model.number="settings.per_page" min="1" max="50" placeholder="10">
+              </div>
+            </div>
+          </div>
+
+          <!-- 外观与侧边栏 -->
+          <div class="space-y-6">
+            <!-- 头像 -->
+            <div class="fluffy-card p-6">
+              <h3 class="text-lg font-bold mb-4 flex items-center gap-2" style="color: var(--cat-brown);">
+                <i class="fa fa-user-circle"></i> 头像
+              </h3>
+              <div class="flex items-center gap-4">
+                <div class="w-20 h-20 rounded-full overflow-hidden border-4 flex-shrink-0 cursor-pointer hover:opacity-80 transition" style="border-color: #ffb6c1; background: #f5f0eb;" @click="$refs.avatarInput.click()" title="点击上传头像">
+                  <img v-if="settings.avatar" :src="settings.avatar" class="w-full h-full object-cover" @error="settings.avatar=''">
+                  <div v-else class="w-full h-full flex items-center justify-center text-3xl">🐱</div>
+                </div>
+                <div class="flex-1">
+                  <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">头像URL</label>
+                  <div class="flex gap-2">
+                    <input type="text" class="cat-input flex-1" v-model="settings.avatar" placeholder="/img/avatar.png 或 https://...">
+                    <button class="btn-ghost flex items-center gap-1 flex-shrink-0" @click="openImagePicker('avatar')">
+                      <i class="fa fa-folder-open"></i> 选择
+                    </button>
+                    <button class="btn-ghost flex items-center gap-1 flex-shrink-0" @click="$refs.avatarInput.click()">
+                      <i class="fa fa-upload"></i> 上传
+                    </button>
+                  </div>
+                  <input type="file" ref="avatarInput" class="hidden" accept="image/*" @change="uploadAvatar($event)">
+                </div>
+              </div>
+            </div>
+
+            <!-- 博主信息 -->
+            <div class="fluffy-card p-6">
+              <h3 class="text-lg font-bold mb-4 flex items-center gap-2" style="color: var(--cat-brown);">
+                <i class="fa fa-id-card"></i> 博主信息
+              </h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">博主简介</label>
+                  <input type="text" class="cat-input" v-model="settings.author_description" placeholder="爬虫工程师 | 二次元爱好者 | 技术宅">
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div>
+                    <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">按钮图标</label>
+                    <input type="text" class="cat-input" v-model="settings.follow_icon" placeholder="fab fa-github">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">按钮文字</label>
+                    <input type="text" class="cat-input" v-model="settings.follow_text" placeholder="Follow Me">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1" style="color: var(--cat-brown);">按钮链接</label>
+                    <input type="text" class="cat-input" v-model="settings.follow_link" placeholder="https://github.com/...">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 公告 -->
+            <div class="fluffy-card p-6">
+              <h3 class="text-lg font-bold mb-4 flex items-center gap-2" style="color: var(--cat-brown);">
+                <i class="fa fa-bullhorn"></i> 站点公告
+              </h3>
+              <textarea class="cat-input" rows="3" v-model="settings.announcement" placeholder="欢迎来到我的博客..."></textarea>
+              <p class="text-xs mt-2" style="color: #a09080;">显示在侧边栏公告卡片中</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 图片管理视图 -->
+      <div v-if="currentView === 'images'">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold" style="color: var(--cat-brown);">🖼️ 图片管理</h2>
+            <p class="text-sm mt-1" style="color: #a09080;">管理已上传的图片，上传后自动同步到远端</p>
+          </div>
+          <button class="btn-gradient flex items-center gap-2" @click="$refs.manageImgInput.click()">
+            <i class="fa fa-upload"></i> 上传图片
+          </button>
+          <input type="file" ref="manageImgInput" class="hidden" accept="image/*" @change="uploadManageImage($event)">
+        </div>
+
+        <!-- 空状态 -->
+        <div v-if="uploadedImages.length === 0 && !imagesLoading" class="text-center py-20">
+          <div class="text-6xl mb-4">📷</div>
+          <p class="text-lg font-medium" style="color: var(--cat-brown);">还没有图片</p>
+          <p class="text-sm mt-2" style="color: #a09080;">点击右上角"上传图片"开始上传吧～</p>
+        </div>
+
+        <!-- 加载中 -->
+        <div v-if="imagesLoading" class="text-center py-20">
+          <span class="loading-cat text-5xl">🐱</span>
+          <p class="mt-4" style="color: #a09080;">猫咪正在整理图片...</p>
+        </div>
+
+        <!-- 图片网格 -->
+        <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div v-for="img in uploadedImages" :key="img.url"
+               class="fluffy-card p-3 group relative">
+            <div class="relative rounded-lg overflow-hidden" style="aspect-ratio: 1; background: #f5f0eb;">
+              <img :src="img.url" class="w-full h-full object-cover" @error="$event.target.style.opacity=0.3">
+              <!-- 悬停操作层 -->
+              <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition flex items-center justify-center gap-2">
+                <button class="w-9 h-9 rounded-full bg-white text-gray-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-pink-100"
+                        @click="copyImageUrl(img)" title="复制链接">
+                  <i class="fa fa-copy text-sm"></i>
+                </button>
+                <button class="w-9 h-9 rounded-full bg-white text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-red-100"
+                        @click="confirmDeleteImage(img)" title="删除">
+                  <i class="fa fa-trash text-sm"></i>
+                </button>
+              </div>
+            </div>
+            <div class="mt-2 text-xs truncate" style="color: #a09080;" :title="img.name">{{ img.name }}</div>
+            <div class="text-xs" style="color: #c0b0a0;">{{ formatSize(img.size) }}</div>
+          </div>
+        </div>
+
+        <!-- 图片数量 -->
+        <div v-if="uploadedImages.length > 0" class="mt-6 text-center text-sm" style="color: #a09080;">
+          共 {{ uploadedImages.length }} 张图片
+        </div>
+      </div>
+
       <!-- 重命名/合并弹窗 -->
       <div v-if="showItemModal" class="modal-overlay" @click.self="showItemModal = false">
         <div class="modal-content fluffy-card p-6 w-[420px]">
@@ -539,7 +719,21 @@
               <label class="block text-sm font-medium mb-2" style="color: var(--cat-brown);">
                 <i class="fa fa-image mr-1"></i> 封面图 URL
               </label>
-              <input type="text" class="cat-input" v-model="editForm.cover" placeholder="https://... （可选）">
+              <div class="flex gap-2">
+                <input type="text" class="cat-input flex-1" v-model="editForm.cover" placeholder="https://... 或 /img/xxx.png （可选）">
+                <button class="btn-ghost flex items-center gap-1 flex-shrink-0" @click="openImagePicker('cover')">
+                  <i class="fa fa-folder-open"></i> 选择
+                </button>
+                <button class="btn-ghost flex items-center gap-1 flex-shrink-0" @click="$refs.coverInput.click()">
+                  <i class="fa fa-upload"></i> 上传
+                </button>
+              </div>
+              <input type="file" ref="coverInput" class="hidden" accept="image/*" @change="uploadCover($event)">
+              <!-- 封面预览 -->
+              <div v-if="editForm.cover" class="mt-2 relative inline-block">
+                <img :src="editForm.cover" class="h-20 rounded-lg object-cover border-2" style="border-color: #ffd6e0;" @error="editForm.cover=''">
+                <button class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-400 text-white text-xs flex items-center justify-center hover:bg-red-500" @click="editForm.cover=''">×</button>
+              </div>
             </div>
             <div>
               <label class="block text-sm font-medium mb-2" style="color: var(--cat-brown);">
@@ -576,6 +770,40 @@
     </main>
   </div>
 
+  <!-- 图片选择器弹窗 -->
+  <div v-if="showImagePicker" class="fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0,0,0,0.5);" @click.self="showImagePicker = false">
+    <div class="fluffy-card p-6 w-full max-w-2xl max-h-[80vh] flex flex-col" style="animation: slideUp 0.2s;">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-bold flex items-center gap-2" style="color: var(--cat-brown);">
+          <i class="fa fa-images"></i> 选择图片
+        </h3>
+        <button class="text-gray-400 hover:text-gray-600 text-xl" @click="showImagePicker = false">×</button>
+      </div>
+      <div class="flex-1 overflow-y-auto">
+        <div v-if="uploadedImages.length === 0" class="text-center py-12">
+          <div class="text-5xl mb-3">📷</div>
+          <p style="color: #a09080;">还没有上传过图片</p>
+          <p class="text-sm mt-1" style="color: #c0b0a0;">点击上方"上传"按钮上传图片</p>
+        </div>
+        <div v-else class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          <div v-for="img in uploadedImages" :key="img.url"
+               class="relative group cursor-pointer rounded-xl overflow-hidden border-2 hover:border-pink-400 transition"
+               style="border-color: #ffd6e0; aspect-ratio: 1;"
+               @click="selectImage(img)">
+            <img :src="img.url" class="w-full h-full object-cover" @error="$event.target.style.display='none'">
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-center justify-center">
+              <span class="text-white opacity-0 group-hover:opacity-100 transition font-bold text-sm">选择</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t flex justify-between items-center" style="border-color: #f0e8e0;">
+        <span class="text-sm" style="color: #a09080;">共 {{ uploadedImages.length }} 张图片</span>
+        <button class="btn-ghost" @click="showImagePicker = false">取消</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 删除确认弹窗 -->
   <div v-if="showDeleteModal" class="modal-overlay" @click.self="showDeleteModal = false">
     <div class="modal-content fluffy-card p-6 w-96">
@@ -589,6 +817,41 @@
           <button class="btn-ghost" @click="showDeleteModal = false">再想想</button>
           <button class="btn-gradient" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);"
                   @click="doDelete">确认删除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除图片确认弹窗 -->
+  <div v-if="showDeleteImageModal" class="modal-overlay" @click.self="!deletingImage && (showDeleteImageModal = false)">
+    <div class="modal-content fluffy-card p-6 w-96">
+      <div class="text-center">
+        <!-- 加载状态 -->
+        <div v-if="deletingImage" class="py-4">
+          <div class="loading-cat text-5xl mb-4" style="display:inline-block;">🗑️</div>
+          <h3 class="text-lg font-bold mb-2" style="color: var(--cat-brown);">正在删除图片...</h3>
+          <!-- 进度条 -->
+          <div class="w-full h-2 rounded-full overflow-hidden mb-3" style="background: #f0e8e0;">
+            <div class="h-full rounded-full transition-all duration-300"
+                 style="background: linear-gradient(90deg, #ffb6c1, #ff8fa3); width: 60%; animation: progressPulse 1.5s ease-in-out infinite;"></div>
+          </div>
+          <p class="text-sm" style="color: #a09080;">正在同步删除本地和远端文件，请稍候～</p>
+        </div>
+        <!-- 确认状态 -->
+        <div v-else>
+          <div class="text-5xl mb-4">🗑️</div>
+          <h3 class="text-lg font-bold mb-2" style="color: var(--cat-brown);">确认删除这张图片？</h3>
+          <div class="my-4 flex justify-center">
+            <img v-if="deleteImageTarget" :src="deleteImageTarget.url" class="w-24 h-24 object-cover rounded-lg border-2" style="border-color: #ffd6e0;">
+          </div>
+          <p class="text-sm mb-6" style="color: #a09080;">
+            "{{ deleteImageTarget?.name }}"<br>删除后本地和远端都会同步删除哦～
+          </p>
+          <div class="flex gap-3 justify-center">
+            <button class="btn-ghost" @click="showDeleteImageModal = false">再想想</button>
+            <button class="btn-gradient" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);"
+                    @click="doDeleteImage">确认删除</button>
+          </div>
         </div>
       </div>
     </div>
@@ -665,6 +928,21 @@ createApp({
     const filterCategory = ref('');
     const filterTag = ref('');
     const sortBy = ref('date_desc'); // date_desc / date_asc / title
+    // 站点设置
+    const settings = ref({
+      title: '', subtitle: '', description: '', author: '', language: '', per_page: 10,
+      avatar: '', author_description: '', follow_icon: '', follow_text: '', follow_link: '',
+      announcement: ''
+    });
+    const savingSettings = ref(false);
+    // 图片选择器
+    const showImagePicker = ref(false);
+    const imagePickerTarget = ref(''); // 'avatar' 或 'cover'
+    const uploadedImages = ref([]);
+    const imagesLoading = ref(false);
+    const showDeleteImageModal = ref(false);
+    const deleteImageTarget = ref(null);
+    const deletingImage = ref(false);
 
     // 编辑器
     const editingFilename = ref('');
@@ -789,6 +1067,154 @@ createApp({
     const hasActiveFilter = computed(() => {
       return searchKeyword.value || filterCategory.value || filterTag.value;
     });
+
+    // 加载站点设置
+    const loadSettings = async () => {
+      try {
+        const data = await api('/api/settings');
+        settings.value = { ...settings.value, ...data };
+      } catch (e) {
+        showToast('加载设置失败', 'error');
+      }
+    };
+
+    // 保存站点设置
+    const saveSettings = async () => {
+      savingSettings.value = true;
+      try {
+        const res = await api('/api/settings', {
+          method: 'POST',
+          body: JSON.stringify(settings.value)
+        }, 15000);
+        showToast(res.message || '设置已保存，部署后生效', 'success');
+      } catch (e) {
+        showToast('保存失败: ' + e.message, 'error');
+      }
+      savingSettings.value = false;
+    };
+
+    // 通用图片上传
+    const uploadImage = async (file) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || '上传失败');
+        return data.url;
+      } catch (e) {
+        showToast('上传失败: ' + e.message, 'error');
+        return null;
+      }
+    };
+
+    // 上传头像
+    const uploadAvatar = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const url = await uploadImage(file);
+      if (url) {
+        settings.value.avatar = url;
+        showToast('头像上传成功', 'success');
+      }
+      event.target.value = '';
+    };
+
+    // 上传封面
+    const uploadCover = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const url = await uploadImage(file);
+      if (url) {
+        editForm.value.cover = url;
+        showToast('封面上传成功', 'success');
+      }
+      event.target.value = '';
+    };
+
+    // 加载已上传图片
+    const loadImages = async () => {
+      imagesLoading.value = true;
+      try {
+        const data = await api('/api/images');
+        uploadedImages.value = data.images || [];
+      } catch (e) {
+        uploadedImages.value = [];
+      }
+      imagesLoading.value = false;
+    };
+
+    // 打开图片选择器
+    const openImagePicker = (target) => {
+      imagePickerTarget.value = target;
+      loadImages();
+      showImagePicker.value = true;
+    };
+
+    // 选择图片
+    const selectImage = (img) => {
+      if (imagePickerTarget.value === 'avatar') {
+        settings.value.avatar = img.url;
+      } else if (imagePickerTarget.value === 'cover') {
+        editForm.value.cover = img.url;
+      }
+      showImagePicker.value = false;
+      showToast('已选择图片', 'success');
+    };
+
+    // 格式化文件大小
+    const formatSize = (bytes) => {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    };
+
+    // 图片管理页面上传
+    const uploadManageImage = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const url = await uploadImage(file);
+      if (url) {
+        showToast('上传成功', 'success');
+        loadImages();
+      }
+      event.target.value = '';
+    };
+
+    // 复制图片链接
+    const copyImageUrl = (img) => {
+      navigator.clipboard.writeText(img.url).then(() => {
+        showToast('链接已复制', 'success');
+      }).catch(() => {
+        showToast('复制失败', 'error');
+      });
+    };
+
+    // 确认删除图片
+    const confirmDeleteImage = (img) => {
+      deleteImageTarget.value = img;
+      showDeleteImageModal.value = true;
+    };
+
+    // 执行删除图片
+    const doDeleteImage = async () => {
+      if (!deleteImageTarget.value || deletingImage.value) return;
+      deletingImage.value = true;
+      try {
+        const filename = deleteImageTarget.value.name;
+        await api(`/api/images?filename=${encodeURIComponent(filename)}`, { method: 'DELETE' }, 15000);
+        showToast('图片已删除', 'success');
+        loadImages();
+      } catch (e) {
+        showToast('删除失败: ' + e.message, 'error');
+      }
+      deletingImage.value = false;
+      showDeleteImageModal.value = false;
+      deleteImageTarget.value = null;
+    };
 
     // 新建文章
     const newPost = () => {
@@ -1129,12 +1555,16 @@ createApp({
     onMounted(() => {
       loadPosts();
       loadMeta();
+      loadSettings();
     });
 
     return {
       currentView, posts, categories, tags, stats, loading,
       searchKeyword, filterCategory, filterTag, sortBy,
       sortLabel, sortIcon, hasActiveFilter,
+      settings, savingSettings,
+      showImagePicker, imagePickerTarget, uploadedImages, imagesLoading,
+      showDeleteImageModal, deleteImageTarget, deletingImage,
       editingFilename, editForm, editorContainer,
       showDeleteModal, deleteTarget,
       showDeployModal, deploying, deployProgress, deployStage,
@@ -1144,7 +1574,10 @@ createApp({
       loadPosts, resetFilters, newPost, editPost, backToList,
       toggleCategory, toggleTag, toggleSort, savePost, confirmDelete, doDelete,
       deploy, cancelDeploy, closeDeployModal,
-      openRenameModal, openMergeModal, confirmDeleteItem, executeItemAction
+      openRenameModal, openMergeModal, confirmDeleteItem, executeItemAction,
+      loadSettings, saveSettings, uploadAvatar, uploadCover,
+      loadImages, openImagePicker, selectImage,
+      formatSize, uploadManageImage, copyImageUrl, confirmDeleteImage, doDeleteImage
     };
   }
 }).mount('#app');

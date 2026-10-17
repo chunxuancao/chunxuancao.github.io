@@ -4,7 +4,7 @@
 喵喵小码 - 文章管理后台
 FastAPI + 静态前端
 """
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -13,6 +13,9 @@ import re
 import base64
 import threading
 import sys
+import os
+import uuid
+import shutil
 import time
 from datetime import datetime
 
@@ -129,6 +132,71 @@ def _git_blob_hash(content):
     data = content.encode("utf-8")
     header = f"blob {len(data)}\0".encode("utf-8")
     return hashlib.sha1(header + data).hexdigest()
+
+
+def push_single_file(github_path, content, commit_message=""):
+    """单文件推送到GitHub（轻量级，不走完整部署流程）
+    返回 (success, message)
+    """
+    try:
+        if not commit_message:
+            commit_message = f"🐱 更新: {github_path}"
+
+        # 1. 获取当前分支最新commit
+        ref = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/ref/heads/{BRANCH}",
+                           headers=GITHUB_HEADERS, timeout=30)
+        ref.raise_for_status()
+        commit_sha = ref.json()['object']['sha']
+
+        commit = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/commits/{commit_sha}",
+                              headers=GITHUB_HEADERS, timeout=30)
+        commit.raise_for_status()
+        tree_sha = commit.json()['tree']['sha']
+
+        # 2. 创建blob
+        content_b64 = base64.b64encode(content.encode("utf-8")).decode("ascii")
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/blobs",
+                          headers=GITHUB_HEADERS,
+                          json={"content": content_b64, "encoding": "base64"},
+                          timeout=30)
+        r.raise_for_status()
+        blob_sha = r.json()["sha"]
+
+        # 3. 创建新tree（只更新这一个文件）
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/trees",
+                          headers=GITHUB_HEADERS,
+                          json={"base_tree": tree_sha, "tree": [{
+                              "path": github_path,
+                              "mode": "100644",
+                              "type": "blob",
+                              "sha": blob_sha,
+                          }]},
+                          timeout=30)
+        r.raise_for_status()
+        new_tree_sha = r.json()["sha"]
+
+        # 4. 创建commit
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/commits",
+                          headers=GITHUB_HEADERS,
+                          json={
+                              "message": commit_message,
+                              "tree": new_tree_sha,
+                              "parents": [commit_sha],
+                          },
+                          timeout=30)
+        r.raise_for_status()
+        new_commit_sha = r.json()["sha"]
+
+        # 5. 更新分支引用
+        r = requests.patch(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/refs/heads/{BRANCH}",
+                           headers=GITHUB_HEADERS,
+                           json={"sha": new_commit_sha, "force": False},
+                           timeout=30)
+        r.raise_for_status()
+
+        return True, f"已推送: {github_path}"
+    except Exception as e:
+        return False, f"推送失败: {str(e)[:200]}"
 
 
 def _deploy_worker(mode="full"):
@@ -576,7 +644,11 @@ def create_post(post: PostData):
 
     content = build_front_matter(fm) + post.content
     (POSTS_DIR / filename).write_text(content, encoding="utf-8")
-    return {"filename": filename, "status": "created"}
+
+    # 自动推送到远端
+    github_path = f"source/_posts/{filename}"
+    ok, msg = push_single_file(github_path, content, f"🐱 新建文章: {post.title}")
+    return {"filename": filename, "status": "created", "synced": ok, "sync_msg": msg}
 
 
 @app.put("/api/posts/{filename}")
@@ -601,17 +673,61 @@ def update_post(filename: str, post: PostData):
 
     content = build_front_matter(fm) + post.content
     md.write_text(content, encoding="utf-8")
-    return {"filename": filename, "status": "updated"}
+
+    # 自动推送到远端
+    github_path = f"source/_posts/{filename}"
+    ok, msg = push_single_file(github_path, content, f"🐱 更新文章: {post.title}")
+    return {"filename": filename, "status": "updated", "synced": ok, "sync_msg": msg}
 
 
 @app.delete("/api/posts/{filename}")
 def delete_post(filename: str):
-    """删除文章"""
+    """删除文章（同时删除远端）"""
     md = POSTS_DIR / filename
     if not md.exists():
         raise HTTPException(404, "文章不存在")
     md.unlink()
-    return {"status": "deleted"}
+
+    # 同步删除远端文件
+    try:
+        github_path = f"source/_posts/{filename}"
+        # 获取当前commit和tree
+        ref = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/ref/heads/{BRANCH}",
+                           headers=GITHUB_HEADERS, timeout=30)
+        ref.raise_for_status()
+        commit_sha = ref.json()['object']['sha']
+        commit = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/commits/{commit_sha}",
+                              headers=GITHUB_HEADERS, timeout=30)
+        commit.raise_for_status()
+        tree_sha = commit.json()['tree']['sha']
+
+        # 创建tree，sha设为null表示删除
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/trees",
+                          headers=GITHUB_HEADERS,
+                          json={"base_tree": tree_sha, "tree": [{
+                              "path": github_path, "mode": "100644", "type": "blob", "sha": None,
+                          }]},
+                          timeout=30)
+        r.raise_for_status()
+        new_tree_sha = r.json()["sha"]
+
+        # 创建commit
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/commits",
+                          headers=GITHUB_HEADERS,
+                          json={"message": f"🐱 删除文章: {filename}", "tree": new_tree_sha, "parents": [commit_sha]},
+                          timeout=30)
+        r.raise_for_status()
+        new_commit_sha = r.json()["sha"]
+
+        # 更新引用
+        r = requests.patch(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/refs/heads/{BRANCH}",
+                           headers=GITHUB_HEADERS,
+                           json={"sha": new_commit_sha, "force": False},
+                           timeout=30)
+        r.raise_for_status()
+        return {"status": "deleted", "synced": True}
+    except Exception as e:
+        return {"status": "deleted", "synced": False, "sync_error": str(e)[:200]}
 
 
 @app.get("/api/categories")
@@ -793,8 +909,346 @@ def stats():
     }
 
 
+# ========== 站点设置 ==========
+MAIN_CONFIG = BLOG_ROOT / "_config.yml"
+THEME_CONFIG = BLOG_ROOT / "_config.butterfly.yml"
+
+
+def _read_yaml_value(filepath, key_path):
+    """从YAML文件中读取嵌套配置项的值（用正则，保留注释）
+    key_path: 如 'title', 'aside.card_author.description'
+    """
+    if not filepath.exists():
+        return ""
+    content = filepath.read_text(encoding="utf-8")
+    keys = key_path.split('.')
+
+    # 简单顶层key
+    if len(keys) == 1:
+        pattern = rf'^{re.escape(keys[0])}:\s*(.+?)\s*$'
+        match = re.search(pattern, content, re.MULTILINE)
+        if match:
+            val = match.group(1).strip()
+            # 去掉引号
+            if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+                val = val[1:-1]
+            return val
+        return ""
+
+    # 嵌套key：逐行缩进匹配
+    lines = content.split('\n')
+    current_indent = 0
+    found_keys = 0
+    for i, line in enumerate(lines):
+        stripped = line.lstrip()
+        if not stripped or stripped.startswith('#'):
+            continue
+        indent = len(line) - len(stripped)
+
+        if found_keys < len(keys) - 1:
+            # 匹配中间的key
+            if stripped.startswith(f"{keys[found_keys]}:") and indent == current_indent:
+                found_keys += 1
+                current_indent = indent + 2
+        else:
+            # 匹配最后一个key
+            if stripped.startswith(f"{keys[-1]}:") and indent == current_indent:
+                val = stripped[len(keys[-1]) + 1:].strip()
+                if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+                    val = val[1:-1]
+                return val
+            # 如果遇到同级或更高级别的其他key，说明没找到
+            if indent <= current_indent and not stripped.startswith(f"{keys[-1]}:"):
+                break
+    return ""
+
+
+def _write_yaml_value(filepath, key_path, new_value):
+    """写入YAML配置项的值（用正则替换，保留注释和其他内容）"""
+    if not filepath.exists():
+        return False
+    content = filepath.read_text(encoding="utf-8")
+    keys = key_path.split('.')
+
+    # 简单顶层key
+    if len(keys) == 1:
+        pattern = rf'^({re.escape(keys[0])}:\s*).+$'
+        new_content = re.sub(pattern, rf'\g<1>{new_value}', content, flags=re.MULTILINE)
+        if new_content != content:
+            filepath.write_text(new_content, encoding="utf-8")
+            return True
+        return False
+
+    # 嵌套key
+    lines = content.split('\n')
+    current_indent = 0
+    found_keys = 0
+    for i, line in enumerate(lines):
+        stripped = line.lstrip()
+        if not stripped or stripped.startswith('#'):
+            continue
+        indent = len(line) - len(stripped)
+
+        if found_keys < len(keys) - 1:
+            if stripped.startswith(f"{keys[found_keys]}:") and indent == current_indent:
+                found_keys += 1
+                current_indent = indent + 2
+        else:
+            if stripped.startswith(f"{keys[-1]}:") and indent == current_indent:
+                lines[i] = f"{' ' * indent}{keys[-1]}: {new_value}"
+                filepath.write_text('\n'.join(lines), encoding="utf-8")
+                return True
+            if indent <= current_indent and not stripped.startswith(f"{keys[-1]}:"):
+                break
+    return False
+
+
+class SiteSettings(BaseModel):
+    # 基本信息
+    title: str = ""
+    subtitle: str = ""
+    description: str = ""
+    author: str = ""
+    language: str = ""
+    per_page: int = 10
+    # 主题设置
+    avatar: str = ""
+    author_description: str = ""
+    follow_icon: str = ""
+    follow_text: str = ""
+    follow_link: str = ""
+    announcement: str = ""
+
+
+@app.get("/api/settings")
+def get_settings():
+    """读取站点设置"""
+    return {
+        "title": _read_yaml_value(MAIN_CONFIG, "title"),
+        "subtitle": _read_yaml_value(MAIN_CONFIG, "subtitle"),
+        "description": _read_yaml_value(MAIN_CONFIG, "description"),
+        "author": _read_yaml_value(MAIN_CONFIG, "author"),
+        "language": _read_yaml_value(MAIN_CONFIG, "language"),
+        "per_page": int(_read_yaml_value(MAIN_CONFIG, "per_page") or 10),
+        "avatar": _read_yaml_value(THEME_CONFIG, "avatar.img"),
+        "author_description": _read_yaml_value(THEME_CONFIG, "aside.card_author.description"),
+        "follow_icon": _read_yaml_value(THEME_CONFIG, "aside.card_author.button.icon"),
+        "follow_text": _read_yaml_value(THEME_CONFIG, "aside.card_author.button.text"),
+        "follow_link": _read_yaml_value(THEME_CONFIG, "aside.card_author.button.link"),
+        "announcement": _read_yaml_value(THEME_CONFIG, "aside.card_announcement.content"),
+    }
+
+
+@app.post("/api/settings")
+def save_settings(settings: SiteSettings):
+    """保存站点设置"""
+    results = {}
+    # 主配置
+    results["title"] = _write_yaml_value(MAIN_CONFIG, "title", settings.title)
+    results["subtitle"] = _write_yaml_value(MAIN_CONFIG, "subtitle", settings.subtitle)
+    results["description"] = _write_yaml_value(MAIN_CONFIG, "description", settings.description)
+    results["author"] = _write_yaml_value(MAIN_CONFIG, "author", settings.author)
+    results["language"] = _write_yaml_value(MAIN_CONFIG, "language", settings.language)
+    results["per_page"] = _write_yaml_value(MAIN_CONFIG, "per_page", str(settings.per_page))
+    # 主题配置
+    results["avatar"] = _write_yaml_value(THEME_CONFIG, "avatar.img", settings.avatar)
+    results["author_description"] = _write_yaml_value(THEME_CONFIG, "aside.card_author.description", settings.author_description)
+    results["follow_icon"] = _write_yaml_value(THEME_CONFIG, "aside.card_author.button.icon", settings.follow_icon)
+    results["follow_text"] = _write_yaml_value(THEME_CONFIG, "aside.card_author.button.text", settings.follow_text)
+    results["follow_link"] = _write_yaml_value(THEME_CONFIG, "aside.card_author.button.link", settings.follow_link)
+    results["announcement"] = _write_yaml_value(THEME_CONFIG, "aside.card_announcement.content", settings.announcement)
+
+    success_count = sum(1 for v in results.values() if v)
+
+    # 自动推送到远端
+    sync_results = {}
+    if results.get("title") or results.get("subtitle") or results.get("description") or results.get("author") or results.get("language") or results.get("per_page"):
+        main_content = MAIN_CONFIG.read_text(encoding="utf-8")
+        ok, msg = push_single_file("_config.yml", main_content, "🐱 更新站点配置")
+        sync_results["_config.yml"] = ok
+    if results.get("avatar") or results.get("author_description") or results.get("follow_icon") or results.get("follow_text") or results.get("follow_link") or results.get("announcement"):
+        theme_content = THEME_CONFIG.read_text(encoding="utf-8")
+        ok, msg = push_single_file("_config.butterfly.yml", theme_content, "🐱 更新主题配置")
+        sync_results["_config.butterfly.yml"] = ok
+
+    return {
+        "status": "success",
+        "updated": success_count,
+        "total": len(results),
+        "details": results,
+        "synced": sync_results,
+        "message": f"已保存 {success_count}/{len(results)} 项设置，已同步到远端"
+    }
+
+
+# ========== 图片上传 ==========
+IMG_DIR = BLOG_ROOT / "source" / "img"
+ALLOWED_EXT = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'}
+
+
+@app.post("/api/upload")
+async def upload_image(file: UploadFile = File(...)):
+    """上传图片到 source/img/，返回相对路径"""
+    # 检查文件类型
+    ext = Path(file.filename).suffix.lower()
+    if ext not in ALLOWED_EXT:
+        raise HTTPException(400, f"不支持的格式: {ext}，支持: {', '.join(ALLOWED_EXT)}")
+
+    # 检查文件大小（最大10MB）
+    content = await file.read()
+    if len(content) > 10 * 1024 * 1024:
+        raise HTTPException(400, "文件过大，最大10MB")
+
+    # 确保目录存在
+    IMG_DIR.mkdir(parents=True, exist_ok=True)
+
+    # 生成唯一文件名
+    unique_name = f"{uuid.uuid4().hex[:8]}_{Path(file.filename).stem}{ext}"
+    save_path = IMG_DIR / unique_name
+    save_path.write_bytes(content)
+
+    # 返回相对路径（Hexo中用 /img/xxx.png 引用）
+    result = {
+        "status": "success",
+        "url": f"/img/{unique_name}",
+        "filename": unique_name,
+        "size": len(content),
+        "message": "上传成功"
+    }
+
+    # 自动推送到远端
+    github_path = f"source/img/{unique_name}"
+    # 二进制文件需要用base64编码后作为字符串传入
+    content_b64 = base64.b64encode(content).decode("ascii")
+    # push_single_file需要文本内容，图片用base64会有问题
+    # 改用直接调用GitHub API的方式推送二进制文件
+    try:
+        # 获取当前commit
+        ref = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/ref/heads/{BRANCH}",
+                           headers=GITHUB_HEADERS, timeout=30)
+        ref.raise_for_status()
+        commit_sha = ref.json()['object']['sha']
+        commit = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/commits/{commit_sha}",
+                              headers=GITHUB_HEADERS, timeout=30)
+        commit.raise_for_status()
+        tree_sha = commit.json()['tree']['sha']
+
+        # 创建blob（二进制用base64）
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/blobs",
+                          headers=GITHUB_HEADERS,
+                          json={"content": content_b64, "encoding": "base64"},
+                          timeout=30)
+        r.raise_for_status()
+        blob_sha = r.json()["sha"]
+
+        # 创建tree
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/trees",
+                          headers=GITHUB_HEADERS,
+                          json={"base_tree": tree_sha, "tree": [{
+                              "path": github_path, "mode": "100644", "type": "blob", "sha": blob_sha,
+                          }]},
+                          timeout=30)
+        r.raise_for_status()
+        new_tree_sha = r.json()["sha"]
+
+        # 创建commit
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/commits",
+                          headers=GITHUB_HEADERS,
+                          json={"message": f"🐱 上传图片: {unique_name}", "tree": new_tree_sha, "parents": [commit_sha]},
+                          timeout=30)
+        r.raise_for_status()
+        new_commit_sha = r.json()["sha"]
+
+        # 更新引用
+        r = requests.patch(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/refs/heads/{BRANCH}",
+                           headers=GITHUB_HEADERS,
+                           json={"sha": new_commit_sha, "force": False},
+                           timeout=30)
+        r.raise_for_status()
+        result["synced"] = True
+        result["message"] = "上传成功，已同步到远端"
+    except Exception as e:
+        result["synced"] = False
+        result["sync_error"] = str(e)[:200]
+
+    return result
+
+
+@app.get("/api/images")
+def list_images():
+    """列出已上传的图片"""
+    if not IMG_DIR.exists():
+        return {"images": []}
+    images = []
+    for f in sorted(IMG_DIR.iterdir()):
+        if f.is_file() and f.suffix.lower() in ALLOWED_EXT:
+            images.append({
+                "url": f"/img/{f.name}",
+                "name": f.name,
+                "size": f.stat().st_size,
+            })
+    return {"images": images}
+
+
+@app.delete("/api/images")
+def delete_image(filename: str):
+    """删除图片（本地+远端），filename用query参数传递，避免中文编码问题"""
+    # 安全检查：防止路径遍历
+    if not filename or '..' in filename or '/' in filename or '\\' in filename:
+        raise HTTPException(400, "非法文件名")
+    if Path(filename).suffix.lower() not in ALLOWED_EXT:
+        raise HTTPException(400, "不支持的文件类型")
+
+    img_path = IMG_DIR / filename
+    if not img_path.exists():
+        raise HTTPException(404, "图片不存在")
+
+    # 删除本地
+    img_path.unlink()
+
+    # 同步删除远端
+    try:
+        github_path = f"source/img/{filename}"
+        ref = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/ref/heads/{BRANCH}",
+                           headers=GITHUB_HEADERS, timeout=30)
+        ref.raise_for_status()
+        commit_sha = ref.json()['object']['sha']
+        commit = requests.get(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/commits/{commit_sha}",
+                              headers=GITHUB_HEADERS, timeout=30)
+        commit.raise_for_status()
+        tree_sha = commit.json()['tree']['sha']
+
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/trees",
+                          headers=GITHUB_HEADERS,
+                          json={"base_tree": tree_sha, "tree": [{
+                              "path": github_path, "mode": "100644", "type": "blob", "sha": None,
+                          }]},
+                          timeout=30)
+        r.raise_for_status()
+        new_tree_sha = r.json()["sha"]
+
+        r = requests.post(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/commits",
+                          headers=GITHUB_HEADERS,
+                          json={"message": f"🐱 删除图片: {filename}", "tree": new_tree_sha, "parents": [commit_sha]},
+                          timeout=30)
+        r.raise_for_status()
+        new_commit_sha = r.json()["sha"]
+
+        r = requests.patch(f"{GITHUB_API}/repos/{OWNER}/{REPO}/git/refs/heads/{BRANCH}",
+                           headers=GITHUB_HEADERS,
+                           json={"sha": new_commit_sha, "force": False},
+                           timeout=30)
+        r.raise_for_status()
+        return {"status": "deleted", "synced": True, "message": "图片已删除，已同步到远端"}
+    except Exception as e:
+        return {"status": "deleted", "synced": False, "sync_error": str(e)[:200], "message": "本地已删除，远端同步失败"}
+
+
 # ========== 静态文件 ==========
 app.mount("/static", StaticFiles(directory=ADMIN_DIR / "static"), name="static")
+# 挂载博客图片目录，供后台预览
+IMG_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/img", StaticFiles(directory=IMG_DIR), name="blog-img")
 
 
 @app.get("/")

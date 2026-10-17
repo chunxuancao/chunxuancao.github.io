@@ -1,13 +1,18 @@
 ---
 title: RSA加密参数分析与解密
 date: "2026-10-17 12:40:00"
-category: 反爬技巧
-tags: "[RSA, 非对称加密, 公钥, JS逆向, 困难]"
+categories:
+  - 反爬技巧
+tags:
+  - RSA
+  - 非对称加密
+  - 公钥
+  - JS逆向
+  - 困难
 difficulty: 困难
 summary: RSA非对称加密原理、公钥提取、Python加密实现、密码加密场景分析，登录接口常用的加密方式
 cover: https://aka.doubaocdn.com/s/A4DGv11ekU
 ---
-
 ## 适用场景
 
 登录接口的密码是加密的，很长一串，用的是RSA非对称加密。需要找到公钥，用Python复现加密，模拟登录。

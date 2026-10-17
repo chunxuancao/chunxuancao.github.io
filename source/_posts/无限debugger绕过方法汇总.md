@@ -1,13 +1,17 @@
 ---
 title: 无限debugger绕过方法汇总
 date: "2026-10-17 14:50:00"
-category: JS逆向
-tags: "[debugger, 反调试, 绕过, JS逆向]"
+categories:
+  - JS逆向
+tags:
+  - debugger
+  - 反调试
+  - 绕过
+  - JS逆向
 difficulty: 中等
 summary: 无限debugger原理，多种绕过方法，Never pause here、定时器Hook、AST删除，反调试技巧汇总
 cover: https://aka.doubaocdn.com/s/MunIXf1j0m
 ---
-
 ## 适用场景
 
 打开开发者工具后，页面不断弹出debugger，无法正常调试。这是网站的反调试手段，需要学会绕过无限debugger。

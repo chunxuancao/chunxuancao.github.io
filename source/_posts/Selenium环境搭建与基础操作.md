@@ -1,13 +1,17 @@
 ---
 title: Selenium环境搭建与基础操作
 date: "2026-10-17 09:50:00"
-category: 环境配置
-tags: "[Selenium, 自动化, 浏览器, 动态渲染]"
+categories:
+  - 环境配置
+tags:
+  - Selenium
+  - 自动化
+  - 浏览器
+  - 动态渲染
 difficulty: 简单
 summary: Selenium4环境搭建与基础操作，驱动配置、元素定位、等待机制、无头模式，处理JS渲染页面必备
 cover: https://aka.doubaocdn.com/s/UFwz8FDa5l
 ---
-
 ## 适用场景
 
 目标网站是JS动态渲染的，requests拿到的HTML里没有数据，需要用真实浏览器渲染页面后再提取。Selenium是最经典的浏览器自动化工具。

@@ -1,13 +1,17 @@
 ---
 title: Scrapy分布式爬虫框架入门
 date: "2026-10-17 17:40:00"
-category: 工具推荐
-tags: "[Scrapy, 框架, 分布式, 中等]"
+categories:
+  - 工具推荐
+tags:
+  - Scrapy
+  - 框架
+  - 分布式
+  - 中等
 difficulty: 中等
 summary: Scrapy爬虫框架入门教程，项目结构、Spider编写、中间件、管道、分布式部署，中大型爬虫首选
 cover: https://aka.doubaocdn.com/s/TTyh6Y5WpA
 ---
-
 ## 适用场景
 
 爬虫项目越来越大，单文件写不过来，需要用框架管理。需要学习Scrapy框架，提高开发效率，支持分布式部署。

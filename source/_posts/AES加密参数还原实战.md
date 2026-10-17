@@ -1,13 +1,18 @@
 ---
 title: AES加密参数还原实战
 date: "2026-10-17 12:30:00"
-category: 反爬技巧
-tags: "[AES, 加密, 解密, JS逆向, 困难]"
+categories:
+  - 反爬技巧
+tags:
+  - AES
+  - 加密
+  - 解密
+  - JS逆向
+  - 困难
 difficulty: 困难
 summary: AES加密原理、ECB/CBC模式、密钥IV提取、Python解密实现，常见的接口数据加密方式
 cover: https://aka.doubaocdn.com/s/atxJxy2hbG
 ---
-
 ## 适用场景
 
 接口请求参数或响应数据是加密的，看起来是一串Base64或十六进制字符串。常见于AES加密，需要找到密钥和IV，用Python解密。

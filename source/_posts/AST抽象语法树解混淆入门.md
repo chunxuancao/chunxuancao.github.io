@@ -1,13 +1,18 @@
 ---
 title: AST抽象语法树解混淆入门
 date: "2026-10-17 14:10:00"
-category: JS逆向
-tags: "[AST, Babel, 解混淆, 抽象语法树, 困难]"
+categories:
+  - JS逆向
+tags:
+  - AST
+  - Babel
+  - 解混淆
+  - 抽象语法树
+  - 困难
 difficulty: 困难
 summary: AST抽象语法树基础，Babel使用教程，自动化解混淆脚本编写，批量处理混淆代码
 cover: https://aka.doubaocdn.com/s/vZ7lxXL3Nr
 ---
-
 ## 适用场景
 
 混淆代码太复杂，手动解混淆效率太低。需要学习AST（抽象语法树），写脚本自动化处理混淆代码，批量还原变量名、字符串、控制流。

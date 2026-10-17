@@ -1,13 +1,17 @@
 ---
 title: requests库入门与实战详解
 date: "2026-10-17 09:20:00"
-category: 环境配置
-tags: "[requests, HTTP, 基础, 新手入门]"
+categories:
+  - 环境配置
+tags:
+  - requests
+  - HTTP
+  - 基础
+  - 新手入门
 difficulty: 入门
 summary: requests库完全入门教程，GET/POST请求、请求头、Cookie、Session、文件上传、异常处理，爬虫最基础的库
 cover: https://aka.doubaocdn.com/s/Vpqbysrbdc
 ---
-
 ## 适用场景
 
 刚学爬虫，需要掌握最基础的HTTP请求库。requests是Python爬虫最常用的库，90%的爬虫都用它发请求。
