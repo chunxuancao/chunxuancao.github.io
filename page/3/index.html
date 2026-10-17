@@ -1,0 +1,251 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>喵喵小码 - 爬虫接单经验与技术分享</title><meta name="author" content="喵轩"><meta name="copyright" content="喵轩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="1a1228"><meta name="description" content="分享爬虫技术、反爬破解、JS逆向、接单经验">
+<meta property="og:type" content="website">
+<meta property="og:title" content="喵喵小码">
+<meta property="og:url" content="https://chunxuancao.github.io/page/3/index.html">
+<meta property="og:site_name" content="喵喵小码">
+<meta property="og:description" content="分享爬虫技术、反爬破解、JS逆向、接单经验">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://chunxuancao.github.io/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png">
+<meta property="article:author" content="喵轩">
+<meta property="article:tag" content="爬虫,Python,反爬,JS逆向,接单">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chunxuancao.github.io/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://chunxuancao.github.io/page/3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '1a1228')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '1a1228')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '喵喵小码',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><link rel="stylesheet" href="/css/cat-theme.css"><link rel="stylesheet" href="/css/custom-style.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://aka.doubaocdn.com/s/bd6ID2NuWr);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">141</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-layer-group"></i><span> 分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><i class="fa-fw fas fa-shield-alt"></i><span> 反爬技巧</span></a></li><li><a class="site-page child" href="/categories/JS%E9%80%86%E5%90%91/"><i class="fa-fw fas fa-code"></i><span> JS逆向</span></a></li><li><a class="site-page child" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><i class="fa-fw fas fa-handshake"></i><span> 接单经验</span></a></li><li><a class="site-page child" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><i class="fa-fw fas fa-tools"></i><span> 工具推荐</span></a></li><li><a class="site-page child" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-fw fas fa-cog"></i><span> 环境配置</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">喵喵小码</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-layer-group"></i><span> 分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><i class="fa-fw fas fa-shield-alt"></i><span> 反爬技巧</span></a></li><li><a class="site-page child" href="/categories/JS%E9%80%86%E5%90%91/"><i class="fa-fw fas fa-code"></i><span> JS逆向</span></a></li><li><a class="site-page child" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><i class="fa-fw fas fa-handshake"></i><span> 接单经验</span></a></li><li><a class="site-page child" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><i class="fa-fw fas fa-tools"></i><span> 工具推荐</span></a></li><li><a class="site-page child" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-fw fas fa-cog"></i><span> 环境配置</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">喵喵小码</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%A1%A5%E7%8E%AF%E5%A2%83%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%AE%9E%E8%B7%B5/" title="浏览器补环境技巧与实践"><img class="post-bg" src="https://aka.doubaocdn.com/s/vawPVtPoKw" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="浏览器补环境技巧与实践"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%A1%A5%E7%8E%AF%E5%A2%83%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%AE%9E%E8%B7%B5/" title="浏览器补环境技巧与实践">浏览器补环境技巧与实践</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T06:20:00.000Z" title="发表于 2026-10-17 14:20:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div><div class="content">适用场景扣出来的JS代码在Node.js里运行报错，提示window is not defined、document is not defined。需要补全浏览器环境，让JS代码以为自己在浏览器里运行。 实现原理前端JS代码依赖浏览器提供的全局对象（window、document、navigator、location等），Node.js里没有这些对象。补环境就是在Node.js里模拟这些浏览器对象，让JS代码能正常运行。常用的补环境工具有jsdom、puppeteer等。 具体步骤第一步：识别需要补的环境运行扣出来的JS代码，看报错信息： 12345ReferenceError: window is not definedReferenceError: document is not definedReferenceError: navigator is not definedReferenceError: location is not definedReferenceError: localStorage is not defined  根据报错逐个补全。 第二步：基础补环境...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/AST%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91%E8%A7%A3%E6%B7%B7%E6%B7%86%E5%85%A5%E9%97%A8/" title="AST抽象语法树解混淆入门"><img class="post-bg" src="https://aka.doubaocdn.com/s/vZ7lxXL3Nr" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="AST抽象语法树解混淆入门"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/AST%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91%E8%A7%A3%E6%B7%B7%E6%B7%86%E5%85%A5%E9%97%A8/" title="AST抽象语法树解混淆入门">AST抽象语法树解混淆入门</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T06:10:00.000Z" title="发表于 2026-10-17 14:10:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div><div class="content">适用场景混淆代码太复杂，手动解混淆效率太低。需要学习AST（抽象语法树），写脚本自动化处理混淆代码，批量还原变量名、字符串、控制流。 实现原理AST（Abstract Syntax Tree，抽象语法树）是代码的树形结构表示。每个节点代表代码中的一个结构（变量声明、函数调用、表达式等）。通过遍历和修改AST节点，可以自动化地进行代码转换，比如解密字符串、重命名变量、还原控制流。Babel是最常用的JS AST处理工具。 具体步骤第一步：环境搭建1234567# 初始化项目mkdir deobfuscatorcd deobfuscatornpm init -y# 安装Babelnpm install @babel/parser @babel/traverse @babel/generator @babel/types  第二步：AST基础概念1234567891011121314151617// 代码const a = 1 + 2;// AST结构（简化）&#123;  type: &quot;VariableDeclaration&quot;,  declarations: [&...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/%E5%B8%B8%E8%A7%81JS%E6%B7%B7%E6%B7%86%E7%B1%BB%E5%9E%8B%E4%B8%8E%E8%A7%A3%E6%B7%B7%E6%B7%86%E6%96%B9%E6%B3%95/" title="常见JS混淆类型与解混淆方法"><img class="post-bg" src="https://aka.doubaocdn.com/s/qh6Fo7mUqm" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="常见JS混淆类型与解混淆方法"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E5%B8%B8%E8%A7%81JS%E6%B7%B7%E6%B7%86%E7%B1%BB%E5%9E%8B%E4%B8%8E%E8%A7%A3%E6%B7%B7%E6%B7%86%E6%96%B9%E6%B3%95/" title="常见JS混淆类型与解混淆方法">常见JS混淆类型与解混淆方法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T06:00:00.000Z" title="发表于 2026-10-17 14:00:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div><div class="content">适用场景拿到的JS代码完全看不懂，各种乱码和无意义变量。需要识别混淆类型，用对应的方法还原代码，方便分析。 实现原理JS混淆是通过各种技术手段让代码变得难以阅读，但功能不变。常见的混淆手段包括：变量名替换、字符串加密、控制流平坦化、死代码插入、调试保护等。解混淆就是逆向这些操作，还原代码的可读性。 具体步骤第一步：变量名混淆特征：  变量名都是a、b、c、_0x1234 函数名无意义 没有任何语义  解混淆方法：  格式化代码（Pretty print） 重命名变量（Rename symbol）：右键变量 → Rename symbol 根据上下文推断变量含义，手动重命名 用AST工具批量重命名  第二步：字符串加密特征： 123456789// 加密前var url = &quot;https://api.example.com&quot;;// 加密后var url = _0x1234(&#x27;0x12&#x27;);  // 通过函数解密// 或者var url = &#x27;\x68\x74\x74\x70\x73&#x27;;  // 十六进制// 或者var u...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/%E8%B0%83%E7%94%A8%E6%A0%88%E5%88%86%E6%9E%90%E4%B8%8E%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0%E5%AE%9A%E4%BD%8D/" title="调用栈分析与加密函数定位"><img class="post-bg" src="https://aka.doubaocdn.com/s/5EUucoQ1oV" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="调用栈分析与加密函数定位"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E8%B0%83%E7%94%A8%E6%A0%88%E5%88%86%E6%9E%90%E4%B8%8E%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0%E5%AE%9A%E4%BD%8D/" title="调用栈分析与加密函数定位">调用栈分析与加密函数定位</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T05:50:00.000Z" title="发表于 2026-10-17 13:50:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div><div class="content">适用场景XHR断点后断在库代码里，不知道业务代码在哪里。需要学会分析调用栈，从底层的请求函数向上追溯，找到加密参数的业务代码。 实现原理调用栈（Call Stack）记录了函数的调用链。当代码在某个位置暂停时，Call Stack面板会显示从当前函数到最外层的所有调用帧。通过点击不同的帧，可以查看每个函数的参数、局部变量和代码，从而追溯参数是在哪里被处理和加密的。 具体步骤第一步：理解调用栈调用栈的显示顺序：  最上面：当前执行的函数（最内层） 往下：调用当前函数的函数 最下面：最外层的入口函数  例如： 12345send (xhr.js:12)          ← 当前在这里（库代码）ajax (jquery.js:100)     ← jquery调用了sendrequest (api.js:50)      ← 业务代码调用了ajaxfetchData (main.js:200)  ← 业务代码调用了request onclick (index.html:10) ← 点击事件触发  分析时从下往上看，找到业务代码的位置。 第二步：XHR断点后分析 设置XHR断点，触发请...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/Chrome%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95%E9%AB%98%E7%BA%A7%E6%8A%80%E5%B7%A7/" title="Chrome断点调试高级技巧"><img class="post-bg" src="https://aka.doubaocdn.com/s/SBnTv29WRF" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Chrome断点调试高级技巧"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/Chrome%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95%E9%AB%98%E7%BA%A7%E6%8A%80%E5%B7%A7/" title="Chrome断点调试高级技巧">Chrome断点调试高级技巧</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T05:40:00.000Z" title="发表于 2026-10-17 13:40:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div><div class="content">适用场景已经会基础的断点调试，但遇到混淆代码还是找不到关键逻辑。需要掌握更高级的断点技巧，快速定位加密函数。 实现原理Chrome开发者工具提供了多种断点类型，可以在特定条件、特定事件、特定DOM变化时暂停代码执行。通过组合使用这些断点，可以快速定位到关键代码的执行位置，而不用一步步单步跟踪。 具体步骤第一步：基础断点普通断点：  点击行号，出现蓝色箭头 代码执行到这一行会暂停  条件断点（Conditional Breakpoint）：  右键行号 → Add conditional breakpoint 输入条件表达式，如user.id === 123 只有条件为true时才暂停 适合在循环中找特定情况  日志断点（Logpoint）：  右键行号 → Add logpoint 输入日志表达式，如&quot;参数:&quot;, param 不会暂停，只在Console输出日志 适合观察变量变化不中断执行  第二步：XHR&#x2F;fetch断点在请求发出时暂停：  Sources面板 → XHR&#x2F;fetch Breakpoints 点击+，输入URL关键词 如输...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/JS%E9%80%86%E5%90%91%E5%85%A5%E9%97%A8%E6%B7%B7%E6%B7%86%E4%BB%A3%E7%A0%81%E8%AF%86%E5%88%AB%E4%B8%8E%E5%88%86%E6%9E%90/" title="JS逆向入门-混淆代码识别与分析"><img class="post-bg" src="https://aka.doubaocdn.com/s/7CAP2ro2Y6" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JS逆向入门-混淆代码识别与分析"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/JS%E9%80%86%E5%90%91%E5%85%A5%E9%97%A8%E6%B7%B7%E6%B7%86%E4%BB%A3%E7%A0%81%E8%AF%86%E5%88%AB%E4%B8%8E%E5%88%86%E6%9E%90/" title="JS逆向入门-混淆代码识别与分析">JS逆向入门-混淆代码识别与分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T05:30:00.000Z" title="发表于 2026-10-17 13:30:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div><div class="content">适用场景网站的JS代码被混淆了，看不懂，找不到加密函数在哪里。需要学习JS逆向的基本思路和方法，从混淆代码中找到关键逻辑。 实现原理JS逆向就是通过调试和分析，理解混淆后的JavaScript代码逻辑，找到加密、签名、反爬等关键函数的实现，然后用Python复现。核心是利用Chrome开发者工具的断点调试功能，一步步跟踪代码执行。 具体步骤第一步：识别混淆类型常见混淆特征：  变量名无意义 — a、b、c、_0x1234、_0xabcd 代码压缩 — 所有代码在一行，没有空格换行 字符串加密 — 字符串都是\x68\x65\x6c\x6c\x6f这种形式 控制流平坦化 — 大量switch-case，代码执行顺序混乱 死代码 — 大量没用的代码干扰阅读 调试保护 — 无限debugger、检测开发者工具  第二步：搭建调试环境Chrome开发者工具：  F12打开，Sources面板 找到混淆的JS文件 点击{}（Pretty print）格式化代码 格式化后代码会有换行和缩进，方便阅读  常用快捷键：  Ctrl+P：快速打开文件 Ctrl+Shift+F：全局搜索 Ctrl+...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/%E7%82%B9%E9%80%89%E9%AA%8C%E8%AF%81%E7%A0%81%E6%96%87%E5%AD%97%E8%AF%86%E5%88%AB%E4%B8%8E%E7%82%B9%E5%87%BB/" title="点选验证码文字识别与点击"><img class="post-bg" src="https://aka.doubaocdn.com/s/rWDUGXmY6o" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="点选验证码文字识别与点击"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E7%82%B9%E9%80%89%E9%AA%8C%E8%AF%81%E7%A0%81%E6%96%87%E5%AD%97%E8%AF%86%E5%88%AB%E4%B8%8E%E7%82%B9%E5%87%BB/" title="点选验证码文字识别与点击">点选验证码文字识别与点击</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T05:10:00.000Z" title="发表于 2026-10-17 13:10:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/">反爬技巧</a></span></div><div class="content">适用场景验证码要求按顺序点击图片中的文字或图标，比如12306的图片点选、腾讯防水墙的文字点选。需要识别文字位置，然后模拟点击。 实现原理点选验证码要求用户按提示顺序点击图片中的特定文字或图标。爬虫需要：1）OCR识别图片中的文字和位置；2）根据提示文字找到对应的坐标；3）模拟人类的点击轨迹和间隔。 具体步骤第一步：点选验证码类型 文字点选 — 提示”请依次点击：猫、狗、鱼”，图片中有多个文字 图片点选 — 12306类型，提示”点击所有符合要求的图片” 图标点选 — 点击特定的图标或符号 语序点选 — 按语义顺序点击文字  第二步：获取验证码图片12345678910111213141516171819import requestsdef get_captcha():    &quot;&quot;&quot;获取点选验证码图片和提示文字&quot;&quot;&quot;    url = &quot;https://example.com/captcha&quot;    response = requests.get(url)    data = response.jso...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E8%AF%86%E5%88%AB%E4%B8%8E%E6%A8%A1%E6%8B%9F%E6%8B%96%E5%8A%A8/" title="滑块验证码识别与模拟拖动"><img class="post-bg" src="https://aka.doubaocdn.com/s/RwkH2UfsYQ" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="滑块验证码识别与模拟拖动"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E8%AF%86%E5%88%AB%E4%B8%8E%E6%A8%A1%E6%8B%9F%E6%8B%96%E5%8A%A8/" title="滑块验证码识别与模拟拖动">滑块验证码识别与模拟拖动</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T05:00:00.000Z" title="发表于 2026-10-17 13:00:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/">反爬技巧</a></span></div><div class="content">适用场景登录或请求时出现滑块验证码，需要拖动滑块到缺口位置。包括简单的滑块拼图和复杂的极验、腾讯防水墙等行为验证。 实现原理滑块验证码通过两个维度验证：1）缺口位置是否正确（图像识别）；2）拖动轨迹是否像人（行为检测）。爬虫需要用图像识别找到缺口位置，然后模拟人类的拖动轨迹（先快后慢、有抖动），而不是匀速直线移动。 具体步骤第一步：滑块验证码类型 简单滑块 — 只有一个滑块和缺口，识别缺口位置即可 极验滑块 — 有背景图和滑块图，需要对比找缺口，还有行为检测 腾讯防水墙 — 类似极验，有旋转、点选等多种类型 网易易盾 — 滑块+点选组合  第二步：获取验证码图片123456789101112131415161718import requestsdef get_captcha_images():    &quot;&quot;&quot;获取滑块验证码的背景图和滑块图&quot;&quot;&quot;    # 背景图（有缺口）    bg_url = &quot;https://example.com/captcha/bg.png&quot;    # 滑块图（小拼图）    ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/MD5%E4%B8%8ESHA%E7%AD%BE%E5%90%8D%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" title="MD5与SHA签名逆向分析"><img class="post-bg" src="https://aka.doubaocdn.com/s/Zsp6g16Q7g" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MD5与SHA签名逆向分析"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/MD5%E4%B8%8ESHA%E7%AD%BE%E5%90%8D%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" title="MD5与SHA签名逆向分析">MD5与SHA签名逆向分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T04:50:00.000Z" title="发表于 2026-10-17 12:50:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/">反爬技巧</a></span></div><div class="content">适用场景接口有sign参数，是32位（MD5）或40位（SHA1）或64位（SHA256）的十六进制字符串。需要分析签名规则，找到盐值，用Python复现。 实现原理MD5和SHA都是哈希算法，把任意长度的输入转成固定长度的输出。网站常用它们做接口签名：把请求参数按一定规则拼接，加上密钥（盐值），然后哈希得到sign。服务器用同样的方式计算，对比是否一致。 具体步骤第一步：识别哈希类型根据签名长度判断：  32位十六进制 → MD5（最常见） 40位十六进制 → SHA1 64位十六进制 → SHA256 128位十六进制 → SHA512  12345678910111213def detect_hash(sign):    &quot;&quot;&quot;根据长度判断哈希类型&quot;&quot;&quot;    length = len(sign)    if length == 32:        return &quot;MD5&quot;    elif length == 40:        return &quot;SHA1&quot;    elif...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/RSA%E5%8A%A0%E5%AF%86%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90%E4%B8%8E%E8%A7%A3%E5%AF%86/" title="RSA加密参数分析与解密"><img class="post-bg" src="https://aka.doubaocdn.com/s/A4DGv11ekU" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RSA加密参数分析与解密"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/RSA%E5%8A%A0%E5%AF%86%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90%E4%B8%8E%E8%A7%A3%E5%AF%86/" title="RSA加密参数分析与解密">RSA加密参数分析与解密</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T04:40:00.000Z" title="发表于 2026-10-17 12:40:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/">反爬技巧</a></span></div><div class="content">适用场景登录接口的密码是加密的，很长一串，用的是RSA非对称加密。需要找到公钥，用Python复现加密，模拟登录。 实现原理RSA是非对称加密，有公钥和私钥一对。网站把公钥放在前端，前端用公钥加密密码，后端用私钥解密。爬虫只需要拿到公钥，用Python的rsa或cryptography库加密即可，不需要私钥。 具体步骤第一步：识别RSA加密特征：  加密后的密码很长（256位密钥加密后是256字节，Base64后约344字符） 同样的密码每次加密结果不一样（有随机填充） JS里有JSEncrypt、RSAKey、encrypt 页面里有公钥，格式是-----BEGIN PUBLIC KEY-----  第二步：获取公钥公钥一般有两种形式： 形式1：PEM格式 123-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC...-----END PUBLIC KEY-----  形式2：模和指数 1234var publicKey = &#123;    n: &quot;ABCDEF123456...&qu...</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/2/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#content-inner">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#content-inner">4</a><a class="page-number" href="/page/5/#content-inner">5</a><a class="extend next" rel="next" href="/page/4/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">喵轩</div><div class="author-info-description">爬虫工程师 | 二次元爱好者 | 技术宅</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">141</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/chunxuancao"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到喵轩的技术博客~ 这里有爬虫接单经验、反爬技巧、JS逆向教程，还有二次元看板娘陪你哦！🌸</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="爬虫反爬之User-Agent检测与绕过"/></a><div class="content"><a class="title" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过">爬虫反爬之User-Agent检测与绕过</a><time datetime="2026-10-17T10:54:37.000Z" title="发表于 2026-10-17 18:54:37">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择"><img src="https://aka.doubaocdn.com/s/VmelXrsSnS" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据存储方案对比与选择"/></a><div class="content"><a class="title" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择">数据存储方案对比与选择</a><time datetime="2026-10-17T09:50:00.000Z" title="发表于 2026-10-17 17:50:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门"><img src="https://aka.doubaocdn.com/s/TTyh6Y5WpA" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Scrapy分布式爬虫框架入门"/></a><div class="content"><a class="title" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门">Scrapy分布式爬虫框架入门</a><time datetime="2026-10-17T09:40:00.000Z" title="发表于 2026-10-17 17:40:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐"><img src="https://aka.doubaocdn.com/s/8eQQujATAC" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="代理池搭建方案与工具推荐"/></a><div class="content"><a class="title" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐">代理池搭建方案与工具推荐</a><time datetime="2026-10-17T09:30:00.000Z" title="发表于 2026-10-17 17:30:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南"><img src="https://aka.doubaocdn.com/s/kdW5ooms6M" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="抓包工具对比与选择指南"/></a><div class="content"><a class="title" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南">抓包工具对比与选择指南</a><time datetime="2026-10-17T09:20:00.000Z" title="发表于 2026-10-17 17:20:00">2026-10-17</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline"><i class="fas fa-folder-open"></i><span>分类</span></div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/JS%E9%80%86%E5%90%91/"><span class="card-category-list-name">JS逆向</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><span class="card-category-list-name">反爬技巧</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><span class="card-category-list-name">工具推荐</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><span class="card-category-list-name">接单经验</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><span class="card-category-list-name">环境配置</span><span class="card-category-list-count">10</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E8%A1%8C%E4%B8%BA%E9%AA%8C%E8%AF%81/" style="font-size: 1.18em; color: #999ca1">行为验证</a> <a href="/tags/HTTPS/" style="font-size: 1.1em; color: #999">HTTPS</a> <a href="/tags/%E9%AA%8C%E8%AF%81%E7%A0%81/" style="font-size: 1.1em; color: #999">验证码</a> <a href="/tags/obfuscator/" style="font-size: 1.1em; color: #999">obfuscator</a> <a href="/tags/%E8%AE%A4%E8%AF%81/" style="font-size: 1.1em; color: #999">认证</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/%E9%AA%97%E5%AD%90/" style="font-size: 1.1em; color: #999">骗子</a> <a href="/tags/%E5%9B%B0%E9%9A%BE/" style="font-size: 1.5em; color: #99a9bf">困难</a> <a href="/tags/%E9%95%BF%E6%9C%9F%E5%90%88%E4%BD%9C/" style="font-size: 1.1em; color: #999">长期合作</a> <a href="/tags/%E5%8A%A0%E5%AF%86/" style="font-size: 1.1em; color: #999">加密</a> <a href="/tags/%E5%8F%8D%E8%B0%83%E8%AF%95/" style="font-size: 1.1em; color: #999">反调试</a> <a href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">开发工具</a> <a href="/tags/SHA/" style="font-size: 1.1em; color: #999">SHA</a> <a href="/tags/%E4%BB%A3%E7%90%86%E6%B1%A0/" style="font-size: 1.18em; color: #999ca1">代理池</a> <a href="/tags/%E7%AD%BE%E5%90%8D/" style="font-size: 1.18em; color: #999ca1">签名</a> <a href="/tags/%E6%8A%93%E5%8C%85/" style="font-size: 1.34em; color: #99a3b0">抓包</a> <a href="/tags/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">开发者工具</a> <a href="/tags/Chrome/" style="font-size: 1.18em; color: #999ca1">Chrome</a> <a href="/tags/lxml/" style="font-size: 1.1em; color: #999">lxml</a> <a href="/tags/%E6%89%93%E7%A0%81%E5%B9%B3%E5%8F%B0/" style="font-size: 1.1em; color: #999">打码平台</a> <a href="/tags/woff/" style="font-size: 1.1em; color: #999">woff</a> <a href="/tags/%E6%8E%A5%E5%8D%95%E5%B9%B3%E5%8F%B0/" style="font-size: 1.1em; color: #999">接单平台</a> <a href="/tags/%E5%87%BD%E6%95%B0%E5%AE%9A%E4%BD%8D/" style="font-size: 1.1em; color: #999">函数定位</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 1.26em; color: #999fa8">调试</a> <a href="/tags/XPath/" style="font-size: 1.1em; color: #999">XPath</a> <a href="/tags/%E8%A1%8C%E4%B8%9A%E5%88%86%E6%9E%90/" style="font-size: 1.1em; color: #999">行业分析</a> <a href="/tags/%E7%99%BB%E5%BD%95%E6%80%81/" style="font-size: 1.18em; color: #999ca1">登录态</a> <a href="/tags/JavaScript/" style="font-size: 1.1em; color: #999">JavaScript</a> <a href="/tags/Windows/" style="font-size: 1.1em; color: #999">Windows</a> <a href="/tags/%E7%88%AC%E8%99%AB%E5%BA%93/" style="font-size: 1.1em; color: #999">爬虫库</a> <a href="/tags/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91/" style="font-size: 1.1em; color: #999">抽象语法树</a> <a href="/tags/IP%E4%BB%A3%E7%90%86/" style="font-size: 1.18em; color: #999ca1">IP代理</a> <a href="/tags/%E5%B0%BE%E6%AC%BE/" style="font-size: 1.1em; color: #999">尾款</a> <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%8E%AF%E5%A2%83/" style="font-size: 1.1em; color: #999">浏览器环境</a> <a href="/tags/%E5%8F%8D%E7%88%AC/" style="font-size: 1.42em; color: #99a6b7">反爬</a> <a href="/tags/Babel/" style="font-size: 1.1em; color: #999">Babel</a> <a href="/tags/%E5%AE%9E%E6%88%98/" style="font-size: 1.1em; color: #999">实战</a> <a href="/tags/%E5%93%88%E5%B8%8C/" style="font-size: 1.1em; color: #999">哈希</a> <a href="/tags/Call-Stack/" style="font-size: 1.1em; color: #999">Call Stack</a> <a href="/tags/DevTools/" style="font-size: 1.1em; color: #999">DevTools</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/10/">
+            <span class="card-archive-list-date">
+              十月 2026
+            </span>
+            <span class="card-archive-list-count">50</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">50</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-10-17T22:17:21.311Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 喵轩</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div><div class="footer_custom_text"><div style="margin-top:8px;font-size:12px;opacity:.7">🐱 用猫爪写代码 · Powered by Hexo + Butterfly</div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, {"typeSpeed":80,"backSpeed":40,"backDelay":2000,"loop":true}))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js@3.0.0/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  },
+  processSubtitle: (content, extraContents = []) => {
+    if (true) {
+      const sub = ["喵～欢迎来到喵喵小码 🐱","爬虫技术 · 接单经验 · 码农日常","每一行代码，都是猫爪印","用猫爪写代码的技术博客"].slice()
+
+      if (extraContents.length > 0) {
+        sub.unshift(...extraContents)
+      }
+
+      if (typeof content === 'string') {
+        sub.unshift(content)
+      } else if (Array.isArray(content)) {
+        sub.unshift(...content)
+      }
+
+      sub.length > 0 && typedJSFn.init(sub)
+    } else {
+      document.getElementById('subtitle').textContent = typeof content === 'string' ? content :
+        (Array.isArray(content) && content.length > 0 ? content[0] : '')
+    }
+  }
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed && typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  typedJSFn.processSubtitle(["喵～欢迎来到喵喵小码 🐱","爬虫技术 · 接单经验 · 码农日常","每一行代码，都是猫爪印","用猫爪写代码的技术博客"])
+}
+typedJSFn.run(subtitleType)</script></div><script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script><script src="/js/cat-theme.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

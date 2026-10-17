@@ -1,0 +1,18 @@
+/* 喵喵小码 · 自定义样式（后台生成，请勿手动编辑） */
+:root{
+  --cat-text: #4a3728;
+  --cat-accent: #ff9d5c;
+  --cat-bg-deep: #fff8f0;
+  --butterfly-card-bg: rgba(255,255,255,0.72) !important;
+}
+#post .post-title,
+#post .post-bg .post-title,
+#post .article-header .post-title{
+  color: #4a3728 !important;
+}
+.post-content{
+  color: #4a3728 !important;
+}
+a, .article-title:hover, #post .post-meta a:hover{
+  color: #ff9d5c !important;
+}

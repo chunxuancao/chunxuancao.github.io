@@ -1,0 +1,504 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Python爬虫常用库大全与对比 | 喵喵小码</title><meta name="author" content="喵轩"><meta name="copyright" content="喵轩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="1a1228"><meta name="description" content="适用场景开发爬虫时不知道该用什么库，或者想了解有哪些好用的工具可以提高效率。需要一份全面的爬虫库对比和推荐。 实现原理Python爬虫生态非常丰富，从请求、解析、自动化到异步、分布式，每个环节都有多个库可选。不同的库有不同的特点和适用场景，选择合适的库可以大幅提高开发效率。 具体步骤第一步：请求库1. requests（最常用）  特点：简单易用，API友好，文档完善 适用：90%的普通爬虫 安装">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python爬虫常用库大全与对比">
+<meta property="og:url" content="https://chunxuancao.github.io/2026/10/17/Python%E7%88%AC%E8%99%AB%E5%B8%B8%E7%94%A8%E5%BA%93%E5%A4%A7%E5%85%A8%E4%B8%8E%E5%AF%B9%E6%AF%94/index.html">
+<meta property="og:site_name" content="喵喵小码">
+<meta property="og:description" content="适用场景开发爬虫时不知道该用什么库，或者想了解有哪些好用的工具可以提高效率。需要一份全面的爬虫库对比和推荐。 实现原理Python爬虫生态非常丰富，从请求、解析、自动化到异步、分布式，每个环节都有多个库可选。不同的库有不同的特点和适用场景，选择合适的库可以大幅提高开发效率。 具体步骤第一步：请求库1. requests（最常用）  特点：简单易用，API友好，文档完善 适用：90%的普通爬虫 安装">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://aka.doubaocdn.com/s/aaOEwJtD7S">
+<meta property="article:published_time" content="2026-10-17T09:10:00.000Z">
+<meta property="article:modified_time" content="2026-10-17T22:17:07.797Z">
+<meta property="article:author" content="喵轩">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="入门">
+<meta property="article:tag" content="工具推荐">
+<meta property="article:tag" content="爬虫库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://aka.doubaocdn.com/s/aaOEwJtD7S"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Python爬虫常用库大全与对比",
+  "url": "https://chunxuancao.github.io/2026/10/17/Python%E7%88%AC%E8%99%AB%E5%B8%B8%E7%94%A8%E5%BA%93%E5%A4%A7%E5%85%A8%E4%B8%8E%E5%AF%B9%E6%AF%94/",
+  "image": "https://aka.doubaocdn.com/s/aaOEwJtD7S",
+  "datePublished": "2026-10-17T09:10:00.000Z",
+  "dateModified": "2026-10-17T22:17:07.797Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "喵轩",
+      "url": "https://chunxuancao.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://chunxuancao.github.io/2026/10/17/Python%E7%88%AC%E8%99%AB%E5%B8%B8%E7%94%A8%E5%BA%93%E5%A4%A7%E5%85%A8%E4%B8%8E%E5%AF%B9%E6%AF%94/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '1a1228')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '1a1228')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Python爬虫常用库大全与对比',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/cat-theme.css"><link rel="stylesheet" href="/css/custom-style.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://aka.doubaocdn.com/s/bd6ID2NuWr);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">141</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-layer-group"></i><span> 分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><i class="fa-fw fas fa-shield-alt"></i><span> 反爬技巧</span></a></li><li><a class="site-page child" href="/categories/JS%E9%80%86%E5%90%91/"><i class="fa-fw fas fa-code"></i><span> JS逆向</span></a></li><li><a class="site-page child" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><i class="fa-fw fas fa-handshake"></i><span> 接单经验</span></a></li><li><a class="site-page child" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><i class="fa-fw fas fa-tools"></i><span> 工具推荐</span></a></li><li><a class="site-page child" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-fw fas fa-cog"></i><span> 环境配置</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://aka.doubaocdn.com/s/aaOEwJtD7S);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">喵喵小码</span></a><a class="nav-page-title" href="/"><span class="site-name">Python爬虫常用库大全与对比</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-layer-group"></i><span> 分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><i class="fa-fw fas fa-shield-alt"></i><span> 反爬技巧</span></a></li><li><a class="site-page child" href="/categories/JS%E9%80%86%E5%90%91/"><i class="fa-fw fas fa-code"></i><span> JS逆向</span></a></li><li><a class="site-page child" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><i class="fa-fw fas fa-handshake"></i><span> 接单经验</span></a></li><li><a class="site-page child" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><i class="fa-fw fas fa-tools"></i><span> 工具推荐</span></a></li><li><a class="site-page child" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-fw fas fa-cog"></i><span> 环境配置</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Python爬虫常用库大全与对比</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-17T09:10:00.000Z" title="发表于 2026-10-17 17:10:00">2026-10-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-17T22:17:07.797Z" title="更新于 2026-10-18 06:17:07">2026-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/">工具推荐</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>开发爬虫时不知道该用什么库，或者想了解有哪些好用的工具可以提高效率。需要一份全面的爬虫库对比和推荐。</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>Python爬虫生态非常丰富，从请求、解析、自动化到异步、分布式，每个环节都有多个库可选。不同的库有不同的特点和适用场景，选择合适的库可以大幅提高开发效率。</p>
+<h2 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h2><h3 id="第一步：请求库"><a href="#第一步：请求库" class="headerlink" title="第一步：请求库"></a>第一步：请求库</h3><p><strong>1. requests（最常用）</strong></p>
+<ul>
+<li>特点：简单易用，API友好，文档完善</li>
+<li>适用：90%的普通爬虫</li>
+<li>安装：<code>pip install requests</code></li>
+<li>示例：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">response = requests.get(<span class="string">&quot;https://example.com&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(response.text)</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. httpx（支持异步）</strong></p>
+<ul>
+<li>特点：支持同步和异步，HTTP&#x2F;2，比requests更现代</li>
+<li>适用：需要异步请求的场景</li>
+<li>安装：<code>pip install httpx</code></li>
+<li>示例：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> httpx</span><br><span class="line">response = httpx.get(<span class="string">&quot;https://example.com&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. aiohttp（异步）</strong></p>
+<ul>
+<li>特点：纯异步，高并发性能好</li>
+<li>适用：高并发爬虫</li>
+<li>安装：<code>pip install aiohttp</code></li>
+<li>示例：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> aiohttp</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">fetch</span>():</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> aiohttp.ClientSession() <span class="keyword">as</span> session:</span><br><span class="line">        <span class="keyword">async</span> <span class="keyword">with</span> session.get(<span class="string">&quot;https://example.com&quot;</span>) <span class="keyword">as</span> resp:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">await</span> resp.text()</span><br></pre></td></tr></table></figure>
+
+<p><strong>4. urllib（标准库）</strong></p>
+<ul>
+<li>特点：Python内置，不需要安装</li>
+<li>适用：简单请求，不想装依赖</li>
+<li>缺点：API比较底层，用起来麻烦</li>
+</ul>
+<p><strong>对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>库</th>
+<th>异步</th>
+<th>易用性</th>
+<th>性能</th>
+<th>推荐度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>requests</td>
+<td>否</td>
+<td>高</td>
+<td>中</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>httpx</td>
+<td>是</td>
+<td>高</td>
+<td>高</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>aiohttp</td>
+<td>是</td>
+<td>中</td>
+<td>高</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>urllib</td>
+<td>否</td>
+<td>低</td>
+<td>中</td>
+<td>⭐⭐</td>
+</tr>
+</tbody></table>
+<h3 id="第二步：解析库"><a href="#第二步：解析库" class="headerlink" title="第二步：解析库"></a>第二步：解析库</h3><p><strong>1. BeautifulSoup4（最常用）</strong></p>
+<ul>
+<li>特点：简单易学，API友好，适合新手</li>
+<li>适用：HTML解析，简单爬虫</li>
+<li>安装：<code>pip install beautifulsoup4 lxml</code></li>
+</ul>
+<p><strong>2. lxml + XPath（速度快）</strong></p>
+<ul>
+<li>特点：C语言实现，速度快，XPath功能强大</li>
+<li>适用：大量数据解析，性能要求高</li>
+<li>安装：<code>pip install lxml</code></li>
+</ul>
+<p><strong>3. pyquery（jQuery风格）</strong></p>
+<ul>
+<li>特点：jQuery风格的API，前端开发者友好</li>
+<li>适用：熟悉jQuery的人</li>
+<li>安装：<code>pip install pyquery</code></li>
+</ul>
+<p><strong>4. parsel（Scrapy御用）</strong></p>
+<ul>
+<li>特点：Scrapy的解析库，支持XPath和CSS</li>
+<li>适用：Scrapy项目</li>
+<li>安装：<code>pip install parsel</code></li>
+</ul>
+<p><strong>对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>库</th>
+<th>速度</th>
+<th>易用性</th>
+<th>功能</th>
+<th>推荐度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BeautifulSoup</td>
+<td>中</td>
+<td>高</td>
+<td>中</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>lxml&#x2F;XPath</td>
+<td>高</td>
+<td>中</td>
+<td>高</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>pyquery</td>
+<td>中</td>
+<td>高</td>
+<td>中</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>parsel</td>
+<td>高</td>
+<td>中</td>
+<td>高</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+</tbody></table>
+<h3 id="第三步：自动化库"><a href="#第三步：自动化库" class="headerlink" title="第三步：自动化库"></a>第三步：自动化库</h3><p><strong>1. Selenium（最经典）</strong></p>
+<ul>
+<li>特点：生态成熟，文档多，支持多浏览器</li>
+<li>适用：JS渲染页面，自动化操作</li>
+<li>缺点：速度慢，资源占用高</li>
+<li>安装：<code>pip install selenium</code></li>
+</ul>
+<p><strong>2. Playwright（推荐）</strong></p>
+<ul>
+<li>特点：微软出品，速度快，自动等待，API现代</li>
+<li>适用：现代爬虫，自动化测试</li>
+<li>优点：比Selenium快，网络拦截功能强</li>
+<li>安装：<code>pip install playwright &amp;&amp; playwright install</code></li>
+</ul>
+<p><strong>3. Puppeteer（Node.js）</strong></p>
+<ul>
+<li>特点：Google出品，Node.js生态</li>
+<li>适用：Node.js开发者</li>
+<li>Python版：pyppeteer（不太维护了）</li>
+</ul>
+<p><strong>对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>库</th>
+<th>速度</th>
+<th>易用性</th>
+<th>功能</th>
+<th>推荐度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Selenium</td>
+<td>慢</td>
+<td>高</td>
+<td>高</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>Playwright</td>
+<td>快</td>
+<td>高</td>
+<td>很高</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>Puppeteer</td>
+<td>快</td>
+<td>高</td>
+<td>高</td>
+<td>⭐⭐⭐（Node.js）</td>
+</tr>
+</tbody></table>
+<h3 id="第四步：异步和并发"><a href="#第四步：异步和并发" class="headerlink" title="第四步：异步和并发"></a>第四步：异步和并发</h3><p><strong>1. asyncio + aiohttp</strong></p>
+<ul>
+<li>特点：Python标准异步方案</li>
+<li>适用：高并发爬虫</li>
+<li>并发量：几百到几千</li>
+</ul>
+<p><strong>2. Scrapy（框架）</strong></p>
+<ul>
+<li>特点：异步框架，自带调度、去重、管道</li>
+<li>适用：中大型爬虫项目</li>
+<li>安装：<code>pip install scrapy</code></li>
+</ul>
+<p><strong>3. Celery（分布式任务）</strong></p>
+<ul>
+<li>特点：分布式任务队列</li>
+<li>适用：超大规模分布式爬虫</li>
+<li>安装：<code>pip install celery</code></li>
+</ul>
+<h3 id="第五步：反爬相关库"><a href="#第五步：反爬相关库" class="headerlink" title="第五步：反爬相关库"></a>第五步：反爬相关库</h3><p><strong>1. fake-useragent（随机UA）</strong></p>
+<ul>
+<li>功能：生成随机User-Agent</li>
+<li>安装：<code>pip install fake-useragent</code></li>
+</ul>
+<p><strong>2. ddddocr（验证码识别）</strong></p>
+<ul>
+<li>功能：验证码OCR识别，识别率高</li>
+<li>安装：<code>pip install ddddocr</code></li>
+</ul>
+<p><strong>3. PyExecJS（运行JS）</strong></p>
+<ul>
+<li>功能：在Python中运行JS代码</li>
+<li>安装：<code>pip install PyExecJS</code></li>
+</ul>
+<p><strong>4. pycryptodome（加密）</strong></p>
+<ul>
+<li>功能：AES、RSA等加密算法</li>
+<li>安装：<code>pip install pycryptodome</code></li>
+</ul>
+<p><strong>5. fonttools（字体反爬）</strong></p>
+<ul>
+<li>功能：分析字体文件，破解字体反爬</li>
+<li>安装：<code>pip install fonttools</code></li>
+</ul>
+<h3 id="第六步：数据存储库"><a href="#第六步：数据存储库" class="headerlink" title="第六步：数据存储库"></a>第六步：数据存储库</h3><p><strong>1. csv（标准库）</strong></p>
+<ul>
+<li>适用：小数据量，简单存储</li>
+<li>优点：不需要额外依赖</li>
+</ul>
+<p><strong>2. openpyxl（Excel）</strong></p>
+<ul>
+<li>功能：读写Excel文件</li>
+<li>安装：<code>pip install openpyxl</code></li>
+</ul>
+<p><strong>3. pymysql（MySQL）</strong></p>
+<ul>
+<li>功能：连接MySQL数据库</li>
+<li>安装：<code>pip install pymysql</code></li>
+</ul>
+<p><strong>4. pymongo（MongoDB）</strong></p>
+<ul>
+<li>功能：连接MongoDB数据库</li>
+<li>安装：<code>pip install pymongo</code></li>
+</ul>
+<p><strong>5. redis（缓存&#x2F;去重）</strong></p>
+<ul>
+<li>功能：Redis缓存，用于URL去重、队列</li>
+<li>安装：<code>pip install redis</code></li>
+</ul>
+<h3 id="第七步：工具库"><a href="#第七步：工具库" class="headerlink" title="第七步：工具库"></a>第七步：工具库</h3><p><strong>1. tqdm（进度条）</strong></p>
+<ul>
+<li>功能：显示进度条</li>
+<li>安装：<code>pip install tqdm</code></li>
+</ul>
+<p><strong>2. loguru（日志）</strong></p>
+<ul>
+<li>功能：更友好的日志库</li>
+<li>安装：<code>pip install loguru</code></li>
+</ul>
+<p><strong>3. tenacity（重试）</strong></p>
+<ul>
+<li>功能：优雅的重试机制</li>
+<li>安装：<code>pip install tenacity</code></li>
+</ul>
+<p><strong>4. pydantic（数据验证）</strong></p>
+<ul>
+<li>功能：数据模型验证和序列化</li>
+<li>安装：<code>pip install pydantic</code></li>
+</ul>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># requirements.txt - 爬虫常用库</span></span><br><span class="line"><span class="comment"># 基础请求</span></span><br><span class="line">requests==<span class="number">2.31</span><span class="number">.0</span></span><br><span class="line">httpx==<span class="number">0.25</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解析</span></span><br><span class="line">beautifulsoup4==<span class="number">4.12</span><span class="number">.0</span></span><br><span class="line">lxml==<span class="number">4.9</span><span class="number">.0</span></span><br><span class="line">pyquery==<span class="number">2.0</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 自动化</span></span><br><span class="line">selenium==<span class="number">4.15</span><span class="number">.0</span></span><br><span class="line">playwright==<span class="number">1.40</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 异步</span></span><br><span class="line">aiohttp==<span class="number">3.9</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 框架</span></span><br><span class="line">Scrapy==<span class="number">2.11</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 反爬</span></span><br><span class="line">fake-useragent==<span class="number">1.4</span><span class="number">.0</span></span><br><span class="line">ddddocr==<span class="number">1.4</span><span class="number">.0</span></span><br><span class="line">PyExecJS==<span class="number">1.5</span><span class="number">.1</span></span><br><span class="line">pycryptodome==<span class="number">3.19</span><span class="number">.0</span></span><br><span class="line">fonttools==<span class="number">4.44</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 存储</span></span><br><span class="line">openpyxl==<span class="number">3.1</span><span class="number">.2</span></span><br><span class="line">pymysql==<span class="number">1.1</span><span class="number">.0</span></span><br><span class="line">pymongo==<span class="number">4.6</span><span class="number">.0</span></span><br><span class="line">redis==<span class="number">5.0</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 工具</span></span><br><span class="line">tqdm==<span class="number">4.66</span><span class="number">.0</span></span><br><span class="line">loguru==<span class="number">0.7</span><span class="number">.2</span></span><br><span class="line">tenacity==<span class="number">8.2</span><span class="number">.3</span></span><br><span class="line">pydantic==<span class="number">2.5</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 爬虫项目模板 - 常用库组合</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">from</span> loguru <span class="keyword">import</span> logger</span><br><span class="line"><span class="keyword">from</span> tenacity <span class="keyword">import</span> retry, stop_after_attempt, wait_fixed</span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BaseSpider</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.session = requests.Session()</span><br><span class="line">        <span class="variable language_">self</span>.session.headers.update(&#123;</span><br><span class="line">            <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64)&quot;</span></span><br><span class="line">        &#125;)</span><br><span class="line">    </span><br><span class="line"><span class="meta">    @retry(<span class="params">stop=stop_after_attempt(<span class="params"><span class="number">3</span></span>), wait=wait_fixed(<span class="params"><span class="number">2</span></span>)</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">fetch</span>(<span class="params">self, url</span>):</span><br><span class="line">        logger.info(<span class="string">f&quot;请求: <span class="subst">&#123;url&#125;</span>&quot;</span>)</span><br><span class="line">        response = <span class="variable language_">self</span>.session.get(url, timeout=<span class="number">10</span>)</span><br><span class="line">        response.raise_for_status()</span><br><span class="line">        <span class="keyword">return</span> response.text</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parse</span>(<span class="params">self, html</span>):</span><br><span class="line">        soup = BeautifulSoup(html, <span class="string">&quot;lxml&quot;</span>)</span><br><span class="line">        items = []</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> soup.select(<span class="string">&quot;.item&quot;</span>):</span><br><span class="line">            items.append(&#123;</span><br><span class="line">                <span class="string">&quot;title&quot;</span>: item.select_one(<span class="string">&quot;.title&quot;</span>).text,</span><br><span class="line">                <span class="string">&quot;url&quot;</span>: item.select_one(<span class="string">&quot;a&quot;</span>)[<span class="string">&quot;href&quot;</span>]</span><br><span class="line">            &#125;)</span><br><span class="line">        <span class="keyword">return</span> items</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">save</span>(<span class="params">self, items, filename=<span class="string">&quot;data.csv&quot;</span></span>):</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&quot;w&quot;</span>, newline=<span class="string">&quot;&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            writer = csv.DictWriter(f, fieldnames=[<span class="string">&quot;title&quot;</span>, <span class="string">&quot;url&quot;</span>])</span><br><span class="line">            writer.writeheader()</span><br><span class="line">            writer.writerows(items)</span><br><span class="line">        logger.info(<span class="string">f&quot;保存<span class="subst">&#123;<span class="built_in">len</span>(items)&#125;</span>条数据&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self, urls</span>):</span><br><span class="line">        all_items = []</span><br><span class="line">        <span class="keyword">for</span> url <span class="keyword">in</span> tqdm(urls):</span><br><span class="line">            html = <span class="variable language_">self</span>.fetch(url)</span><br><span class="line">            items = <span class="variable language_">self</span>.parse(html)</span><br><span class="line">            all_items.extend(items)</span><br><span class="line">        <span class="variable language_">self</span>.save(all_items)</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li><strong>不要重复造轮子</strong> — 有现成的库就用，不要自己写</li>
+<li><strong>版本兼容</strong> — 注意库的版本，有些库新版本API会变</li>
+<li><strong>依赖管理</strong> — 用requirements.txt或pyproject.toml管理依赖</li>
+<li><strong>性能考虑</strong> — 大量数据用lxml不用BeautifulSoup，高并发用异步</li>
+<li><strong>安全考虑</strong> — 不要用太冷门的库，可能有安全漏洞</li>
+</ol>
+<h2 id="进阶拓展"><a href="#进阶拓展" class="headerlink" title="进阶拓展"></a>进阶拓展</h2><ul>
+<li>学习Scrapy框架，中大型项目首选</li>
+<li>了解异步编程，提高爬虫效率</li>
+<li>学习分布式爬虫（Scrapy-Redis）</li>
+<li>了解爬虫监控和部署工具</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://chunxuancao.github.io">喵轩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://chunxuancao.github.io/2026/10/17/Python%E7%88%AC%E8%99%AB%E5%B8%B8%E7%94%A8%E5%BA%93%E5%A4%A7%E5%85%A8%E4%B8%8E%E5%AF%B9%E6%AF%94/">https://chunxuancao.github.io/2026/10/17/Python%E7%88%AC%E8%99%AB%E5%B8%B8%E7%94%A8%E5%BA%93%E5%A4%A7%E5%85%A8%E4%B8%8E%E5%AF%B9%E6%AF%94/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://chunxuancao.github.io" target="_blank">喵喵小码</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%85%A5%E9%97%A8/">入门</a><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/%E7%88%AC%E8%99%AB%E5%BA%93/">爬虫库</a><a class="post-meta__tags" href="/tags/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/">工具推荐</a></div><div class="post-share"><div class="social-share" data-image="https://aka.doubaocdn.com/s/aaOEwJtD7S" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南"><img class="cover" src="https://aka.doubaocdn.com/s/kdW5ooms6M" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">抓包工具对比与选择指南</div></div><div class="info-2"><div class="info-item-1">适用场景需要分析网站或APP的接口，但不知道该用哪个抓包工具。需要了解各抓包工具的特点，选择适合自己的。 实现原理抓包工具通过设置HTTP代理，拦截客户端和服务器之间的流量，从而查看和修改请求&#x2F;响应。不同的抓包工具有不同的特点和适用场景，有的适合网页，有的适合APP，有的适合自动化脚本。 具体步骤第一步：Fiddler（Windows首选）特点：  Windows平台最经典的抓包工具 免费（Fiddler Classic） 功能强大，界面友好 支持HTTP&#x2F;HTTPS抓包 支持修改请求&#x2F;响应 支持断点调试  优点：  免费，功能全 Windows下体验最好 插件丰富 中文资料多  缺点：  跨平台差（Mac&#x2F;Linux体验不好） 新版Fiddler Everywhere收费 大流量时会卡  适用场景：  Windows用户 网页抓包 接口分析 初学者入门  下载： https://www.telerik.com/fiddler/fiddler-classic 第二步：Charles（Mac首选）特点：  跨平台（Windows&#x2F;M...</div></div></div></a><a class="pagination-related" href="/2026/10/17/%E6%96%B0%E6%89%8B%E6%8E%A5%E5%8D%95%E9%81%BF%E5%9D%91%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97/" title="新手接单避坑完全指南"><img class="cover" src="https://aka.doubaocdn.com/s/axmnNfZCMd" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">新手接单避坑完全指南</div></div><div class="info-2"><div class="info-item-1">适用场景刚接触爬虫接单，踩了很多坑，或者想接单但怕被骗。需要了解新手常见的坑点，避免走弯路。 实现原理新手接单最容易踩的坑主要有几类：1）被骗（不收定金、客户跑路）；2）被白嫖（拿到代码&#x2F;数据不给钱）；3）需求蔓延（不断加需求不加钱）；4）低价竞争（自己卷自己）；5）法律风险（爬了不该爬的）。通过了解这些坑点和应对方法，可以避免大部分损失。 具体步骤第一步：被骗类坑点坑1：不收定金就开工  表现：客户说”先做，做好了肯定给钱” 结果：做完客户消失，白干几天 避坑：定金是底线，不收定金绝对不开工 话术：”不好意思，我们都是先收30%定金再开工的，这是行规。”  坑2：先做demo看看  表现：”你先做个demo，满意了再合作” 结果：demo做完客户就跑了，拿demo找别人做 避坑：demo也要收钱，或者demo只做一部分 话术：”可以做demo，不过需要收500元开发费，后续合作可以抵扣尾款。”  坑3：尾款拖欠  表现：交付后客户说”再等等”、”月底给” 结果：拖几个月最后不给了 避坑：尾款到账再交付最终版本，不要先给完整代码 话术：”您先付尾款，我马上把完整版本发给...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/10/17/Python%E7%88%AC%E8%99%AB%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8BWindows/" title="Python爬虫环境搭建完整教程（Windows）"><img class="cover" src="https://aka.doubaocdn.com/s/lV61sQMtxZ" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">Python爬虫环境搭建完整教程（Windows）</div></div><div class="info-2"><div class="info-item-1">适用场景完全零基础的新手，刚接触爬虫，不知道从何开始。或者换了新电脑，需要重新搭建开发环境。 实现原理爬虫开发环境的核心是：Python解释器 + 包管理工具(pip) + 常用爬虫库(requests、BeautifulSoup等) + 代码编辑器。搭建好环境后，才能运行和调试爬虫代码。 具体步骤第一步：安装Python 打开Python官网：https://www.python.org/downloads/ 下载最新的Python 3.x版本（建议3.10以上） 运行安装程序，务必勾选”Add Python to PATH” 选择”Install Now”默认安装 安装完成后，打开cmd，输入 python --version 验证  12python --version# 输出类似：Python 3.11.4  第二步：配置pip国内源默认pip下载速度慢，配置国内镜像源： 12345# 临时使用国内源pip install requests -i https://pypi.tuna.tsinghua.edu.cn/simple# 永久配置（Windows）pip conf...</div></div></div></a><a class="pagination-related" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南"><img class="cover" src="https://aka.doubaocdn.com/s/kdW5ooms6M" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">抓包工具对比与选择指南</div></div><div class="info-2"><div class="info-item-1">适用场景需要分析网站或APP的接口，但不知道该用哪个抓包工具。需要了解各抓包工具的特点，选择适合自己的。 实现原理抓包工具通过设置HTTP代理，拦截客户端和服务器之间的流量，从而查看和修改请求&#x2F;响应。不同的抓包工具有不同的特点和适用场景，有的适合网页，有的适合APP，有的适合自动化脚本。 具体步骤第一步：Fiddler（Windows首选）特点：  Windows平台最经典的抓包工具 免费（Fiddler Classic） 功能强大，界面友好 支持HTTP&#x2F;HTTPS抓包 支持修改请求&#x2F;响应 支持断点调试  优点：  免费，功能全 Windows下体验最好 插件丰富 中文资料多  缺点：  跨平台差（Mac&#x2F;Linux体验不好） 新版Fiddler Everywhere收费 大流量时会卡  适用场景：  Windows用户 网页抓包 接口分析 初学者入门  下载： https://www.telerik.com/fiddler/fiddler-classic 第二步：Charles（Mac首选）特点：  跨平台（Windows&#x2F;M...</div></div></div></a><a class="pagination-related" href="/2026/10/17/Referer%E4%B8%8EOrigin%E5%A4%B4%E6%A3%80%E6%B5%8B%E7%BB%95%E8%BF%87/" title="Referer与Origin头检测与绕过"><img class="cover" src="https://aka.doubaocdn.com/s/AGIbrjazQe" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">Referer与Origin头检测与绕过</div></div><div class="info-2"><div class="info-item-1">适用场景请求带了正确的UA还是被拒绝，返回403或者”非法请求”。很多网站会检查Referer或Origin头，验证请求来源是否合法。 实现原理Referer和Origin都是HTTP请求头，用来标识请求的来源页面：  Referer：包含完整的来源URL，比如https://example.com/list Origin：只包含协议+域名，比如https://example.com  网站通过检查这两个头，判断请求是从自己的页面发出的，还是外部脚本直接调用的。直接用requests请求时这两个头是空的，容易被识别。 具体步骤第一步：检测是否有Referer限制 用Chrome打开目标网站，F12 → Network 找到数据接口请求，查看Request Headers 看是否有Referer或Origin字段 用requests不带这两个头请求测试，如果失败说明有检测  第二步：添加Referer头12345678import requestsheaders = &#123;    &quot;User-Agent&quot;: &quot;Mozilla/5.0 (Windo...</div></div></div></a><a class="pagination-related" href="/2026/10/17/JS%E9%80%86%E5%90%91%E5%85%A5%E9%97%A8%E6%B7%B7%E6%B7%86%E4%BB%A3%E7%A0%81%E8%AF%86%E5%88%AB%E4%B8%8E%E5%88%86%E6%9E%90/" title="JS逆向入门-混淆代码识别与分析"><img class="cover" src="https://aka.doubaocdn.com/s/7CAP2ro2Y6" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">JS逆向入门-混淆代码识别与分析</div></div><div class="info-2"><div class="info-item-1">适用场景网站的JS代码被混淆了，看不懂，找不到加密函数在哪里。需要学习JS逆向的基本思路和方法，从混淆代码中找到关键逻辑。 实现原理JS逆向就是通过调试和分析，理解混淆后的JavaScript代码逻辑，找到加密、签名、反爬等关键函数的实现，然后用Python复现。核心是利用Chrome开发者工具的断点调试功能，一步步跟踪代码执行。 具体步骤第一步：识别混淆类型常见混淆特征：  变量名无意义 — a、b、c、_0x1234、_0xabcd 代码压缩 — 所有代码在一行，没有空格换行 字符串加密 — 字符串都是\x68\x65\x6c\x6c\x6f这种形式 控制流平坦化 — 大量switch-case，代码执行顺序混乱 死代码 — 大量没用的代码干扰阅读 调试保护 — 无限debugger、检测开发者工具  第二步：搭建调试环境Chrome开发者工具：  F12打开，Sources面板 找到混淆的JS文件 点击{}（Pretty print）格式化代码 格式化后代码会有换行和缩进，方便阅读  常用快捷键：  Ctrl+P：快速打开文件 Ctrl+Shift+F：全局搜索 Ctrl+...</div></div></div></a><a class="pagination-related" href="/2026/10/17/%E6%96%B0%E6%89%8B%E6%8E%A5%E5%8D%95%E9%81%BF%E5%9D%91%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97/" title="新手接单避坑完全指南"><img class="cover" src="https://aka.doubaocdn.com/s/axmnNfZCMd" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">新手接单避坑完全指南</div></div><div class="info-2"><div class="info-item-1">适用场景刚接触爬虫接单，踩了很多坑，或者想接单但怕被骗。需要了解新手常见的坑点，避免走弯路。 实现原理新手接单最容易踩的坑主要有几类：1）被骗（不收定金、客户跑路）；2）被白嫖（拿到代码&#x2F;数据不给钱）；3）需求蔓延（不断加需求不加钱）；4）低价竞争（自己卷自己）；5）法律风险（爬了不该爬的）。通过了解这些坑点和应对方法，可以避免大部分损失。 具体步骤第一步：被骗类坑点坑1：不收定金就开工  表现：客户说”先做，做好了肯定给钱” 结果：做完客户消失，白干几天 避坑：定金是底线，不收定金绝对不开工 话术：”不好意思，我们都是先收30%定金再开工的，这是行规。”  坑2：先做demo看看  表现：”你先做个demo，满意了再合作” 结果：demo做完客户就跑了，拿demo找别人做 避坑：demo也要收钱，或者demo只做一部分 话术：”可以做demo，不过需要收500元开发费，后续合作可以抵扣尾款。”  坑3：尾款拖欠  表现：交付后客户说”再等等”、”月底给” 结果：拖几个月最后不给了 避坑：尾款到账再交付最终版本，不要先给完整代码 话术：”您先付尾款，我马上把完整版本发给...</div></div></div></a><a class="pagination-related" href="/2026/10/17/Cookie%E6%9C%BA%E5%88%B6%E4%B8%8ESession%E4%BF%9D%E6%8C%81%E5%AE%9E%E6%88%98/" title="Cookie机制与Session保持实战"><img class="cover" src="https://aka.doubaocdn.com/s/OoTcXVR3RM" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">Cookie机制与Session保持实战</div></div><div class="info-2"><div class="info-item-1">适用场景网站需要登录才能看到数据，或者不登录只能看少量内容。需要维护登录状态，批量爬取登录后的数据。 实现原理HTTP是无状态协议，Cookie是服务器存在浏览器里的小数据，每次请求自动带上。服务器通过Cookie识别用户身份。爬虫用requests.Session()可以自动保存和发送Cookie，模拟登录状态。 具体步骤第一步：Cookie基础12345678910import requests# 查看响应Cookieresponse = requests.get(&quot;https://example.com&quot;)print(response.cookies)  # CookieJar对象print(dict(response.cookies))  # 转成字典# 手动设置Cookiecookies = &#123;&quot;session_id&quot;: &quot;abc123&quot;, &quot;token&quot;: &quot;xyz789&quot;&#125;response = requests.get(&quot;https://...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">喵轩</div><div class="author-info-description">爬虫工程师 | 二次元爱好者 | 技术宅</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">141</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/chunxuancao"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到喵轩的技术博客~ 这里有爬虫接单经验、反爬技巧、JS逆向教程，还有二次元看板娘陪你哦！🌸</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">实现原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="toc-number">3.</span> <span class="toc-text">具体步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E8%AF%B7%E6%B1%82%E5%BA%93"><span class="toc-number">3.1.</span> <span class="toc-text">第一步：请求库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E8%A7%A3%E6%9E%90%E5%BA%93"><span class="toc-number">3.2.</span> <span class="toc-text">第二步：解析库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E5%BA%93"><span class="toc-number">3.3.</span> <span class="toc-text">第三步：自动化库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E5%BC%82%E6%AD%A5%E5%92%8C%E5%B9%B6%E5%8F%91"><span class="toc-number">3.4.</span> <span class="toc-text">第四步：异步和并发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E5%8F%8D%E7%88%AC%E7%9B%B8%E5%85%B3%E5%BA%93"><span class="toc-number">3.5.</span> <span class="toc-text">第五步：反爬相关库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%BA%93"><span class="toc-number">3.6.</span> <span class="toc-text">第六步：数据存储库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E6%AD%A5%EF%BC%9A%E5%B7%A5%E5%85%B7%E5%BA%93"><span class="toc-number">3.7.</span> <span class="toc-text">第七步：工具库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">完整代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">5.</span> <span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E9%98%B6%E6%8B%93%E5%B1%95"><span class="toc-number">6.</span> <span class="toc-text">进阶拓展</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="爬虫反爬之User-Agent检测与绕过"/></a><div class="content"><a class="title" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过">爬虫反爬之User-Agent检测与绕过</a><time datetime="2026-10-17T10:54:37.000Z" title="发表于 2026-10-17 18:54:37">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择"><img src="https://aka.doubaocdn.com/s/VmelXrsSnS" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据存储方案对比与选择"/></a><div class="content"><a class="title" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择">数据存储方案对比与选择</a><time datetime="2026-10-17T09:50:00.000Z" title="发表于 2026-10-17 17:50:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门"><img src="https://aka.doubaocdn.com/s/TTyh6Y5WpA" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Scrapy分布式爬虫框架入门"/></a><div class="content"><a class="title" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门">Scrapy分布式爬虫框架入门</a><time datetime="2026-10-17T09:40:00.000Z" title="发表于 2026-10-17 17:40:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐"><img src="https://aka.doubaocdn.com/s/8eQQujATAC" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="代理池搭建方案与工具推荐"/></a><div class="content"><a class="title" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐">代理池搭建方案与工具推荐</a><time datetime="2026-10-17T09:30:00.000Z" title="发表于 2026-10-17 17:30:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南"><img src="https://aka.doubaocdn.com/s/kdW5ooms6M" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="抓包工具对比与选择指南"/></a><div class="content"><a class="title" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南">抓包工具对比与选择指南</a><time datetime="2026-10-17T09:20:00.000Z" title="发表于 2026-10-17 17:20:00">2026-10-17</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 喵轩</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div><div class="footer_custom_text"><div style="margin-top:8px;font-size:12px;opacity:.7">🐱 用猫爪写代码 · Powered by Hexo + Butterfly</div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script><script src="/js/cat-theme.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

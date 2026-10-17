@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>喵喵小码 - 爬虫接单经验与技术分享</title><meta name="author" content="喵轩"><meta name="copyright" content="喵轩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="1a1228"><meta name="description" content="分享爬虫技术、反爬破解、JS逆向、接单经验">
+<meta property="og:type" content="website">
+<meta property="og:title" content="喵喵小码">
+<meta property="og:url" content="https://chunxuancao.github.io/index.html">
+<meta property="og:site_name" content="喵喵小码">
+<meta property="og:description" content="分享爬虫技术、反爬破解、JS逆向、接单经验">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://chunxuancao.github.io/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png">
+<meta property="article:author" content="喵轩">
+<meta property="article:tag" content="爬虫,Python,反爬,JS逆向,接单">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chunxuancao.github.io/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "喵喵小码",
+  "alternateName": [
+    "爬虫接单经验与技术分享",
+    "chunxuancao.github.io"
+  ],
+  "url": "https://chunxuancao.github.io/"
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://chunxuancao.github.io/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '1a1228')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '1a1228')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '喵喵小码',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><link rel="stylesheet" href="/css/cat-theme.css"><link rel="stylesheet" href="/css/custom-style.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://aka.doubaocdn.com/s/bd6ID2NuWr);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">141</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-layer-group"></i><span> 分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><i class="fa-fw fas fa-shield-alt"></i><span> 反爬技巧</span></a></li><li><a class="site-page child" href="/categories/JS%E9%80%86%E5%90%91/"><i class="fa-fw fas fa-code"></i><span> JS逆向</span></a></li><li><a class="site-page child" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><i class="fa-fw fas fa-handshake"></i><span> 接单经验</span></a></li><li><a class="site-page child" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><i class="fa-fw fas fa-tools"></i><span> 工具推荐</span></a></li><li><a class="site-page child" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-fw fas fa-cog"></i><span> 环境配置</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">喵喵小码</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-layer-group"></i><span> 分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><i class="fa-fw fas fa-shield-alt"></i><span> 反爬技巧</span></a></li><li><a class="site-page child" href="/categories/JS%E9%80%86%E5%90%91/"><i class="fa-fw fas fa-code"></i><span> JS逆向</span></a></li><li><a class="site-page child" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><i class="fa-fw fas fa-handshake"></i><span> 接单经验</span></a></li><li><a class="site-page child" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><i class="fa-fw fas fa-tools"></i><span> 工具推荐</span></a></li><li><a class="site-page child" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-fw fas fa-cog"></i><span> 环境配置</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">喵喵小码</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过"><img class="post-bg" src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="爬虫反爬之User-Agent检测与绕过"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过">爬虫反爬之User-Agent检测与绕过</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T10:54:37.000Z" title="发表于 2026-10-17 18:54:37">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/">反爬技巧</a></span></div><div class="content">适用场景几乎所有网站都会做User-Agent检测，这是最基础也是最常见的反爬手段。当你遇到以下情况时，大概率是UA被检测了：  用requests请求返回403 Forbidden 用浏览器能正常访问，用Python请求就失败 返回的内容和浏览器看到的不一样 提示”请使用浏览器访问”  实现原理User-Agent是HTTP请求头里的一个字段，用来标识客户端的浏览器类型、版本、操作系统等信息。网站通过检查这个字段，判断你是真实浏览器还是爬虫脚本。 Python的requests库默认UA是 python-requests/x.x.x，一看就是爬虫，所以很多网站直接拦截。 具体步骤第一步：获取浏览器的User-Agent 打开浏览器，按F12打开开发者工具 切换到Network面板 刷新页面，随便点一个请求 在Request Headers里找到User-Agent，复制完整内容  常见的UA长这样： 1Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/1...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择"><img class="post-bg" src="https://aka.doubaocdn.com/s/VmelXrsSnS" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据存储方案对比与选择"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择">数据存储方案对比与选择</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T09:50:00.000Z" title="发表于 2026-10-17 17:50:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/">工具推荐</a></span></div><div class="content">适用场景爬取的数据不知道该存哪里，CSV、Excel、MySQL、MongoDB各有什么优缺点。需要根据数据量和使用场景选择合适的存储方案。 实现原理爬虫数据存储有多种方案，从简单的文件到复杂的分布式数据库，各有适用场景。选择存储方案主要考虑：数据量、数据结构、查询需求、并发写入、成本和维护难度。 具体步骤第一步：CSV&#x2F;Excel（文件存储）CSV特点：  纯文本格式，通用性强 任何软件都能打开 写入简单，不需要额外依赖 适合小数据量（&lt;10万条）  Excel特点：  有格式，可读性好 可以直接用Excel打开编辑 单表最多104万行 适合交付给非技术人员  优点：  零配置，开箱即用 文件方便传输和分享 不需要数据库服务 客户容易接受  缺点：  不支持复杂查询 不支持并发写入 大数据量性能差 不适合长期存储  适用场景：  小数据量（&lt;10万条） 一次性采集 交付给客户 简单数据分析  代码示例： 12345678910111213import csv# 写入CSVwith open(&#x27;data.csv&#x27;, &#x27;w&#x2...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门"><img class="post-bg" src="https://aka.doubaocdn.com/s/TTyh6Y5WpA" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Scrapy分布式爬虫框架入门"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门">Scrapy分布式爬虫框架入门</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T09:40:00.000Z" title="发表于 2026-10-17 17:40:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/">工具推荐</a></span></div><div class="content">适用场景爬虫项目越来越大，单文件写不过来，需要用框架管理。需要学习Scrapy框架，提高开发效率，支持分布式部署。 实现原理Scrapy是一个为了爬取网站数据、提取结构性数据而编写的应用框架。它使用Twisted异步网络框架，自带调度器、下载器、解析器、管道等组件，开发者只需要编写Spider和Item，框架处理其他事情。 具体步骤第一步：安装和创建项目安装： 1pip install scrapy  创建项目： 12scrapy startproject myspidercd myspider  项目结构： 12345678910myspider/├── scrapy.cfg          # 配置文件├── myspider/│   ├── __init__.py│   ├── items.py        # 数据模型定义│   ├── middlewares.py  # 中间件│   ├── pipelines.py    # 数据管道（存储）│   ├── settings.py     # 配置文件│   └── spiders/        # 爬虫目录│ ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐"><img class="post-bg" src="https://aka.doubaocdn.com/s/8eQQujATAC" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="代理池搭建方案与工具推荐"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐">代理池搭建方案与工具推荐</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T09:30:00.000Z" title="发表于 2026-10-17 17:30:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/">工具推荐</a></span></div><div class="content">适用场景爬取量大了被封IP，需要用代理池轮换IP。需要了解代理的类型、搭建方案和工具，选择适合自己的代理方案。 实现原理代理池维护一批可用的代理IP，每次请求随机或轮询使用不同的IP，避免同一IP请求过多被封禁。代理池需要包含：代理获取、代理验证、代理存储、代理调度四个模块。 具体步骤第一步：代理类型按匿名度分：    类型 匿名度 说明 价格    透明代理 最低 会暴露真实IP 免费   匿名代理 中等 隐藏真实IP，但标识是代理 便宜   高匿代理 最高 完全隐藏真实IP 中等   住宅代理 最高 真实家庭宽带IP 贵   按来源分：  免费代理 — 从免费代理网站爬取，质量差，可用率低 付费代理 — 购买代理服务商的API，质量有保障 自建代理 — 自己买服务器搭建，成本高但稳定 ADSL代理 — 拨号服务器，自动换IP，适合高并发  第二步：免费代理网站可以爬取免费代理的网站：  西刺代理（已不太维护） 快代理免费版 66代理 云代理 全网代理IP  注意： 免费代理可用率很低（一般&lt;10%），需要大量验证，适合学习和小量使用。 第三步：付费代理服务商国内推荐： ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南"><img class="post-bg" src="https://aka.doubaocdn.com/s/kdW5ooms6M" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="抓包工具对比与选择指南"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南">抓包工具对比与选择指南</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T09:20:00.000Z" title="发表于 2026-10-17 17:20:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/">工具推荐</a></span></div><div class="content">适用场景需要分析网站或APP的接口，但不知道该用哪个抓包工具。需要了解各抓包工具的特点，选择适合自己的。 实现原理抓包工具通过设置HTTP代理，拦截客户端和服务器之间的流量，从而查看和修改请求&#x2F;响应。不同的抓包工具有不同的特点和适用场景，有的适合网页，有的适合APP，有的适合自动化脚本。 具体步骤第一步：Fiddler（Windows首选）特点：  Windows平台最经典的抓包工具 免费（Fiddler Classic） 功能强大，界面友好 支持HTTP&#x2F;HTTPS抓包 支持修改请求&#x2F;响应 支持断点调试  优点：  免费，功能全 Windows下体验最好 插件丰富 中文资料多  缺点：  跨平台差（Mac&#x2F;Linux体验不好） 新版Fiddler Everywhere收费 大流量时会卡  适用场景：  Windows用户 网页抓包 接口分析 初学者入门  下载： https://www.telerik.com/fiddler/fiddler-classic 第二步：Charles（Mac首选）特点：  跨平台（Windows&#x2F;M...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/Python%E7%88%AC%E8%99%AB%E5%B8%B8%E7%94%A8%E5%BA%93%E5%A4%A7%E5%85%A8%E4%B8%8E%E5%AF%B9%E6%AF%94/" title="Python爬虫常用库大全与对比"><img class="post-bg" src="https://aka.doubaocdn.com/s/aaOEwJtD7S" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Python爬虫常用库大全与对比"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/Python%E7%88%AC%E8%99%AB%E5%B8%B8%E7%94%A8%E5%BA%93%E5%A4%A7%E5%85%A8%E4%B8%8E%E5%AF%B9%E6%AF%94/" title="Python爬虫常用库大全与对比">Python爬虫常用库大全与对比</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T09:10:00.000Z" title="发表于 2026-10-17 17:10:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/">工具推荐</a></span></div><div class="content">适用场景开发爬虫时不知道该用什么库，或者想了解有哪些好用的工具可以提高效率。需要一份全面的爬虫库对比和推荐。 实现原理Python爬虫生态非常丰富，从请求、解析、自动化到异步、分布式，每个环节都有多个库可选。不同的库有不同的特点和适用场景，选择合适的库可以大幅提高开发效率。 具体步骤第一步：请求库1. requests（最常用）  特点：简单易用，API友好，文档完善 适用：90%的普通爬虫 安装：pip install requests 示例：  123import requestsresponse = requests.get(&quot;https://example.com&quot;)print(response.text)  2. httpx（支持异步）  特点：支持同步和异步，HTTP&#x2F;2，比requests更现代 适用：需要异步请求的场景 安装：pip install httpx 示例：  12import httpxresponse = httpx.get(&quot;https://example.com&quot;)  3. aiohttp（异步）...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/%E6%96%B0%E6%89%8B%E6%8E%A5%E5%8D%95%E9%81%BF%E5%9D%91%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97/" title="新手接单避坑完全指南"><img class="post-bg" src="https://aka.doubaocdn.com/s/axmnNfZCMd" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="新手接单避坑完全指南"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E6%96%B0%E6%89%8B%E6%8E%A5%E5%8D%95%E9%81%BF%E5%9D%91%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97/" title="新手接单避坑完全指南">新手接单避坑完全指南</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T08:50:00.000Z" title="发表于 2026-10-17 16:50:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/">接单经验</a></span></div><div class="content">适用场景刚接触爬虫接单，踩了很多坑，或者想接单但怕被骗。需要了解新手常见的坑点，避免走弯路。 实现原理新手接单最容易踩的坑主要有几类：1）被骗（不收定金、客户跑路）；2）被白嫖（拿到代码&#x2F;数据不给钱）；3）需求蔓延（不断加需求不加钱）；4）低价竞争（自己卷自己）；5）法律风险（爬了不该爬的）。通过了解这些坑点和应对方法，可以避免大部分损失。 具体步骤第一步：被骗类坑点坑1：不收定金就开工  表现：客户说”先做，做好了肯定给钱” 结果：做完客户消失，白干几天 避坑：定金是底线，不收定金绝对不开工 话术：”不好意思，我们都是先收30%定金再开工的，这是行规。”  坑2：先做demo看看  表现：”你先做个demo，满意了再合作” 结果：demo做完客户就跑了，拿demo找别人做 避坑：demo也要收钱，或者demo只做一部分 话术：”可以做demo，不过需要收500元开发费，后续合作可以抵扣尾款。”  坑3：尾款拖欠  表现：交付后客户说”再等等”、”月底给” 结果：拖几个月最后不给了 避坑：尾款到账再交付最终版本，不要先给完整代码 话术：”您先付尾款，我马上把完整版本发给...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/%E5%B8%B8%E8%A7%81%E7%88%AC%E8%99%AB%E6%8E%A5%E5%8D%95%E9%9C%80%E6%B1%82%E7%B1%BB%E5%9E%8B%E5%88%86%E6%9E%90/" title="常见爬虫接单需求类型分析"><img class="post-bg" src="https://aka.doubaocdn.com/s/SlLBn6DrgR" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="常见爬虫接单需求类型分析"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E5%B8%B8%E8%A7%81%E7%88%AC%E8%99%AB%E6%8E%A5%E5%8D%95%E9%9C%80%E6%B1%82%E7%B1%BB%E5%9E%8B%E5%88%86%E6%9E%90/" title="常见爬虫接单需求类型分析">常见爬虫接单需求类型分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T08:40:00.000Z" title="发表于 2026-10-17 16:40:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/">接单经验</a></span></div><div class="content">适用场景想接单但不知道市面上都有哪些爬虫需求，哪些适合新手，哪些难度高。需要了解常见的爬虫需求类型，选择适合自己的单子。 实现原理爬虫接单的需求五花八门，但可以归纳为几大类。不同类型的需求，技术难度、报价、竞争程度都不一样。了解这些类型，可以帮助新手选择容易上手的单子，避开高难度高风险的坑。 具体步骤第一步：电商数据采集需求描述：  采集淘宝、京东、拼多多、亚马逊等电商平台的商品信息 字段：商品标题、价格、销量、评价、店铺信息 用途：价格监控、竞品分析、选品、数据分析  难度：中等  电商平台反爬较强 需要登录、验证码 有频率限制  报价参考：  简单商品列表：500-2000元 带评价采集：2000-5000元 持续监控：500-2000元&#x2F;月  适合人群： 有一定经验，会处理登录和验证码 第二步：社交媒体数据需求描述：  采集微博、知乎、小红书、抖音、B站等平台数据 字段：用户信息、帖子内容、评论、点赞、转发 用途：舆情监控、营销分析、用户画像  难度：中等-困难  反爬强，有行为验证 需要登录账号 数据量大  报价参考：  关键词搜索采集：1000-3000元 指...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/10/17/%E5%94%AE%E5%90%8E%E7%BB%B4%E6%8A%A4%E4%B8%8E%E5%AE%A2%E6%88%B7%E5%85%B3%E7%B3%BB%E7%AE%A1%E7%90%86/" title="售后维护与客户关系管理"><img class="post-bg" src="https://aka.doubaocdn.com/s/w7MYscVMh9" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="售后维护与客户关系管理"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E5%94%AE%E5%90%8E%E7%BB%B4%E6%8A%A4%E4%B8%8E%E5%AE%A2%E6%88%B7%E5%85%B3%E7%B3%BB%E7%AE%A1%E7%90%86/" title="售后维护与客户关系管理">售后维护与客户关系管理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T08:30:00.000Z" title="发表于 2026-10-17 16:30:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/">接单经验</a></span></div><div class="content">适用场景项目交付后，客户不断找你改东西，或者不知道该怎么维护客户关系。需要明确售后维护范围，做好客户关系管理，获得长期合作和转介绍。 实现原理售后维护是接单的重要环节，好的售后可以带来长期合作和客户转介绍，比不断找新客户效率高得多。核心是明确维护范围，超出范围要收费，同时做好客户关系，让客户觉得你靠谱，愿意持续合作。 具体步骤第一步：维护范围明确免费维护应该包含：  Bug修复 — 代码本身的问题，运行报错 小改版调整 — 网站小幅度改版，选择器变了 使用问题解答 — 客户不会用，教他怎么用 配置调整 — 修改采集页数、间隔等配置  不应该免费的：  新增功能 — 之前没有的功能，要加钱 大改版重写 — 网站大改版，需要重写爬虫 新网站采集 — 采集新的网站，新项目 数据重新采集 — 之前的数据不要了，重新爬 服务器运维 — 部署、服务器维护，单独收费  维护期：  小项目：1-2周 中等项目：1个月 大项目：1-3个月 长期维护：按月收费，每月报价的10%-20%  第二步：维护期沟通交付后主动跟进： 交付当天：  “您好，项目已经交付了，您看一下使用说明，有问题随时找我。” ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/10/17/%E9%A1%B9%E7%9B%AE%E4%BA%A4%E4%BB%98%E6%A0%87%E5%87%86%E4%B8%8E%E9%AA%8C%E6%94%B6%E6%B5%81%E7%A8%8B/" title="项目交付标准与验收流程"><img class="post-bg" src="https://aka.doubaocdn.com/s/8SAs3hL2Fn" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="项目交付标准与验收流程"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/10/17/%E9%A1%B9%E7%9B%AE%E4%BA%A4%E4%BB%98%E6%A0%87%E5%87%86%E4%B8%8E%E9%AA%8C%E6%94%B6%E6%B5%81%E7%A8%8B/" title="项目交付标准与验收流程">项目交付标准与验收流程</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-17T08:20:00.000Z" title="发表于 2026-10-17 16:20:00">2026-10-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/">接单经验</a></span></div><div class="content">适用场景项目做完了，客户不断挑毛病不给验收，或者不知道该交付什么东西。需要明确交付标准和验收流程，让项目顺利收尾。 实现原理交付和验收是项目的最后一步，也是最容易出纠纷的环节。通过明确交付物清单、验收标准、验收期限，可以避免客户无限期挑毛病，保证项目顺利收尾拿到尾款。 具体步骤第一步：交付物清单根据客户需求，交付物可能包括： 1. 数据类  数据文件（CSV&#x2F;Excel&#x2F;JSON） 数据说明文档（字段含义、数据量、采集时间） 数据质量报告（完整率、重复率）  2. 代码类  爬虫源代码（.py文件） 依赖清单（requirements.txt） 使用说明文档 配置文件（config.py） 日志文件  3. 服务类  部署好的爬虫服务 管理后台&#x2F;可视化界面 API接口文档 服务器配置说明  4. 文档类  项目说明文档 使用教程 维护说明 常见问题FAQ  第二步：交付前自检交付前一定要自己先测试： 1. 功能测试   爬虫能正常运行  能采集到目标数据  数据字段完整  翻页正常  异常处理正常  2. 数据质量检查   数据量符合要求  没有大量...</div></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#content-inner">5</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">喵轩</div><div class="author-info-description">爬虫工程师 | 二次元爱好者 | 技术宅</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">141</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/chunxuancao"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到喵轩的技术博客~ 这里有爬虫接单经验、反爬技巧、JS逆向教程，还有二次元看板娘陪你哦！🌸</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="爬虫反爬之User-Agent检测与绕过"/></a><div class="content"><a class="title" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过">爬虫反爬之User-Agent检测与绕过</a><time datetime="2026-10-17T10:54:37.000Z" title="发表于 2026-10-17 18:54:37">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择"><img src="https://aka.doubaocdn.com/s/VmelXrsSnS" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据存储方案对比与选择"/></a><div class="content"><a class="title" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择">数据存储方案对比与选择</a><time datetime="2026-10-17T09:50:00.000Z" title="发表于 2026-10-17 17:50:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门"><img src="https://aka.doubaocdn.com/s/TTyh6Y5WpA" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Scrapy分布式爬虫框架入门"/></a><div class="content"><a class="title" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门">Scrapy分布式爬虫框架入门</a><time datetime="2026-10-17T09:40:00.000Z" title="发表于 2026-10-17 17:40:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐"><img src="https://aka.doubaocdn.com/s/8eQQujATAC" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="代理池搭建方案与工具推荐"/></a><div class="content"><a class="title" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐">代理池搭建方案与工具推荐</a><time datetime="2026-10-17T09:30:00.000Z" title="发表于 2026-10-17 17:30:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南"><img src="https://aka.doubaocdn.com/s/kdW5ooms6M" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="抓包工具对比与选择指南"/></a><div class="content"><a class="title" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南">抓包工具对比与选择指南</a><time datetime="2026-10-17T09:20:00.000Z" title="发表于 2026-10-17 17:20:00">2026-10-17</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline"><i class="fas fa-folder-open"></i><span>分类</span></div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/JS%E9%80%86%E5%90%91/"><span class="card-category-list-name">JS逆向</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><span class="card-category-list-name">反爬技巧</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><span class="card-category-list-name">工具推荐</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><span class="card-category-list-name">接单经验</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><span class="card-category-list-name">环境配置</span><span class="card-category-list-count">10</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E8%A1%8C%E4%B8%BA%E9%AA%8C%E8%AF%81/" style="font-size: 1.18em; color: #999ca1">行为验证</a> <a href="/tags/HTTPS/" style="font-size: 1.1em; color: #999">HTTPS</a> <a href="/tags/%E9%AA%8C%E8%AF%81%E7%A0%81/" style="font-size: 1.1em; color: #999">验证码</a> <a href="/tags/obfuscator/" style="font-size: 1.1em; color: #999">obfuscator</a> <a href="/tags/%E8%AE%A4%E8%AF%81/" style="font-size: 1.1em; color: #999">认证</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/%E9%AA%97%E5%AD%90/" style="font-size: 1.1em; color: #999">骗子</a> <a href="/tags/%E5%9B%B0%E9%9A%BE/" style="font-size: 1.5em; color: #99a9bf">困难</a> <a href="/tags/%E9%95%BF%E6%9C%9F%E5%90%88%E4%BD%9C/" style="font-size: 1.1em; color: #999">长期合作</a> <a href="/tags/%E5%8A%A0%E5%AF%86/" style="font-size: 1.1em; color: #999">加密</a> <a href="/tags/%E5%8F%8D%E8%B0%83%E8%AF%95/" style="font-size: 1.1em; color: #999">反调试</a> <a href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">开发工具</a> <a href="/tags/SHA/" style="font-size: 1.1em; color: #999">SHA</a> <a href="/tags/%E4%BB%A3%E7%90%86%E6%B1%A0/" style="font-size: 1.18em; color: #999ca1">代理池</a> <a href="/tags/%E7%AD%BE%E5%90%8D/" style="font-size: 1.18em; color: #999ca1">签名</a> <a href="/tags/%E6%8A%93%E5%8C%85/" style="font-size: 1.34em; color: #99a3b0">抓包</a> <a href="/tags/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">开发者工具</a> <a href="/tags/Chrome/" style="font-size: 1.18em; color: #999ca1">Chrome</a> <a href="/tags/lxml/" style="font-size: 1.1em; color: #999">lxml</a> <a href="/tags/%E6%89%93%E7%A0%81%E5%B9%B3%E5%8F%B0/" style="font-size: 1.1em; color: #999">打码平台</a> <a href="/tags/woff/" style="font-size: 1.1em; color: #999">woff</a> <a href="/tags/%E6%8E%A5%E5%8D%95%E5%B9%B3%E5%8F%B0/" style="font-size: 1.1em; color: #999">接单平台</a> <a href="/tags/%E5%87%BD%E6%95%B0%E5%AE%9A%E4%BD%8D/" style="font-size: 1.1em; color: #999">函数定位</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 1.26em; color: #999fa8">调试</a> <a href="/tags/XPath/" style="font-size: 1.1em; color: #999">XPath</a> <a href="/tags/%E8%A1%8C%E4%B8%9A%E5%88%86%E6%9E%90/" style="font-size: 1.1em; color: #999">行业分析</a> <a href="/tags/%E7%99%BB%E5%BD%95%E6%80%81/" style="font-size: 1.18em; color: #999ca1">登录态</a> <a href="/tags/JavaScript/" style="font-size: 1.1em; color: #999">JavaScript</a> <a href="/tags/Windows/" style="font-size: 1.1em; color: #999">Windows</a> <a href="/tags/%E7%88%AC%E8%99%AB%E5%BA%93/" style="font-size: 1.1em; color: #999">爬虫库</a> <a href="/tags/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91/" style="font-size: 1.1em; color: #999">抽象语法树</a> <a href="/tags/IP%E4%BB%A3%E7%90%86/" style="font-size: 1.18em; color: #999ca1">IP代理</a> <a href="/tags/%E5%B0%BE%E6%AC%BE/" style="font-size: 1.1em; color: #999">尾款</a> <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%8E%AF%E5%A2%83/" style="font-size: 1.1em; color: #999">浏览器环境</a> <a href="/tags/%E5%8F%8D%E7%88%AC/" style="font-size: 1.42em; color: #99a6b7">反爬</a> <a href="/tags/Babel/" style="font-size: 1.1em; color: #999">Babel</a> <a href="/tags/%E5%AE%9E%E6%88%98/" style="font-size: 1.1em; color: #999">实战</a> <a href="/tags/%E5%93%88%E5%B8%8C/" style="font-size: 1.1em; color: #999">哈希</a> <a href="/tags/Call-Stack/" style="font-size: 1.1em; color: #999">Call Stack</a> <a href="/tags/DevTools/" style="font-size: 1.1em; color: #999">DevTools</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/10/">
+            <span class="card-archive-list-date">
+              十月 2026
+            </span>
+            <span class="card-archive-list-count">50</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">50</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-10-17T22:17:21.311Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 喵轩</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div><div class="footer_custom_text"><div style="margin-top:8px;font-size:12px;opacity:.7">🐱 用猫爪写代码 · Powered by Hexo + Butterfly</div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, {"typeSpeed":80,"backSpeed":40,"backDelay":2000,"loop":true}))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js@3.0.0/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  },
+  processSubtitle: (content, extraContents = []) => {
+    if (true) {
+      const sub = ["喵～欢迎来到喵喵小码 🐱","爬虫技术 · 接单经验 · 码农日常","每一行代码，都是猫爪印","用猫爪写代码的技术博客"].slice()
+
+      if (extraContents.length > 0) {
+        sub.unshift(...extraContents)
+      }
+
+      if (typeof content === 'string') {
+        sub.unshift(content)
+      } else if (Array.isArray(content)) {
+        sub.unshift(...content)
+      }
+
+      sub.length > 0 && typedJSFn.init(sub)
+    } else {
+      document.getElementById('subtitle').textContent = typeof content === 'string' ? content :
+        (Array.isArray(content) && content.length > 0 ? content[0] : '')
+    }
+  }
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed && typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  typedJSFn.processSubtitle(["喵～欢迎来到喵喵小码 🐱","爬虫技术 · 接单经验 · 码农日常","每一行代码，都是猫爪印","用猫爪写代码的技术博客"])
+}
+typedJSFn.run(subtitleType)</script></div><script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script><script src="/js/cat-theme.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

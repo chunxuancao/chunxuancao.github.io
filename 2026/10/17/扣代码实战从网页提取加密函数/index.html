@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>扣代码实战-从网页提取加密函数 | 喵喵小码</title><meta name="author" content="喵轩"><meta name="copyright" content="喵轩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="1a1228"><meta name="description" content="适用场景已经通过断点找到了加密函数，但函数在一大段混淆代码里，不知道怎么提取出来单独运行。需要学习”扣代码”的技巧，把加密函数从网页中提取出来。 实现原理扣代码就是把网页中需要的JS函数和它依赖的所有代码复制出来，在Node.js中单独运行。核心是找到函数的定义和它依赖的所有变量、函数，确保复制出来的代码能独立运行。 具体步骤第一步：定位加密函数 设置XHR断点，触发请求 在调用栈中找到业务代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扣代码实战-从网页提取加密函数">
+<meta property="og:url" content="https://chunxuancao.github.io/2026/10/17/%E6%89%A3%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%8F%90%E5%8F%96%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="喵喵小码">
+<meta property="og:description" content="适用场景已经通过断点找到了加密函数，但函数在一大段混淆代码里，不知道怎么提取出来单独运行。需要学习”扣代码”的技巧，把加密函数从网页中提取出来。 实现原理扣代码就是把网页中需要的JS函数和它依赖的所有代码复制出来，在Node.js中单独运行。核心是找到函数的定义和它依赖的所有变量、函数，确保复制出来的代码能独立运行。 具体步骤第一步：定位加密函数 设置XHR断点，触发请求 在调用栈中找到业务代码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://aka.doubaocdn.com/s/5oP4MXc8GC">
+<meta property="article:published_time" content="2026-10-17T06:40:00.000Z">
+<meta property="article:modified_time" content="2026-10-17T22:17:07.799Z">
+<meta property="article:author" content="喵轩">
+<meta property="article:tag" content="JS逆向">
+<meta property="article:tag" content="函数提取">
+<meta property="article:tag" content="实战">
+<meta property="article:tag" content="扣代码">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://aka.doubaocdn.com/s/5oP4MXc8GC"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "扣代码实战-从网页提取加密函数",
+  "url": "https://chunxuancao.github.io/2026/10/17/%E6%89%A3%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%8F%90%E5%8F%96%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0/",
+  "image": "https://aka.doubaocdn.com/s/5oP4MXc8GC",
+  "datePublished": "2026-10-17T06:40:00.000Z",
+  "dateModified": "2026-10-17T22:17:07.799Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "喵轩",
+      "url": "https://chunxuancao.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://chunxuancao.github.io/2026/10/17/%E6%89%A3%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%8F%90%E5%8F%96%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '1a1228')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '1a1228')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '扣代码实战-从网页提取加密函数',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/cat-theme.css"><link rel="stylesheet" href="/css/custom-style.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://aka.doubaocdn.com/s/bd6ID2NuWr);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">141</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-layer-group"></i><span> 分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><i class="fa-fw fas fa-shield-alt"></i><span> 反爬技巧</span></a></li><li><a class="site-page child" href="/categories/JS%E9%80%86%E5%90%91/"><i class="fa-fw fas fa-code"></i><span> JS逆向</span></a></li><li><a class="site-page child" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><i class="fa-fw fas fa-handshake"></i><span> 接单经验</span></a></li><li><a class="site-page child" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><i class="fa-fw fas fa-tools"></i><span> 工具推荐</span></a></li><li><a class="site-page child" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-fw fas fa-cog"></i><span> 环境配置</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://aka.doubaocdn.com/s/5oP4MXc8GC);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">喵喵小码</span></a><a class="nav-page-title" href="/"><span class="site-name">扣代码实战-从网页提取加密函数</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-layer-group"></i><span> 分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/%E5%8F%8D%E7%88%AC%E6%8A%80%E5%B7%A7/"><i class="fa-fw fas fa-shield-alt"></i><span> 反爬技巧</span></a></li><li><a class="site-page child" href="/categories/JS%E9%80%86%E5%90%91/"><i class="fa-fw fas fa-code"></i><span> JS逆向</span></a></li><li><a class="site-page child" href="/categories/%E6%8E%A5%E5%8D%95%E7%BB%8F%E9%AA%8C/"><i class="fa-fw fas fa-handshake"></i><span> 接单经验</span></a></li><li><a class="site-page child" href="/categories/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><i class="fa-fw fas fa-tools"></i><span> 工具推荐</span></a></li><li><a class="site-page child" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-fw fas fa-cog"></i><span> 环境配置</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">扣代码实战-从网页提取加密函数</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-17T06:40:00.000Z" title="发表于 2026-10-17 14:40:00">2026-10-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-17T22:17:07.799Z" title="更新于 2026-10-18 06:17:07">2026-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>已经通过断点找到了加密函数，但函数在一大段混淆代码里，不知道怎么提取出来单独运行。需要学习”扣代码”的技巧，把加密函数从网页中提取出来。</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>扣代码就是把网页中需要的JS函数和它依赖的所有代码复制出来，在Node.js中单独运行。核心是找到函数的定义和它依赖的所有变量、函数，确保复制出来的代码能独立运行。</p>
+<h2 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h2><h3 id="第一步：定位加密函数"><a href="#第一步：定位加密函数" class="headerlink" title="第一步：定位加密函数"></a>第一步：定位加密函数</h3><ol>
+<li>设置XHR断点，触发请求</li>
+<li>在调用栈中找到业务代码</li>
+<li>单步跟踪，找到加密函数</li>
+<li>在函数定义处打断点</li>
+<li>查看函数的完整代码</li>
+</ol>
+<h3 id="第二步：复制函数代码"><a href="#第二步：复制函数代码" class="headerlink" title="第二步：复制函数代码"></a>第二步：复制函数代码</h3><p>在Sources面板中：</p>
+<ol>
+<li>找到函数定义的位置</li>
+<li>选中函数代码（从function开始到结束的大括号）</li>
+<li>复制</li>
+<li>粘贴到本地文件</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 复制出来的函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">encrypt</span>(<span class="params">password, key</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> _0x1234 = <span class="keyword">function</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">        <span class="comment">// 内部函数</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 加密逻辑</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第三步：分析依赖"><a href="#第三步：分析依赖" class="headerlink" title="第三步：分析依赖"></a>第三步：分析依赖</h3><p>函数可能依赖外部变量和函数，需要找出来：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加密函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">encrypt</span>(<span class="params">password</span>) &#123;</span><br><span class="line">    <span class="comment">// 依赖外部变量</span></span><br><span class="line">    <span class="keyword">var</span> key = <span class="variable constant_">APP_KEY</span>;  <span class="comment">// 外部变量</span></span><br><span class="line">    <span class="comment">// 依赖外部函数</span></span><br><span class="line">    <span class="keyword">var</span> md5 = <span class="title function_">hex_md5</span>(password);  <span class="comment">// 外部函数</span></span><br><span class="line">    <span class="comment">// 依赖内部函数</span></span><br><span class="line">    <span class="keyword">var</span> result = <span class="title function_">pad</span>(password);  <span class="comment">// 内部函数</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">pad</span>(<span class="params">str</span>) &#123;</span><br><span class="line">        <span class="comment">// 内部定义的函数</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要找的依赖：</p>
+<ol>
+<li><strong>外部变量</strong>：函数中使用但不在函数内定义的变量</li>
+<li><strong>外部函数</strong>：函数中调用但不在函数内定义的函数</li>
+<li><strong>全局对象</strong>：window、document、navigator等</li>
+</ol>
+<h3 id="第四步：查找依赖的方法"><a href="#第四步：查找依赖的方法" class="headerlink" title="第四步：查找依赖的方法"></a>第四步：查找依赖的方法</h3><p><strong>方法1：看作用域（Scope）</strong></p>
+<ul>
+<li>在函数内打断点</li>
+<li>暂停时看Scope面板</li>
+<li>Local：局部变量</li>
+<li>Closure：闭包变量（外部函数的变量）</li>
+<li>Global：全局变量</li>
+</ul>
+<p><strong>方法2：搜索引用</strong></p>
+<ul>
+<li>选中变量名</li>
+<li>右键 → Find references</li>
+<li>查看所有引用位置</li>
+</ul>
+<p><strong>方法3：报错法</strong></p>
+<ul>
+<li>把函数复制到Node.js运行</li>
+<li>看报错<code>xxx is not defined</code></li>
+<li>逐个补全依赖</li>
+</ul>
+<h3 id="第五步：补全依赖"><a href="#第五步：补全依赖" class="headerlink" title="第五步：补全依赖"></a>第五步：补全依赖</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 补全外部变量</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">APP_KEY</span> = <span class="string">&quot;your_app_key&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">APP_SECRET</span> = <span class="string">&quot;your_app_secret&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 补全外部函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">hex_md5</span>(<span class="params">str</span>) &#123;</span><br><span class="line">    <span class="comment">// 从网页中复制md5函数</span></span><br><span class="line">    <span class="comment">// 或者用crypto-js</span></span><br><span class="line">    <span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&quot;crypto-js&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> crypto.<span class="title class_">MD5</span>(str).<span class="title function_">toString</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 加密函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">encrypt</span>(<span class="params">password</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> key = <span class="variable constant_">APP_KEY</span>;</span><br><span class="line">    <span class="keyword">var</span> md5 = <span class="title function_">hex_md5</span>(password);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导出</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123; encrypt &#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第六步：处理闭包"><a href="#第六步：处理闭包" class="headerlink" title="第六步：处理闭包"></a>第六步：处理闭包</h3><p>有些函数在闭包里，外部访问不到：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原代码</span></span><br><span class="line">(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">encrypt</span>(<span class="params">password</span>) &#123;</span><br><span class="line">        <span class="comment">// 加密逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 没有导出，外部访问不到</span></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<p>解决方法：</p>
+<ol>
+<li>在函数内打断点，用<code>console.log(encrypt.toString())</code>打印函数代码</li>
+<li>或者修改代码，把函数挂到window上</li>
+<li>用Overrides替换JS文件，添加导出代码</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 修改后</span></span><br><span class="line">(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">encrypt</span>(<span class="params">password</span>) &#123;</span><br><span class="line">        <span class="comment">// 加密逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="property">encrypt</span> = encrypt;  <span class="comment">// 挂到window上</span></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h3 id="第七步：处理混淆的字符串"><a href="#第七步：处理混淆的字符串" class="headerlink" title="第七步：处理混淆的字符串"></a>第七步：处理混淆的字符串</h3><p>混淆代码中的字符串可能是加密的，需要先解密：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原代码</span></span><br><span class="line"><span class="keyword">var</span> url = <span class="title function_">_0x1234</span>(<span class="string">&#x27;0x1&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解密后</span></span><br><span class="line"><span class="keyword">var</span> url = <span class="string">&quot;https://api.example.com&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>方法：</p>
+<ol>
+<li>在Console中运行解密函数，批量解密</li>
+<li>或者把解密函数也一起扣出来</li>
+<li>用AST工具批量替换</li>
+</ol>
+<h3 id="第八步：测试运行"><a href="#第八步：测试运行" class="headerlink" title="第八步：测试运行"></a>第八步：测试运行</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test.js</span></span><br><span class="line"><span class="keyword">const</span> &#123; encrypt &#125; = <span class="built_in">require</span>(<span class="string">&quot;./encrypt.js&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用已知的输入输出测试</span></span><br><span class="line"><span class="keyword">const</span> input = <span class="string">&quot;123456&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> expected = <span class="string">&quot;已知的加密结果&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> result = <span class="title function_">encrypt</span>(input);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;输入:&quot;</span>, input);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;输出:&quot;</span>, result);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;期望:&quot;</span>, expected);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;匹配:&quot;</span>, result === expected ? <span class="string">&quot;成功&quot;</span> : <span class="string">&quot;失败&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>如果结果不匹配，检查：</p>
+<ol>
+<li>依赖是否补全</li>
+<li>环境是否一致（时间戳、随机数等）</li>
+<li>编码方式是否一致</li>
+<li>是否有浏览器特定的API</li>
+</ol>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// encrypt.js - 扣出来的完整加密模块</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ========== 依赖部分 ==========</span></span><br><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&quot;crypto-js&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 外部变量</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">APP_KEY</span> = <span class="string">&quot;your_app_key&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">APP_SECRET</span> = <span class="string">&quot;your_app_secret&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 外部函数（用crypto-js替代）</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">hex_md5</span>(<span class="params">str</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> crypto.<span class="title class_">MD5</span>(str).<span class="title function_">toString</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">base64_encode</span>(<span class="params">str</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">Buffer</span>.<span class="title function_">from</span>(str).<span class="title function_">toString</span>(<span class="string">&quot;base64&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ========== 扣出来的加密函数 ==========</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">encrypt</span>(<span class="params">password, timestamp</span>) &#123;</span><br><span class="line">    <span class="comment">// 从网页中扣出来的加密逻辑</span></span><br><span class="line">    <span class="keyword">var</span> key = <span class="variable constant_">APP_KEY</span>;</span><br><span class="line">    <span class="keyword">var</span> secret = <span class="variable constant_">APP_SECRET</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 第一步：MD5</span></span><br><span class="line">    <span class="keyword">var</span> md5_result = <span class="title function_">hex_md5</span>(password + timestamp);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 第二步：拼接</span></span><br><span class="line">    <span class="keyword">var</span> sign_str = key + md5_result + secret + timestamp;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 第三步：再次MD5</span></span><br><span class="line">    <span class="keyword">var</span> sign = <span class="title function_">hex_md5</span>(sign_str);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">sign</span>: sign,</span><br><span class="line">        <span class="attr">timestamp</span>: timestamp</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">generateSign</span>(<span class="params">params</span>) &#123;</span><br><span class="line">    <span class="comment">// 生成接口签名</span></span><br><span class="line">    <span class="keyword">var</span> keys = <span class="title class_">Object</span>.<span class="title function_">keys</span>(params).<span class="title function_">sort</span>();</span><br><span class="line">    <span class="keyword">var</span> str = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; keys.<span class="property">length</span>; i++) &#123;</span><br><span class="line">        str += keys[i] + <span class="string">&quot;=&quot;</span> + params[keys[i]] + <span class="string">&quot;&amp;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    str += <span class="string">&quot;key=&quot;</span> + <span class="variable constant_">APP_SECRET</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">hex_md5</span>(str).<span class="title function_">toUpperCase</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ========== 导出 ==========</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">    <span class="attr">encrypt</span>: encrypt,</span><br><span class="line">    <span class="attr">generateSign</span>: generateSign</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test.js - 测试脚本</span></span><br><span class="line"><span class="keyword">const</span> &#123; encrypt, generateSign &#125; = <span class="built_in">require</span>(<span class="string">&quot;./encrypt.js&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试加密</span></span><br><span class="line"><span class="keyword">const</span> timestamp = <span class="string">&quot;1699999999&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> result = <span class="title function_">encrypt</span>(<span class="string">&quot;123456&quot;</span>, timestamp);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;加密结果:&quot;</span>, result);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试签名</span></span><br><span class="line"><span class="keyword">const</span> params = &#123; <span class="attr">username</span>: <span class="string">&quot;admin&quot;</span>, <span class="attr">page</span>: <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">const</span> sign = <span class="title function_">generateSign</span>(params);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;签名:&quot;</span>, sign);</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li><strong>依赖要找全</strong> — 少一个依赖就会报错，用Scope面板和报错法逐个找</li>
+<li><strong>闭包处理</strong> — 闭包里的函数要想办法导出，或者一起扣出来</li>
+<li><strong>环境一致</strong> — 注意时间戳、随机数、浏览器API等环境差异</li>
+<li><strong>测试验证</strong> — 一定要用已知的输入输出测试，确保扣的代码正确</li>
+<li><strong>不要硬扣</strong> — 太复杂的代码可以用puppeteer在浏览器里运行，不用硬扣</li>
+</ol>
+<h2 id="进阶拓展"><a href="#进阶拓展" class="headerlink" title="进阶拓展"></a>进阶拓展</h2><ul>
+<li>学习用AST自动化提取函数</li>
+<li>了解Source Map还原混淆代码</li>
+<li>学习用Overrides替换线上JS</li>
+<li>了解WebAssembly的逆向和提取</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://chunxuancao.github.io">喵轩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://chunxuancao.github.io/2026/10/17/%E6%89%A3%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%8F%90%E5%8F%96%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0/">https://chunxuancao.github.io/2026/10/17/%E6%89%A3%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%8F%90%E5%8F%96%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://chunxuancao.github.io" target="_blank">喵喵小码</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JS%E9%80%86%E5%90%91/">JS逆向</a><a class="post-meta__tags" href="/tags/%E6%89%A3%E4%BB%A3%E7%A0%81/">扣代码</a><a class="post-meta__tags" href="/tags/%E5%87%BD%E6%95%B0%E6%8F%90%E5%8F%96/">函数提取</a><a class="post-meta__tags" href="/tags/%E5%AE%9E%E6%88%98/">实战</a></div><div class="post-share"><div class="social-share" data-image="https://aka.doubaocdn.com/s/5oP4MXc8GC" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/10/17/%E6%97%A0%E9%99%90debugger%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95%E6%B1%87%E6%80%BB/" title="无限debugger绕过方法汇总"><img class="cover" src="https://aka.doubaocdn.com/s/MunIXf1j0m" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">无限debugger绕过方法汇总</div></div><div class="info-2"><div class="info-item-1">适用场景打开开发者工具后，页面不断弹出debugger，无法正常调试。这是网站的反调试手段，需要学会绕过无限debugger。 实现原理无限debugger是网站的反调试手段，通过定时器或循环不断执行debugger语句，当开发者工具打开时，代码会在debugger处暂停，导致无法正常调试。绕过的核心是让debugger语句不执行或者不暂停。 具体步骤第一步：识别无限debugger特征：  打开F12后，代码不断在debugger处暂停 Sources面板显示debugger语句 按F8继续后马上又断住 关闭开发者工具页面正常运行  常见形式： 12345678910111213141516171819202122232425262728293031// 形式1：定时器setInterval(function() &#123;    debugger;&#125;, 100);// 形式2：循环while (true) &#123;    debugger;&#125;// 形式3：函数递归function debug() &#123;    debugger;    setT...</div></div></div></a><a class="pagination-related" href="/2026/10/17/Node.js%E8%BF%90%E8%A1%8C%E5%89%8D%E7%AB%AFJS%E4%BB%A3%E7%A0%81/" title="Node.js运行前端JS代码"><img class="cover" src="https://aka.doubaocdn.com/s/J5UnPjoJSi" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Node.js运行前端JS代码</div></div><div class="info-2"><div class="info-item-1">适用场景已经从网页中扣出了加密函数的JS代码，想在Node.js里运行它来生成签名或加密参数。需要掌握在Node.js中执行前端JS的方法。 实现原理前端JS代码和Node.js代码都是JavaScript，但运行环境不同。前端代码依赖浏览器的全局对象，Node.js有自己的模块系统。可以通过eval、vm沙箱、函数构造器等方式在Node.js中运行前端代码，必要时补全浏览器环境。 具体步骤第一步：最简单的方式 - eval1234567891011const fs = require(&quot;fs&quot;);// 读取扣出来的JS代码const jsCode = fs.readFileSync(&quot;encrypt.js&quot;, &quot;utf-8&quot;);// 直接eval执行eval(jsCode);// 调用全局函数const result = encrypt(&quot;hello&quot;);console.log(result);  第二步：vm沙箱（推荐）vm模块可以在独立的沙箱中运行代码，更安全： 1234567891011121...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/10/17/JS%E9%80%86%E5%90%91%E5%85%A5%E9%97%A8%E6%B7%B7%E6%B7%86%E4%BB%A3%E7%A0%81%E8%AF%86%E5%88%AB%E4%B8%8E%E5%88%86%E6%9E%90/" title="JS逆向入门-混淆代码识别与分析"><img class="cover" src="https://aka.doubaocdn.com/s/7CAP2ro2Y6" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">JS逆向入门-混淆代码识别与分析</div></div><div class="info-2"><div class="info-item-1">适用场景网站的JS代码被混淆了，看不懂，找不到加密函数在哪里。需要学习JS逆向的基本思路和方法，从混淆代码中找到关键逻辑。 实现原理JS逆向就是通过调试和分析，理解混淆后的JavaScript代码逻辑，找到加密、签名、反爬等关键函数的实现，然后用Python复现。核心是利用Chrome开发者工具的断点调试功能，一步步跟踪代码执行。 具体步骤第一步：识别混淆类型常见混淆特征：  变量名无意义 — a、b、c、_0x1234、_0xabcd 代码压缩 — 所有代码在一行，没有空格换行 字符串加密 — 字符串都是\x68\x65\x6c\x6c\x6f这种形式 控制流平坦化 — 大量switch-case，代码执行顺序混乱 死代码 — 大量没用的代码干扰阅读 调试保护 — 无限debugger、检测开发者工具  第二步：搭建调试环境Chrome开发者工具：  F12打开，Sources面板 找到混淆的JS文件 点击{}（Pretty print）格式化代码 格式化后代码会有换行和缩进，方便阅读  常用快捷键：  Ctrl+P：快速打开文件 Ctrl+Shift+F：全局搜索 Ctrl+...</div></div></div></a><a class="pagination-related" href="/2026/10/17/Node.js%E8%BF%90%E8%A1%8C%E5%89%8D%E7%AB%AFJS%E4%BB%A3%E7%A0%81/" title="Node.js运行前端JS代码"><img class="cover" src="https://aka.doubaocdn.com/s/J5UnPjoJSi" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">Node.js运行前端JS代码</div></div><div class="info-2"><div class="info-item-1">适用场景已经从网页中扣出了加密函数的JS代码，想在Node.js里运行它来生成签名或加密参数。需要掌握在Node.js中执行前端JS的方法。 实现原理前端JS代码和Node.js代码都是JavaScript，但运行环境不同。前端代码依赖浏览器的全局对象，Node.js有自己的模块系统。可以通过eval、vm沙箱、函数构造器等方式在Node.js中运行前端代码，必要时补全浏览器环境。 具体步骤第一步：最简单的方式 - eval1234567891011const fs = require(&quot;fs&quot;);// 读取扣出来的JS代码const jsCode = fs.readFileSync(&quot;encrypt.js&quot;, &quot;utf-8&quot;);// 直接eval执行eval(jsCode);// 调用全局函数const result = encrypt(&quot;hello&quot;);console.log(result);  第二步：vm沙箱（推荐）vm模块可以在独立的沙箱中运行代码，更安全： 1234567891011121...</div></div></div></a><a class="pagination-related" href="/2026/10/17/%E8%B0%83%E7%94%A8%E6%A0%88%E5%88%86%E6%9E%90%E4%B8%8E%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0%E5%AE%9A%E4%BD%8D/" title="调用栈分析与加密函数定位"><img class="cover" src="https://aka.doubaocdn.com/s/5EUucoQ1oV" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">调用栈分析与加密函数定位</div></div><div class="info-2"><div class="info-item-1">适用场景XHR断点后断在库代码里，不知道业务代码在哪里。需要学会分析调用栈，从底层的请求函数向上追溯，找到加密参数的业务代码。 实现原理调用栈（Call Stack）记录了函数的调用链。当代码在某个位置暂停时，Call Stack面板会显示从当前函数到最外层的所有调用帧。通过点击不同的帧，可以查看每个函数的参数、局部变量和代码，从而追溯参数是在哪里被处理和加密的。 具体步骤第一步：理解调用栈调用栈的显示顺序：  最上面：当前执行的函数（最内层） 往下：调用当前函数的函数 最下面：最外层的入口函数  例如： 12345send (xhr.js:12)          ← 当前在这里（库代码）ajax (jquery.js:100)     ← jquery调用了sendrequest (api.js:50)      ← 业务代码调用了ajaxfetchData (main.js:200)  ← 业务代码调用了request onclick (index.html:10) ← 点击事件触发  分析时从下往上看，找到业务代码的位置。 第二步：XHR断点后分析 设置XHR断点，触发请...</div></div></div></a><a class="pagination-related" href="/2026/10/17/RSA%E5%8A%A0%E5%AF%86%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90%E4%B8%8E%E8%A7%A3%E5%AF%86/" title="RSA加密参数分析与解密"><img class="cover" src="https://aka.doubaocdn.com/s/A4DGv11ekU" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">RSA加密参数分析与解密</div></div><div class="info-2"><div class="info-item-1">适用场景登录接口的密码是加密的，很长一串，用的是RSA非对称加密。需要找到公钥，用Python复现加密，模拟登录。 实现原理RSA是非对称加密，有公钥和私钥一对。网站把公钥放在前端，前端用公钥加密密码，后端用私钥解密。爬虫只需要拿到公钥，用Python的rsa或cryptography库加密即可，不需要私钥。 具体步骤第一步：识别RSA加密特征：  加密后的密码很长（256位密钥加密后是256字节，Base64后约344字符） 同样的密码每次加密结果不一样（有随机填充） JS里有JSEncrypt、RSAKey、encrypt 页面里有公钥，格式是-----BEGIN PUBLIC KEY-----  第二步：获取公钥公钥一般有两种形式： 形式1：PEM格式 123-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC...-----END PUBLIC KEY-----  形式2：模和指数 1234var publicKey = &#123;    n: &quot;ABCDEF123456...&qu...</div></div></div></a><a class="pagination-related" href="/2026/10/17/%E5%B8%B8%E8%A7%81JS%E6%B7%B7%E6%B7%86%E7%B1%BB%E5%9E%8B%E4%B8%8E%E8%A7%A3%E6%B7%B7%E6%B7%86%E6%96%B9%E6%B3%95/" title="常见JS混淆类型与解混淆方法"><img class="cover" src="https://aka.doubaocdn.com/s/qh6Fo7mUqm" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">常见JS混淆类型与解混淆方法</div></div><div class="info-2"><div class="info-item-1">适用场景拿到的JS代码完全看不懂，各种乱码和无意义变量。需要识别混淆类型，用对应的方法还原代码，方便分析。 实现原理JS混淆是通过各种技术手段让代码变得难以阅读，但功能不变。常见的混淆手段包括：变量名替换、字符串加密、控制流平坦化、死代码插入、调试保护等。解混淆就是逆向这些操作，还原代码的可读性。 具体步骤第一步：变量名混淆特征：  变量名都是a、b、c、_0x1234 函数名无意义 没有任何语义  解混淆方法：  格式化代码（Pretty print） 重命名变量（Rename symbol）：右键变量 → Rename symbol 根据上下文推断变量含义，手动重命名 用AST工具批量重命名  第二步：字符串加密特征： 123456789// 加密前var url = &quot;https://api.example.com&quot;;// 加密后var url = _0x1234(&#x27;0x12&#x27;);  // 通过函数解密// 或者var url = &#x27;\x68\x74\x74\x70\x73&#x27;;  // 十六进制// 或者var u...</div></div></div></a><a class="pagination-related" href="/2026/10/17/MD5%E4%B8%8ESHA%E7%AD%BE%E5%90%8D%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" title="MD5与SHA签名逆向分析"><img class="cover" src="https://aka.doubaocdn.com/s/Zsp6g16Q7g" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-17</div><div class="info-item-2">MD5与SHA签名逆向分析</div></div><div class="info-2"><div class="info-item-1">适用场景接口有sign参数，是32位（MD5）或40位（SHA1）或64位（SHA256）的十六进制字符串。需要分析签名规则，找到盐值，用Python复现。 实现原理MD5和SHA都是哈希算法，把任意长度的输入转成固定长度的输出。网站常用它们做接口签名：把请求参数按一定规则拼接，加上密钥（盐值），然后哈希得到sign。服务器用同样的方式计算，对比是否一致。 具体步骤第一步：识别哈希类型根据签名长度判断：  32位十六进制 → MD5（最常见） 40位十六进制 → SHA1 64位十六进制 → SHA256 128位十六进制 → SHA512  12345678910111213def detect_hash(sign):    &quot;&quot;&quot;根据长度判断哈希类型&quot;&quot;&quot;    length = len(sign)    if length == 32:        return &quot;MD5&quot;    elif length == 40:        return &quot;SHA1&quot;    elif...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">喵轩</div><div class="author-info-description">爬虫工程师 | 二次元爱好者 | 技术宅</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">141</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/chunxuancao"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到喵轩的技术博客~ 这里有爬虫接单经验、反爬技巧、JS逆向教程，还有二次元看板娘陪你哦！🌸</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">实现原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="toc-number">3.</span> <span class="toc-text">具体步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%AE%9A%E4%BD%8D%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">第一步：定位加密函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%A4%8D%E5%88%B6%E5%87%BD%E6%95%B0%E4%BB%A3%E7%A0%81"><span class="toc-number">3.2.</span> <span class="toc-text">第二步：复制函数代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E5%88%86%E6%9E%90%E4%BE%9D%E8%B5%96"><span class="toc-number">3.3.</span> <span class="toc-text">第三步：分析依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E6%9F%A5%E6%89%BE%E4%BE%9D%E8%B5%96%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">3.4.</span> <span class="toc-text">第四步：查找依赖的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E8%A1%A5%E5%85%A8%E4%BE%9D%E8%B5%96"><span class="toc-number">3.5.</span> <span class="toc-text">第五步：补全依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%EF%BC%9A%E5%A4%84%E7%90%86%E9%97%AD%E5%8C%85"><span class="toc-number">3.6.</span> <span class="toc-text">第六步：处理闭包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E6%AD%A5%EF%BC%9A%E5%A4%84%E7%90%86%E6%B7%B7%E6%B7%86%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">3.7.</span> <span class="toc-text">第七步：处理混淆的字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%85%AB%E6%AD%A5%EF%BC%9A%E6%B5%8B%E8%AF%95%E8%BF%90%E8%A1%8C"><span class="toc-number">3.8.</span> <span class="toc-text">第八步：测试运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">完整代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">5.</span> <span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E9%98%B6%E6%8B%93%E5%B1%95"><span class="toc-number">6.</span> <span class="toc-text">进阶拓展</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过"><img src="/img/48297729_%E7%94%9F%E6%88%90%E5%A5%B6%E9%BE%99%E9%BB%91%E8%89%B2JK%E7%85%A7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="爬虫反爬之User-Agent检测与绕过"/></a><div class="content"><a class="title" href="/2026/10/17/%E7%88%AC%E8%99%AB%E5%8F%8D%E7%88%AC%E4%B9%8BUser-Agent%E6%A3%80%E6%B5%8B%E4%B8%8E%E7%BB%95%E8%BF%87/" title="爬虫反爬之User-Agent检测与绕过">爬虫反爬之User-Agent检测与绕过</a><time datetime="2026-10-17T10:54:37.000Z" title="发表于 2026-10-17 18:54:37">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择"><img src="https://aka.doubaocdn.com/s/VmelXrsSnS" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据存储方案对比与选择"/></a><div class="content"><a class="title" href="/2026/10/17/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9/" title="数据存储方案对比与选择">数据存储方案对比与选择</a><time datetime="2026-10-17T09:50:00.000Z" title="发表于 2026-10-17 17:50:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门"><img src="https://aka.doubaocdn.com/s/TTyh6Y5WpA" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Scrapy分布式爬虫框架入门"/></a><div class="content"><a class="title" href="/2026/10/17/Scrapy%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8/" title="Scrapy分布式爬虫框架入门">Scrapy分布式爬虫框架入门</a><time datetime="2026-10-17T09:40:00.000Z" title="发表于 2026-10-17 17:40:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐"><img src="https://aka.doubaocdn.com/s/8eQQujATAC" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="代理池搭建方案与工具推荐"/></a><div class="content"><a class="title" href="/2026/10/17/%E4%BB%A3%E7%90%86%E6%B1%A0%E6%90%AD%E5%BB%BA%E6%96%B9%E6%A1%88%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" title="代理池搭建方案与工具推荐">代理池搭建方案与工具推荐</a><time datetime="2026-10-17T09:30:00.000Z" title="发表于 2026-10-17 17:30:00">2026-10-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南"><img src="https://aka.doubaocdn.com/s/kdW5ooms6M" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="抓包工具对比与选择指南"/></a><div class="content"><a class="title" href="/2026/10/17/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E6%8B%A9%E6%8C%87%E5%8D%97/" title="抓包工具对比与选择指南">抓包工具对比与选择指南</a><time datetime="2026-10-17T09:20:00.000Z" title="发表于 2026-10-17 17:20:00">2026-10-17</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 喵轩</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div><div class="footer_custom_text"><div style="margin-top:8px;font-size:12px;opacity:.7">🐱 用猫爪写代码 · Powered by Hexo + Butterfly</div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script><script src="/js/cat-theme.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

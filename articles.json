@@ -1,0 +1,822 @@
+[
+  {
+    "title": "AES加密参数还原实战",
+    "url": "/2026/10/17/AES加密参数还原实战/",
+    "raw_url": "/raw/AES加密参数还原实战.md",
+    "category": "未分类",
+    "tags": [
+      "AES",
+      "加密",
+      "解密",
+      "JS逆向",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "AES加密原理、ECB/CBC模式、密钥IV提取、Python解密实现，常见的接口数据加密方式",
+    "cover": "https://aka.doubaocdn.com/s/atxJxy2hbG",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "AST抽象语法树解混淆入门",
+    "url": "/2026/10/17/AST抽象语法树解混淆入门/",
+    "raw_url": "/raw/AST抽象语法树解混淆入门.md",
+    "category": "未分类",
+    "tags": [
+      "AST",
+      "Babel",
+      "解混淆",
+      "抽象语法树",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "AST抽象语法树基础，Babel使用教程，自动化解混淆脚本编写，批量处理混淆代码",
+    "cover": "https://aka.doubaocdn.com/s/vZ7lxXL3Nr",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "BeautifulSoup4网页解析完全指南",
+    "url": "/2026/10/17/BeautifulSoup4网页解析完全指南/",
+    "raw_url": "/raw/BeautifulSoup4网页解析完全指南.md",
+    "category": "未分类",
+    "tags": [
+      "BeautifulSoup",
+      "网页解析",
+      "基础",
+      "新手入门"
+    ],
+    "difficulty": "入门",
+    "summary": "BeautifulSoup4解析HTML完全教程，标签查找、属性提取、CSS选择器、遍历文档树，爬虫数据提取必备",
+    "cover": "https://aka.doubaocdn.com/s/xUAaEbz4pk",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Charles移动端抓包与HTTPS配置",
+    "url": "/2026/10/17/Charles移动端抓包与HTTPS配置/",
+    "raw_url": "/raw/Charles移动端抓包与HTTPS配置.md",
+    "category": "未分类",
+    "tags": [
+      "Charles",
+      "抓包",
+      "移动端",
+      "HTTPS",
+      "代理"
+    ],
+    "difficulty": "简单",
+    "summary": "Charles抓包工具教程，重点讲解移动端APP抓包、HTTPS证书配置、SSL代理设置，APP爬虫必备",
+    "cover": "https://aka.doubaocdn.com/s/4O7EuMIVQz",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Chrome开发者工具抓包实战教程",
+    "url": "/2026/10/17/Chrome开发者工具抓包实战教程/",
+    "raw_url": "/raw/Chrome开发者工具抓包实战教程.md",
+    "category": "未分类",
+    "tags": [
+      "Chrome",
+      "开发者工具",
+      "抓包",
+      "调试"
+    ],
+    "difficulty": "入门",
+    "summary": "Chrome DevTools完全教程，Network面板、XHR过滤、请求分析、Cookie查看，爬虫工程师必备技能",
+    "cover": "https://aka.doubaocdn.com/s/owmd76AjtJ",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Chrome断点调试高级技巧",
+    "url": "/2026/10/17/Chrome断点调试高级技巧/",
+    "raw_url": "/raw/Chrome断点调试高级技巧.md",
+    "category": "未分类",
+    "tags": [
+      "Chrome",
+      "断点调试",
+      "DevTools",
+      "技巧"
+    ],
+    "difficulty": "中等",
+    "summary": "Chrome开发者工具断点调试高级技巧，条件断点、日志断点、DOM断点、事件断点，JS逆向必备技能",
+    "cover": "https://aka.doubaocdn.com/s/SBnTv29WRF",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Cookie机制与Session保持实战",
+    "url": "/2026/10/17/Cookie机制与Session保持实战/",
+    "raw_url": "/raw/Cookie机制与Session保持实战.md",
+    "category": "未分类",
+    "tags": [
+      "Cookie",
+      "Session",
+      "登录态",
+      "反爬",
+      "入门"
+    ],
+    "difficulty": "入门",
+    "summary": "Cookie工作原理、Session保持、登录态维护、Cookie池搭建，需要登录的爬虫必备技能",
+    "cover": "https://aka.doubaocdn.com/s/OoTcXVR3RM",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Fiddler抓包工具使用指南",
+    "url": "/2026/10/17/Fiddler抓包工具使用指南/",
+    "raw_url": "/raw/Fiddler抓包工具使用指南.md",
+    "category": "未分类",
+    "tags": [
+      "Fiddler",
+      "抓包",
+      "调试",
+      "代理"
+    ],
+    "difficulty": "简单",
+    "summary": "Fiddler抓包工具完全教程，HTTP/HTTPS抓包、请求修改、响应篡改、断点调试，爬虫分析接口必备",
+    "cover": "https://aka.doubaocdn.com/s/N0hVZVW1rz",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "IP频率限制与代理池搭建",
+    "url": "/2026/10/17/IP频率限制与代理池搭建/",
+    "raw_url": "/raw/IP频率限制与代理池搭建.md",
+    "category": "未分类",
+    "tags": [
+      "代理池",
+      "IP代理",
+      "频率限制",
+      "反爬",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "IP封禁原理、代理选择、代理池搭建、IP轮换策略，大规模爬虫必备的反封禁技术",
+    "cover": "https://aka.doubaocdn.com/s/ybj2G5zRPM",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "JS逆向入门-混淆代码识别与分析",
+    "url": "/2026/10/17/JS逆向入门混淆代码识别与分析/",
+    "raw_url": "/raw/JS逆向入门混淆代码识别与分析.md",
+    "category": "未分类",
+    "tags": [
+      "JS逆向",
+      "混淆",
+      "入门",
+      "调试"
+    ],
+    "difficulty": "中等",
+    "summary": "JS逆向入门教程，混淆代码识别、调试环境搭建、分析思路，爬虫进阶的核心技能",
+    "cover": "https://aka.doubaocdn.com/s/7CAP2ro2Y6",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "MD5与SHA签名逆向分析",
+    "url": "/2026/10/17/MD5与SHA签名逆向分析/",
+    "raw_url": "/raw/MD5与SHA签名逆向分析.md",
+    "category": "未分类",
+    "tags": [
+      "MD5",
+      "SHA",
+      "哈希",
+      "签名",
+      "JS逆向",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "MD5/SHA哈希算法原理、签名参数分析、盐值查找、Python复现，最常见的接口签名算法",
+    "cover": "https://aka.doubaocdn.com/s/Zsp6g16Q7g",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Node.js运行前端JS代码",
+    "url": "/2026/10/17/Node.js运行前端JS代码/",
+    "raw_url": "/raw/Node.js运行前端JS代码.md",
+    "category": "未分类",
+    "tags": [
+      "Node.js",
+      "扣代码",
+      "vm",
+      "执行JS",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "在Node.js中运行前端JS代码的方法，vm沙箱、eval、模块导出，扣代码后执行加密函数",
+    "cover": "https://aka.doubaocdn.com/s/J5UnPjoJSi",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Playwright现代自动化工具入门",
+    "url": "/2026/10/17/Playwright现代自动化工具入门/",
+    "raw_url": "/raw/Playwright现代自动化工具入门.md",
+    "category": "未分类",
+    "tags": [
+      "Playwright",
+      "自动化",
+      "浏览器",
+      "动态渲染"
+    ],
+    "difficulty": "简单",
+    "summary": "Playwright入门教程，比Selenium更快更稳定，支持多浏览器、自动等待、网络拦截，现代爬虫首选",
+    "cover": "https://aka.doubaocdn.com/s/VCDNSL7kZ0",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "PyCharm配置与爬虫开发最佳实践",
+    "url": "/2026/10/17/PyCharm配置与爬虫开发最佳实践/",
+    "raw_url": "/raw/PyCharm配置与爬虫开发最佳实践.md",
+    "category": "未分类",
+    "tags": [
+      "PyCharm",
+      "IDE",
+      "开发工具",
+      "新手入门"
+    ],
+    "difficulty": "入门",
+    "summary": "PyCharm爬虫开发环境配置，包括解释器设置、代码模板、调试技巧、插件推荐，提升开发效率",
+    "cover": "https://aka.doubaocdn.com/s/bUGDjqsYHV",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Python爬虫常用库大全与对比",
+    "url": "/2026/10/17/Python爬虫常用库大全与对比/",
+    "raw_url": "/raw/Python爬虫常用库大全与对比.md",
+    "category": "未分类",
+    "tags": [
+      "Python",
+      "爬虫库",
+      "工具推荐",
+      "入门"
+    ],
+    "difficulty": "入门",
+    "summary": "Python爬虫开发常用库汇总，请求库、解析库、自动化库、异步库对比，选择合适的工具提高效率",
+    "cover": "https://aka.doubaocdn.com/s/aaOEwJtD7S",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Python爬虫环境搭建完整教程（Windows）",
+    "url": "/2026/10/17/Python爬虫环境搭建完整教程Windows/",
+    "raw_url": "/raw/Python爬虫环境搭建完整教程Windows.md",
+    "category": "未分类",
+    "tags": [
+      "Python",
+      "环境搭建",
+      "Windows",
+      "新手入门"
+    ],
+    "difficulty": "入门",
+    "summary": "从零开始搭建Python爬虫开发环境，包括Python安装、pip配置、虚拟环境、常用库安装，适合完全零基础的新手",
+    "cover": "https://aka.doubaocdn.com/s/lV61sQMtxZ",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "RSA加密参数分析与解密",
+    "url": "/2026/10/17/RSA加密参数分析与解密/",
+    "raw_url": "/raw/RSA加密参数分析与解密.md",
+    "category": "未分类",
+    "tags": [
+      "RSA",
+      "非对称加密",
+      "公钥",
+      "JS逆向",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "RSA非对称加密原理、公钥提取、Python加密实现、密码加密场景分析，登录接口常用的加密方式",
+    "cover": "https://aka.doubaocdn.com/s/A4DGv11ekU",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Referer与Origin头检测与绕过",
+    "url": "/2026/10/17/Referer与Origin头检测绕过/",
+    "raw_url": "/raw/Referer与Origin头检测绕过.md",
+    "category": "未分类",
+    "tags": [
+      "Referer",
+      "Origin",
+      "请求头",
+      "反爬",
+      "入门"
+    ],
+    "difficulty": "入门",
+    "summary": "Referer和Origin请求头检测原理与绕过方法，防盗链、接口来源验证的处理技巧",
+    "cover": "https://aka.doubaocdn.com/s/AGIbrjazQe",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Scrapy分布式爬虫框架入门",
+    "url": "/2026/10/17/Scrapy分布式爬虫框架入门/",
+    "raw_url": "/raw/Scrapy分布式爬虫框架入门.md",
+    "category": "未分类",
+    "tags": [
+      "Scrapy",
+      "框架",
+      "分布式",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "Scrapy爬虫框架入门教程，项目结构、Spider编写、中间件、管道、分布式部署，中大型爬虫首选",
+    "cover": "https://aka.doubaocdn.com/s/TTyh6Y5WpA",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "Selenium环境搭建与基础操作",
+    "url": "/2026/10/17/Selenium环境搭建与基础操作/",
+    "raw_url": "/raw/Selenium环境搭建与基础操作.md",
+    "category": "未分类",
+    "tags": [
+      "Selenium",
+      "自动化",
+      "浏览器",
+      "动态渲染"
+    ],
+    "difficulty": "简单",
+    "summary": "Selenium4环境搭建与基础操作，驱动配置、元素定位、等待机制、无头模式，处理JS渲染页面必备",
+    "cover": "https://aka.doubaocdn.com/s/UFwz8FDa5l",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "WebAssembly逆向入门",
+    "url": "/2026/10/17/WebAssembly逆向入门/",
+    "raw_url": "/raw/WebAssembly逆向入门.md",
+    "category": "未分类",
+    "tags": [
+      "WebAssembly",
+      "WASM",
+      "逆向",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "WebAssembly基础概念，wasm模块分析，函数调用，反编译工具，新一代的代码保护技术",
+    "cover": "https://aka.doubaocdn.com/s/Fok8UB7bVx",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "XPath与lxml高效提取数据",
+    "url": "/2026/10/17/XPath与lxml高效提取数据/",
+    "raw_url": "/raw/XPath与lxml高效提取数据.md",
+    "category": "未分类",
+    "tags": [
+      "XPath",
+      "lxml",
+      "网页解析",
+      "基础"
+    ],
+    "difficulty": "简单",
+    "summary": "XPath语法与lxml库使用教程，比BeautifulSoup更快的解析方式，爬虫数据提取进阶必备",
+    "cover": "https://aka.doubaocdn.com/s/4LYSbwyuTb",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "requests库入门与实战详解",
+    "url": "/2026/10/17/requests库入门与实战详解/",
+    "raw_url": "/raw/requests库入门与实战详解.md",
+    "category": "未分类",
+    "tags": [
+      "requests",
+      "HTTP",
+      "基础",
+      "新手入门"
+    ],
+    "difficulty": "入门",
+    "summary": "requests库完全入门教程，GET/POST请求、请求头、Cookie、Session、文件上传、异常处理，爬虫最基础的库",
+    "cover": "https://aka.doubaocdn.com/s/Vpqbysrbdc",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "代理池搭建方案与工具推荐",
+    "url": "/2026/10/17/代理池搭建方案与工具推荐/",
+    "raw_url": "/raw/代理池搭建方案与工具推荐.md",
+    "category": "未分类",
+    "tags": [
+      "代理池",
+      "IP代理",
+      "反爬",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "代理池搭建方案，免费/付费代理推荐，开源代理池工具，IP轮换策略，大规模爬虫必备",
+    "cover": "https://aka.doubaocdn.com/s/8eQQujATAC",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "售后维护与客户关系管理",
+    "url": "/2026/10/17/售后维护与客户关系管理/",
+    "raw_url": "/raw/售后维护与客户关系管理.md",
+    "category": "未分类",
+    "tags": [
+      "售后",
+      "维护",
+      "客户关系",
+      "长期合作"
+    ],
+    "difficulty": "简单",
+    "summary": "爬虫项目售后维护范围，客户关系维护技巧，长期合作和转介绍，让客户持续找你",
+    "cover": "https://aka.doubaocdn.com/s/w7MYscVMh9",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "图形验证码识别与处理",
+    "url": "/2026/10/17/图形验证码识别与处理/",
+    "raw_url": "/raw/图形验证码识别与处理.md",
+    "category": "未分类",
+    "tags": [
+      "验证码",
+      "OCR",
+      "打码平台",
+      "反爬",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "图形验证码类型、OCR识别、打码平台接入、验证码处理策略，绕过验证码的完整方案",
+    "cover": "https://aka.doubaocdn.com/s/VyNMKSFVVF",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "图片懒加载与动态渲染处理",
+    "url": "/2026/10/17/图片懒加载与动态渲染处理/",
+    "raw_url": "/raw/图片懒加载与动态渲染处理.md",
+    "category": "未分类",
+    "tags": [
+      "懒加载",
+      "动态渲染",
+      "JavaScript",
+      "Selenium",
+      "简单"
+    ],
+    "difficulty": "简单",
+    "summary": "图片懒加载原理、data-src属性处理、JS动态渲染页面解决方案，requests拿不到数据的常见原因",
+    "cover": "https://aka.doubaocdn.com/s/Lwpye7byrg",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "如何评估爬虫单子难度与报价",
+    "url": "/2026/10/17/如何评估爬虫单子难度与报价/",
+    "raw_url": "/raw/如何评估爬虫单子难度与报价.md",
+    "category": "未分类",
+    "tags": [
+      "难度评估",
+      "报价",
+      "接单",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "爬虫项目难度评估方法，报价计算公式，影响价格的因素分析，避免低价接单和亏本",
+    "cover": "https://aka.doubaocdn.com/s/jLS4Ueyc3I",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "如何识别骗子客户与风险控制",
+    "url": "/2026/10/17/如何识别骗子客户与风险控制/",
+    "raw_url": "/raw/如何识别骗子客户与风险控制.md",
+    "category": "未分类",
+    "tags": [
+      "骗子",
+      "风险控制",
+      "防骗",
+      "接单"
+    ],
+    "difficulty": "中等",
+    "summary": "爬虫接单常见骗局识别，骗子客户特征，风险控制措施，保护自己不被白嫖和诈骗",
+    "cover": "https://aka.doubaocdn.com/s/fUp0YlHfTA",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "字体反爬破解实战",
+    "url": "/2026/10/17/字体反爬破解实战/",
+    "raw_url": "/raw/字体反爬破解实战.md",
+    "category": "未分类",
+    "tags": [
+      "字体反爬",
+      "woff",
+      "ttf",
+      "字体加密",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "字体反爬原理、woff/ttf字体分析、字体映射关系提取、自动破解方法，猫眼/大众点评等网站常用反爬",
+    "cover": "https://aka.doubaocdn.com/s/C6KYbB5yRi",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "定金收取与尾款追讨技巧",
+    "url": "/2026/10/17/定金收取与尾款追讨技巧/",
+    "raw_url": "/raw/定金收取与尾款追讨技巧.md",
+    "category": "未分类",
+    "tags": [
+      "定金",
+      "尾款",
+      "收款",
+      "风险控制"
+    ],
+    "difficulty": "中等",
+    "summary": "定金收取比例和话术，尾款追讨方法，客户拖欠尾款应对，保证能收到钱",
+    "cover": "https://aka.doubaocdn.com/s/gALIdBfV03",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "常见JS混淆类型与解混淆方法",
+    "url": "/2026/10/17/常见JS混淆类型与解混淆方法/",
+    "raw_url": "/raw/常见JS混淆类型与解混淆方法.md",
+    "category": "未分类",
+    "tags": [
+      "混淆",
+      "解混淆",
+      "obfuscator",
+      "JS逆向"
+    ],
+    "difficulty": "中等",
+    "summary": "常见JS混淆类型识别，变量混淆、字符串加密、控制流平坦化、死代码，以及对应的解混淆方法",
+    "cover": "https://aka.doubaocdn.com/s/qh6Fo7mUqm",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "常见爬虫接单需求类型分析",
+    "url": "/2026/10/17/常见爬虫接单需求类型分析/",
+    "raw_url": "/raw/常见爬虫接单需求类型分析.md",
+    "category": "未分类",
+    "tags": [
+      "需求类型",
+      "接单",
+      "行业分析",
+      "入门"
+    ],
+    "difficulty": "入门",
+    "summary": "爬虫接单常见需求类型分析，各类型难度和报价参考，适合新手选择容易上手的单子",
+    "cover": "https://aka.doubaocdn.com/s/SlLBn6DrgR",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "扣代码实战-从网页提取加密函数",
+    "url": "/2026/10/17/扣代码实战从网页提取加密函数/",
+    "raw_url": "/raw/扣代码实战从网页提取加密函数.md",
+    "category": "未分类",
+    "tags": [
+      "扣代码",
+      "函数提取",
+      "JS逆向",
+      "实战"
+    ],
+    "difficulty": "中等",
+    "summary": "从混淆的JS代码中提取加密函数的完整流程，定位、复制、补环境、运行，JS逆向必备技能",
+    "cover": "https://aka.doubaocdn.com/s/5oP4MXc8GC",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "抓包工具对比与选择指南",
+    "url": "/2026/10/17/抓包工具对比与选择指南/",
+    "raw_url": "/raw/抓包工具对比与选择指南.md",
+    "category": "未分类",
+    "tags": [
+      "抓包",
+      "Fiddler",
+      "Charles",
+      "mitmproxy",
+      "工具推荐"
+    ],
+    "difficulty": "简单",
+    "summary": "主流抓包工具对比，Fiddler、Charles、mitmproxy、Wireshark特点分析，选择适合的抓包工具",
+    "cover": "https://aka.doubaocdn.com/s/kdW5ooms6M",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "接口签名参数破解入门",
+    "url": "/2026/10/17/接口签名参数破解入门/",
+    "raw_url": "/raw/接口签名参数破解入门.md",
+    "category": "未分类",
+    "tags": [
+      "签名",
+      "sign",
+      "接口加密",
+      "JS逆向",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "接口签名原理、sign参数分析、常见签名算法、定位签名JS代码，爬虫进阶必备技能",
+    "cover": "https://aka.doubaocdn.com/s/xxACGECUzt",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "数据存储方案对比与选择",
+    "url": "/2026/10/17/数据存储方案对比与选择/",
+    "raw_url": "/raw/数据存储方案对比与选择.md",
+    "category": "未分类",
+    "tags": [
+      "数据存储",
+      "MySQL",
+      "MongoDB",
+      "CSV",
+      "数据库"
+    ],
+    "difficulty": "简单",
+    "summary": "爬虫数据存储方案对比，CSV/Excel/MySQL/MongoDB/Redis特点分析，根据数据量和场景选择合适的存储方式",
+    "cover": "https://aka.doubaocdn.com/s/VmelXrsSnS",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "新手接单避坑完全指南",
+    "url": "/2026/10/17/新手接单避坑完全指南/",
+    "raw_url": "/raw/新手接单避坑完全指南.md",
+    "category": "未分类",
+    "tags": [
+      "新手",
+      "避坑",
+      "接单",
+      "入门"
+    ],
+    "difficulty": "入门",
+    "summary": "爬虫新手接单常见坑点汇总，被骗、被白嫖、需求蔓延、低价竞争，新手必读避坑指南",
+    "cover": "https://aka.doubaocdn.com/s/axmnNfZCMd",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "无限debugger绕过方法汇总",
+    "url": "/2026/10/17/无限debugger绕过方法汇总/",
+    "raw_url": "/raw/无限debugger绕过方法汇总.md",
+    "category": "未分类",
+    "tags": [
+      "debugger",
+      "反调试",
+      "绕过",
+      "JS逆向"
+    ],
+    "difficulty": "中等",
+    "summary": "无限debugger原理，多种绕过方法，Never pause here、定时器Hook、AST删除，反调试技巧汇总",
+    "cover": "https://aka.doubaocdn.com/s/MunIXf1j0m",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "无限滚动与分页数据采集",
+    "url": "/2026/10/17/无限滚动与分页数据采集/",
+    "raw_url": "/raw/无限滚动与分页数据采集.md",
+    "category": "未分类",
+    "tags": [
+      "无限滚动",
+      "分页",
+      "数据采集",
+      "简单"
+    ],
+    "difficulty": "简单",
+    "summary": "无限滚动页面原理、分页参数分析、滚动加载处理、批量数据采集策略，微博/知乎/小红书等页面常用",
+    "cover": "https://aka.doubaocdn.com/s/5jVKyugf16",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "浏览器补环境技巧与实践",
+    "url": "/2026/10/17/浏览器补环境技巧与实践/",
+    "raw_url": "/raw/浏览器补环境技巧与实践.md",
+    "category": "未分类",
+    "tags": [
+      "补环境",
+      "Node.js",
+      "jsdom",
+      "浏览器环境",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "浏览器补环境原理，jsdom使用，window/document/navigator补全，在Node.js中运行前端JS代码",
+    "cover": "https://aka.doubaocdn.com/s/vawPVtPoKw",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "滑块验证码识别与模拟拖动",
+    "url": "/2026/10/17/滑块验证码识别与模拟拖动/",
+    "raw_url": "/raw/滑块验证码识别与模拟拖动.md",
+    "category": "未分类",
+    "tags": [
+      "滑块验证码",
+      "行为验证",
+      "极验",
+      "Selenium",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "滑块验证码原理、缺口识别、轨迹模拟、Selenium/Playwright实现，绕过行为验证的完整方案",
+    "cover": "https://aka.doubaocdn.com/s/RwkH2UfsYQ",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "点选验证码文字识别与点击",
+    "url": "/2026/10/17/点选验证码文字识别与点击/",
+    "raw_url": "/raw/点选验证码文字识别与点击.md",
+    "category": "未分类",
+    "tags": [
+      "点选验证码",
+      "文字识别",
+      "OCR",
+      "行为验证",
+      "困难"
+    ],
+    "difficulty": "困难",
+    "summary": "点选验证码原理、文字识别、坐标计算、模拟点击，12306/腾讯防水墙等常用的验证码类型",
+    "cover": "https://aka.doubaocdn.com/s/rWDUGXmY6o",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "爬虫反爬之User-Agent检测与绕过",
+    "url": "/2026/10/17/爬虫反爬之User-Agent检测与绕过/",
+    "raw_url": "/raw/爬虫反爬之User-Agent检测与绕过.md",
+    "category": "未分类",
+    "tags": [
+      "User-Agent",
+      "反爬",
+      "requests",
+      "新手入门"
+    ],
+    "difficulty": "未知",
+    "summary": "",
+    "cover": "/img/48297729_生成奶龙黑色JK照.png",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "爬虫报价策略与谈判技巧",
+    "url": "/2026/10/17/爬虫报价策略与谈判技巧/",
+    "raw_url": "/raw/爬虫报价策略与谈判技巧.md",
+    "category": "未分类",
+    "tags": [
+      "报价",
+      "谈判",
+      "客户沟通",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "爬虫接单报价策略，客户砍价应对，谈判话术，如何守住价格底线，提高成交率",
+    "cover": "https://aka.doubaocdn.com/s/nIHWJ2YxTe",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "爬虫接单平台与渠道汇总",
+    "url": "/2026/10/17/爬虫接单平台与渠道汇总/",
+    "raw_url": "/raw/爬虫接单平台与渠道汇总.md",
+    "category": "未分类",
+    "tags": [
+      "接单平台",
+      "渠道",
+      "兼职",
+      "新手入门"
+    ],
+    "difficulty": "入门",
+    "summary": "爬虫接单的主流平台和渠道汇总，各平台特点分析，适合新手的接单渠道推荐",
+    "cover": "https://aka.doubaocdn.com/s/RCjClfUOdk",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "登录态保持与Token机制分析",
+    "url": "/2026/10/17/登录态保持与Token机制分析/",
+    "raw_url": "/raw/登录态保持与Token机制分析.md",
+    "category": "未分类",
+    "tags": [
+      "Token",
+      "JWT",
+      "登录态",
+      "认证",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "Token认证机制、JWT结构分析、Token刷新策略、登录态维护，现代APP和网站常用的认证方式",
+    "cover": "https://aka.doubaocdn.com/s/65ppvn2wQp",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "调用栈分析与加密函数定位",
+    "url": "/2026/10/17/调用栈分析与加密函数定位/",
+    "raw_url": "/raw/调用栈分析与加密函数定位.md",
+    "category": "未分类",
+    "tags": [
+      "调用栈",
+      "Call Stack",
+      "函数定位",
+      "JS逆向"
+    ],
+    "difficulty": "中等",
+    "summary": "调用栈分析方法，从请求反推加密函数，快速定位关键代码，JS逆向的核心技巧",
+    "cover": "https://aka.doubaocdn.com/s/5EUucoQ1oV",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "需求确认清单与避坑指南",
+    "url": "/2026/10/17/需求确认清单与避坑指南/",
+    "raw_url": "/raw/需求确认清单与避坑指南.md",
+    "category": "未分类",
+    "tags": [
+      "需求确认",
+      "避坑",
+      "沟通",
+      "中等"
+    ],
+    "difficulty": "中等",
+    "summary": "爬虫接单需求确认清单，必须问清楚的问题，避免需求模糊导致返工和纠纷",
+    "cover": "https://aka.doubaocdn.com/s/afWq2INgST",
+    "updated": "2026-10-17"
+  },
+  {
+    "title": "项目交付标准与验收流程",
+    "url": "/2026/10/17/项目交付标准与验收流程/",
+    "raw_url": "/raw/项目交付标准与验收流程.md",
+    "category": "未分类",
+    "tags": [
+      "交付",
+      "验收",
+      "项目管理",
+      "中等"
+    ],
+    "difficulty": "未知",
+    "summary": "",
+    "cover": "https://aka.doubaocdn.com/s/8SAs3hL2Fn",
+    "updated": "2026-10-17"
+  }
+]
