@@ -1,11 +1,11 @@
 ---
 title: Charles移动端抓包与HTTPS配置
-date: 2026-10-17 10:30:00
+date: "2026-10-17 10:30:00"
 category: 环境配置
-tags: [Charles, 抓包, 移动端, HTTPS, 代理]
+tags: "[Charles, 抓包, 移动端, HTTPS, 代理]"
 difficulty: 简单
 summary: Charles抓包工具教程，重点讲解移动端APP抓包、HTTPS证书配置、SSL代理设置，APP爬虫必备
-cover: /images/env-cover.jpg
+cover: https://aka.doubaocdn.com/s/8uai9Z5Bdd
 ---
 
 ## 适用场景

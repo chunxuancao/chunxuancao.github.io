@@ -1,11 +1,11 @@
 ---
 title: Cookie机制与Session保持实战
-date: 2026-10-17 11:10:00
+date: "2026-10-17 11:10:00"
 category: 反爬技巧
-tags: [Cookie, Session, 登录态, 反爬, 入门]
+tags: "[Cookie, Session, 登录态, 反爬, 入门]"
 difficulty: 入门
 summary: Cookie工作原理、Session保持、登录态维护、Cookie池搭建，需要登录的爬虫必备技能
-cover: /images/antibot-cover.jpg
+cover: https://aka.doubaocdn.com/s/3lxaDYD7Qp
 ---
 
 ## 适用场景

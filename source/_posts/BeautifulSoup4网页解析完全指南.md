@@ -1,11 +1,11 @@
 ---
 title: BeautifulSoup4网页解析完全指南
-date: 2026-10-17 09:30:00
+date: "2026-10-17 09:30:00"
 category: 环境配置
-tags: [BeautifulSoup, 网页解析, 基础, 新手入门]
+tags: "[BeautifulSoup, 网页解析, 基础, 新手入门]"
 difficulty: 入门
 summary: BeautifulSoup4解析HTML完全教程，标签查找、属性提取、CSS选择器、遍历文档树，爬虫数据提取必备
-cover: /images/env-cover.jpg
+cover: https://aka.doubaocdn.com/s/O6gCURn1QP
 ---
 
 ## 适用场景

@@ -1,11 +1,11 @@
 ---
 title: Playwright现代自动化工具入门
-date: 2026-10-17 10:00:00
+date: "2026-10-17 10:00:00"
 category: 环境配置
-tags: [Playwright, 自动化, 浏览器, 动态渲染]
+tags: "[Playwright, 自动化, 浏览器, 动态渲染]"
 difficulty: 简单
 summary: Playwright入门教程，比Selenium更快更稳定，支持多浏览器、自动等待、网络拦截，现代爬虫首选
-cover: /images/env-cover.jpg
+cover: https://aka.doubaocdn.com/s/YVRENKc2Cv
 ---
 
 ## 适用场景

@@ -1,11 +1,11 @@
 ---
 title: Chrome断点调试高级技巧
-date: 2026-10-17 13:40:00
+date: "2026-10-17 13:40:00"
 category: JS逆向
-tags: [Chrome, 断点调试, DevTools, 技巧]
+tags: "[Chrome, 断点调试, DevTools, 技巧]"
 difficulty: 中等
 summary: Chrome开发者工具断点调试高级技巧，条件断点、日志断点、DOM断点、事件断点，JS逆向必备技能
-cover: /images/jsreverse-cover.jpg
+cover: https://aka.doubaocdn.com/s/RzUUdNJz4g
 ---
 
 ## 适用场景

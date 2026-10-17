@@ -1,11 +1,11 @@
 ---
 title: MD5与SHA签名逆向分析
-date: 2026-10-17 12:50:00
+date: "2026-10-17 12:50:00"
 category: 反爬技巧
-tags: [MD5, SHA, 哈希, 签名, JS逆向, 中等]
+tags: "[MD5, SHA, 哈希, 签名, JS逆向, 中等]"
 difficulty: 中等
 summary: MD5/SHA哈希算法原理、签名参数分析、盐值查找、Python复现，最常见的接口签名算法
-cover: /images/antibot-cover.jpg
+cover: https://aka.doubaocdn.com/s/MSKu9xmUTH
 ---
 
 ## 适用场景

@@ -1,11 +1,11 @@
 ---
 title: Referer与Origin头检测与绕过
-date: 2026-10-17 11:00:00
+date: "2026-10-17 11:00:00"
 category: 反爬技巧
-tags: [Referer, Origin, 请求头, 反爬, 入门]
+tags: "[Referer, Origin, 请求头, 反爬, 入门]"
 difficulty: 入门
 summary: Referer和Origin请求头检测原理与绕过方法，防盗链、接口来源验证的处理技巧
-cover: /images/antibot-cover.jpg
+cover: https://aka.doubaocdn.com/s/q0XH5udIjr
 ---
 
 ## 适用场景

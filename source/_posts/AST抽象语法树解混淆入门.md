@@ -1,11 +1,11 @@
 ---
 title: AST抽象语法树解混淆入门
-date: 2026-10-17 14:10:00
+date: "2026-10-17 14:10:00"
 category: JS逆向
-tags: [AST, Babel, 解混淆, 抽象语法树, 困难]
+tags: "[AST, Babel, 解混淆, 抽象语法树, 困难]"
 difficulty: 困难
 summary: AST抽象语法树基础，Babel使用教程，自动化解混淆脚本编写，批量处理混淆代码
-cover: /images/jsreverse-cover.jpg
+cover: https://aka.doubaocdn.com/s/hGInNt9mVQ
 ---
 
 ## 适用场景

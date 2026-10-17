@@ -1,11 +1,11 @@
 ---
 title: 爬虫反爬之User-Agent检测与绕过
-date: 2026-10-17 18:54:37
+date: "2026-10-17 18:54:37"
 category: 反爬技巧
-tags: [User-Agent, 反爬, requests, 新手入门]
+tags: "[User-Agent, 反爬, requests, 新手入门]"
 difficulty: 简单
 summary: 最常见的反爬机制之一，通过检测User-Agent识别爬虫，本文介绍如何识别和绕过
-cover: /images/ua-cover.jpg
+cover: https://aka.doubaocdn.com/s/haitTO7iDU
 ---
 
 ## 适用场景
@@ -112,3 +112,8 @@ if __name__ == "__main__":
 3. **fake-useragent可能失效** — 这个库偶尔会因为数据源问题报错，可以自己维护一个UA列表
 4. **移动端UA** — 爬移动端网站要用手机的UA，别用桌面的
 5. **结合其他反爬手段** — UA只是第一道防线，后面还有Cookie、IP频率、验证码等
+
+## 相关文章
+
+- [爬虫反爬之Cookie检测与绕过](/posts/cookie-detection/)
+- [爬虫反爬之IP频率限制与代理池](/posts/ip-rate-limit/)

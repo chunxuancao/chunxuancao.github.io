@@ -1,11 +1,11 @@
 ---
 title: PyCharm配置与爬虫开发最佳实践
-date: 2026-10-17 09:10:00
+date: "2026-10-17 09:10:00"
 category: 环境配置
-tags: [PyCharm, IDE, 开发工具, 新手入门]
+tags: "[PyCharm, IDE, 开发工具, 新手入门]"
 difficulty: 入门
 summary: PyCharm爬虫开发环境配置，包括解释器设置、代码模板、调试技巧、插件推荐，提升开发效率
-cover: /images/env-cover.jpg
+cover: https://aka.doubaocdn.com/s/3PG6LTGVoa
 ---
 
 ## 适用场景

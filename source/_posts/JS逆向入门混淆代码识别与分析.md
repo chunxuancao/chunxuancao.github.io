@@ -1,11 +1,11 @@
 ---
 title: JS逆向入门-混淆代码识别与分析
-date: 2026-10-17 13:30:00
+date: "2026-10-17 13:30:00"
 category: JS逆向
-tags: [JS逆向, 混淆, 入门, 调试]
+tags: "[JS逆向, 混淆, 入门, 调试]"
 difficulty: 中等
 summary: JS逆向入门教程，混淆代码识别、调试环境搭建、分析思路，爬虫进阶的核心技能
-cover: /images/jsreverse-cover.jpg
+cover: https://aka.doubaocdn.com/s/4CcxUKyx0b
 ---
 
 ## 适用场景

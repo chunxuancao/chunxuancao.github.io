@@ -1,11 +1,11 @@
 ---
 title: XPath与lxml高效提取数据
-date: 2026-10-17 09:40:00
+date: "2026-10-17 09:40:00"
 category: 环境配置
-tags: [XPath, lxml, 网页解析, 基础]
+tags: "[XPath, lxml, 网页解析, 基础]"
 difficulty: 简单
 summary: XPath语法与lxml库使用教程，比BeautifulSoup更快的解析方式，爬虫数据提取进阶必备
-cover: /images/env-cover.jpg
+cover: https://aka.doubaocdn.com/s/U46PRpPLud
 ---
 
 ## 适用场景

@@ -1,11 +1,11 @@
 ---
 title: requests库入门与实战详解
-date: 2026-10-17 09:20:00
+date: "2026-10-17 09:20:00"
 category: 环境配置
-tags: [requests, HTTP, 基础, 新手入门]
+tags: "[requests, HTTP, 基础, 新手入门]"
 difficulty: 入门
 summary: requests库完全入门教程，GET/POST请求、请求头、Cookie、Session、文件上传、异常处理，爬虫最基础的库
-cover: /images/env-cover.jpg
+cover: https://aka.doubaocdn.com/s/54ZuWDXe2T
 ---
 
 ## 适用场景

@@ -1,11 +1,11 @@
 ---
 title: 常见JS混淆类型与解混淆方法
-date: 2026-10-17 14:00:00
+date: "2026-10-17 14:00:00"
 category: JS逆向
-tags: [混淆, 解混淆, obfuscator, JS逆向]
+tags: "[混淆, 解混淆, obfuscator, JS逆向]"
 difficulty: 中等
 summary: 常见JS混淆类型识别，变量混淆、字符串加密、控制流平坦化、死代码，以及对应的解混淆方法
-cover: /images/jsreverse-cover.jpg
+cover: https://aka.doubaocdn.com/s/WBT9VCcZd1
 ---
 
 ## 适用场景

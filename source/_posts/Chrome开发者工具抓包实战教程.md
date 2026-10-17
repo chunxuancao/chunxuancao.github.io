@@ -1,11 +1,11 @@
 ---
 title: Chrome开发者工具抓包实战教程
-date: 2026-10-17 10:10:00
+date: "2026-10-17 10:10:00"
 category: 环境配置
-tags: [Chrome, 开发者工具, 抓包, 调试]
+tags: "[Chrome, 开发者工具, 抓包, 调试]"
 difficulty: 入门
 summary: Chrome DevTools完全教程，Network面板、XHR过滤、请求分析、Cookie查看，爬虫工程师必备技能
-cover: /images/env-cover.jpg
+cover: https://aka.doubaocdn.com/s/vhUWfBUaC5
 ---
 
 ## 适用场景

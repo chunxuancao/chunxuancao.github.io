@@ -1,11 +1,11 @@
 ---
 title: Node.js运行前端JS代码
-date: 2026-10-17 14:30:00
+date: "2026-10-17 14:30:00"
 category: JS逆向
-tags: [Node.js, 扣代码, vm, 执行JS, 中等]
+tags: "[Node.js, 扣代码, vm, 执行JS, 中等]"
 difficulty: 中等
 summary: 在Node.js中运行前端JS代码的方法，vm沙箱、eval、模块导出，扣代码后执行加密函数
-cover: /images/jsreverse-cover.jpg
+cover: https://aka.doubaocdn.com/s/bQ03eZWizD
 ---
 
 ## 适用场景

@@ -1,11 +1,11 @@
 ---
 title: AES加密参数还原实战
-date: 2026-10-17 12:30:00
+date: "2026-10-17 12:30:00"
 category: 反爬技巧
-tags: [AES, 加密, 解密, JS逆向, 困难]
+tags: "[AES, 加密, 解密, JS逆向, 困难]"
 difficulty: 困难
 summary: AES加密原理、ECB/CBC模式、密钥IV提取、Python解密实现，常见的接口数据加密方式
-cover: /images/antibot-cover.jpg
+cover: https://aka.doubaocdn.com/s/0n2VObfBuJ
 ---
 
 ## 适用场景

@@ -1,11 +1,11 @@
 ---
 title: WebAssembly逆向入门
-date: 2026-10-17 15:00:00
+date: "2026-10-17 15:00:00"
 category: JS逆向
-tags: [WebAssembly, WASM, 逆向, 困难]
+tags: "[WebAssembly, WASM, 逆向, 困难]"
 difficulty: 困难
 summary: WebAssembly基础概念，wasm模块分析，函数调用，反编译工具，新一代的代码保护技术
-cover: /images/jsreverse-cover.jpg
+cover: https://aka.doubaocdn.com/s/1rYt4L6U14
 ---
 
 ## 适用场景
