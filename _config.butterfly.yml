@@ -289,7 +289,7 @@ aside:
     category: true
   card_author:
     enable: true
-    description: 爬虫工程师
+    description: 爬虫工程师 | 二次元爱好者 | 技术宅
     button:
       enable: true
       icon: fab fa-github
@@ -297,7 +297,7 @@ aside:
       link: https://github.com/chunxuancao
   card_announcement:
     enable: true
-    content: 欢迎
+    content: 欢迎来到喵轩的技术博客~
   card_recent_post:
     enable: true
     # If set 0 will show all
