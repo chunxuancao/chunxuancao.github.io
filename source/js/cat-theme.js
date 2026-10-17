@@ -205,4 +205,65 @@
   style.textContent = '@keyframes catShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-1deg)}40%{transform:translateX(8px) rotate(1deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}';
   document.head.appendChild(style);
 
+  /* ── Live2D 看板娘（黑猫/白猫，点击切换） ── */
+  var catModels = {
+    black: 'https://cdn.jsdelivr.net/npm/live2d-widget-model-hijiki@1.0.5/assets/hijiki.model.json',
+    white: 'https://cdn.jsdelivr.net/npm/live2d-widget-model-tororo@1.0.5/assets/tororo.model.json'
+  };
+  var currentCat = 'black';
+  var live2dInited = false;
+
+  function initLive2dCat(){
+    if(typeof L2Dwidget === 'undefined'){
+      setTimeout(initLive2dCat, 500);
+      return;
+    }
+    L2Dwidget.init({
+      model: {
+        jsonPath: catModels[currentCat],
+        scale: 1
+      },
+      display: {
+        position: 'right',
+        width: 150,
+        height: 200,
+        hOffset: 20,
+        vOffset: -10
+      },
+      mobile: {
+        show: true
+      },
+      react: {
+        opacity: 0.9
+      }
+    });
+    live2dInited = true;
+
+    // 绑定点击切换
+    setTimeout(bindCatClick, 1200);
+  }
+
+  function bindCatClick(){
+    var widget = document.getElementById('live2d-widget');
+    if(!widget) return;
+    var canvas = widget.querySelector('canvas');
+    if(canvas){
+      canvas.style.cursor = 'pointer';
+      canvas.addEventListener('click', switchCat);
+    }
+  }
+
+  function switchCat(){
+    // 切换模型
+    currentCat = currentCat === 'black' ? 'white' : 'black';
+    meow(0.15);
+    // 移除旧看板娘
+    var widget = document.getElementById('live2d-widget');
+    if(widget) widget.remove();
+    // 重新初始化
+    setTimeout(initLive2dCat, 300);
+  }
+
+  initLive2dCat();
+
 })();
