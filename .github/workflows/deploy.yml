@@ -1,0 +1,37 @@
+name: Deploy Hexo Blog to GitHub Pages
+
+on:
+  push:
+    branches:
+      - source
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Clone Butterfly Theme
+        run: |
+          git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Hexo
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          force_orphan: true
