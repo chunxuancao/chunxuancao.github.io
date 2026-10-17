@@ -224,17 +224,17 @@
         scale: 1
       },
       display: {
-        position: 'right',
-        width: 150,
-        height: 200,
-        hOffset: 20,
-        vOffset: -10
+        position: 'left',
+        width: 220,
+        height: 300,
+        hOffset: 10,
+        vOffset: -20
       },
       mobile: {
         show: true
       },
       react: {
-        opacity: 0.9
+        opacity: 0.95
       }
     });
     live2dInited = true;
