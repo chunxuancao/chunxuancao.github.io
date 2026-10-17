@@ -486,26 +486,48 @@
   </div>
 
   <!-- 部署弹窗 -->
-  <div v-if="showDeployModal" class="modal-overlay" @click.self="showDeployModal = false">
-    <div class="modal-content fluffy-card p-6 w-[500px] max-h-[80vh] flex flex-col">
+  <div v-if="showDeployModal" class="modal-overlay" @click.self="">
+    <div class="modal-content fluffy-card p-6 w-[560px] max-h-[85vh] flex flex-col">
       <div class="flex items-center gap-3 mb-4">
         <span class="loading-cat text-3xl" v-if="deploying">🚀</span>
-        <span class="text-3xl" v-else>✅</span>
+        <span class="text-3xl" v-else-if="deployResult === 'success'">✅</span>
+        <span class="text-3xl" v-else-if="deployResult === 'cancelled'">⚠️</span>
+        <span class="text-3xl" v-else>❌</span>
         <h3 class="text-lg font-bold flex-1" style="color: var(--cat-brown);">
-          {{ deploying ? '正在部署到 GitHub...' : '部署完成！' }}
+          {{ deployTitle }}
         </h3>
-        <button class="action-btn" @click="showDeployModal = false" title="关闭">
+        <button class="action-btn" @click="closeDeployModal" title="关闭" v-if="!deploying">
           <i class="fa fa-times text-sm"></i>
         </button>
       </div>
-      <div class="flex-1 overflow-y-auto bg-gray-50 rounded-xl p-4 font-mono text-xs"
-           style="max-height: 300px; white-space: pre-wrap; color: #5d4e37;">{{ deployLog }}</div>
-      <div class="mt-4 flex justify-between items-center">
-        <span class="text-xs" style="color: #a09080;" v-if="deploying">
-          💡 关闭弹窗后部署仍在后台运行，可稍后查看 GitHub Actions
+
+      <!-- 进度条 -->
+      <div class="mb-4" v-if="deploying || deployResult">
+        <div class="flex justify-between text-xs mb-1" style="color: var(--cat-brown);">
+          <span>{{ deployStage }}</span>
+          <span>{{ deployProgress }}% · 已用 {{ deployElapsed }}s</span>
+        </div>
+        <div class="w-full h-3 rounded-full overflow-hidden" style="background: #f0e8e0;">
+          <div class="h-full rounded-full transition-all duration-500"
+               :style="{ width: deployProgress + '%', background: 'linear-gradient(90deg, #ffb6c1, #ff8fab)' }"></div>
+        </div>
+      </div>
+
+      <!-- 日志 -->
+      <div class="flex-1 overflow-y-auto rounded-xl p-4 font-mono text-xs"
+           style="max-height: 280px; min-height: 150px; white-space: pre-wrap; color: #5d4e37; background: #fdfaf6; border: 1px solid #f0e8e0;">{{ deployLogText }}</div>
+
+      <!-- 按钮区 -->
+      <div class="mt-4 flex justify-between items-center gap-3">
+        <span class="text-xs flex-1" style="color: #a09080;" v-if="deploying">
+          💡 部署中请勿关闭页面，取消后已上传的文件不会回滚
         </span>
-        <button class="btn-gradient" @click="showDeployModal = false" v-if="!deploying">知道了</button>
-        <button class="btn-ghost" @click="showDeployModal = false" v-else>后台运行</button>
+        <div class="flex gap-2">
+          <button class="btn-ghost" @click="cancelDeploy" v-if="deploying" :disabled="cancelling">
+            <i class="fa fa-stop mr-1"></i>{{ cancelling ? '取消中...' : '取消部署' }}
+          </button>
+          <button class="btn-gradient" @click="closeDeployModal" v-if="!deploying">知道了</button>
+        </div>
       </div>
     </div>
   </div>
@@ -553,7 +575,13 @@ createApp({
     const deleteTarget = ref(null);
     const showDeployModal = ref(false);
     const deploying = ref(false);
-    const deployLog = ref('');
+    const deployProgress = ref(0);
+    const deployStage = ref('');
+    const deployResult = ref(null); // success / failed / cancelled
+    const deployElapsed = ref(0);
+    const cancelling = ref(false);
+    const deployLogText = ref('');
+    let deployPollTimer = null;
 
     // Toast
     const toast = reactive({ show: false, message: '', type: 'success' });
@@ -791,42 +819,109 @@ createApp({
       }
     };
 
-    // 部署
+    // 部署 - 异步启动 + 轮询进度
     const deploy = async () => {
       if (deploying.value) {
         showToast('已有部署正在运行，请稍候...', 'error');
         return;
       }
-      showDeployModal.value = true;
+      // 重置状态
       deploying.value = true;
-      deployLog.value = '🚀 开始部署到 GitHub...\n\n';
+      cancelling.value = false;
+      deployProgress.value = 0;
+      deployStage.value = '初始化';
+      deployResult.value = null;
+      deployElapsed.value = 0;
+      deployLogText.value = '🚀 开始部署到 GitHub...\n';
+      showDeployModal.value = true;
+
       try {
-        // 部署超时设为200秒（后端超时180秒）
-        const res = await api('/api/deploy', { method: 'POST' }, 200000);
+        // 启动部署
+        const res = await api('/api/deploy/start', { method: 'POST' }, 10000);
         if (res.status === 'busy') {
-          deployLog.value += '⚠️ ' + (res.message || '已有部署在运行') + '\n';
-        } else {
-          deployLog.value += res.stdout || '';
-          if (res.stderr) deployLog.value += '\n--- stderr ---\n' + res.stderr;
-          if (res.status === 'success') {
-            deployLog.value += '\n\n✅ 部署成功！GitHub Actions 正在构建（约1-2分钟）';
-            deployLog.value += '\n🌐 线上博客: https://chunxuancao.github.io/';
-            showToast('部署成功');
-          } else if (res.status === 'timeout') {
-            deployLog.value += '\n\n⏰ ' + (res.message || '部署超时');
-            showToast('部署超时', 'error');
-          } else {
-            deployLog.value += '\n\n❌ 部署失败，请检查上方日志';
-            showToast('部署失败', 'error');
-          }
+          deployLogText.value += '⚠️ ' + (res.message || '已有部署在运行') + '\n';
+          deploying.value = false;
+          return;
         }
+        deployLogText.value += '✅ 部署任务已启动，正在执行...\n\n';
+
+        // 开始轮询状态
+        startDeployPolling();
       } catch (e) {
-        deployLog.value += '\n\n❌ 部署出错: ' + e.message;
-        deployLog.value += '\n💡 提示：可以直接运行 deploy-blog.bat 部署';
-        showToast('部署出错', 'error');
+        deployLogText.value += '\n❌ 启动部署失败: ' + e.message;
+        deployLogText.value += '\n💡 提示：可以直接运行 deploy-blog.bat 部署';
+        deploying.value = false;
+        deployResult.value = 'failed';
+        showToast('启动部署失败', 'error');
       }
-      deploying.value = false;
     };
+
+    // 轮询部署状态
+    const startDeployPolling = () => {
+      if (deployPollTimer) clearInterval(deployPollTimer);
+      deployPollTimer = setInterval(async () => {
+        try {
+          const status = await api('/api/deploy/status', {}, 10000);
+          deployProgress.value = status.progress || 0;
+          deployStage.value = status.stage || '';
+          deployElapsed.value = status.elapsed || 0;
+          // 更新日志（只追加新的）
+          const logs = status.logs || [];
+          deployLogText.value = logs.join('\n') + '\n';
+
+          if (!status.running) {
+            // 部署结束
+            clearInterval(deployPollTimer);
+            deployPollTimer = null;
+            deploying.value = false;
+            deployResult.value = status.result;
+            if (status.result === 'success') {
+              showToast('部署成功');
+            } else if (status.result === 'cancelled') {
+              showToast('部署已取消', 'error');
+            } else {
+              showToast('部署失败', 'error');
+            }
+          }
+        } catch (e) {
+          // 轮询出错不中断，继续尝试
+          console.error('轮询部署状态出错:', e);
+        }
+      }, 1000);
+    };
+
+    // 取消部署
+    const cancelDeploy = async () => {
+      if (cancelling.value) return;
+      cancelling.value = true;
+      try {
+        await api('/api/deploy/cancel', { method: 'POST' }, 10000);
+        deployLogText.value += '\n⏹️ 正在取消部署...\n';
+      } catch (e) {
+        deployLogText.value += '\n❌ 取消失败: ' + e.message + '\n';
+        cancelling.value = false;
+      }
+    };
+
+    // 关闭部署弹窗
+    const closeDeployModal = () => {
+      if (deploying.value) {
+        // 部署中关闭弹窗，后台继续运行
+        if (deployPollTimer) {
+          clearInterval(deployPollTimer);
+          deployPollTimer = null;
+        }
+      }
+      showDeployModal.value = false;
+    };
+
+    // 部署标题计算
+    const deployTitle = computed(() => {
+      if (deploying.value) return '正在部署到 GitHub...';
+      if (deployResult.value === 'success') return '部署完成！';
+      if (deployResult.value === 'cancelled') return '部署已取消';
+      return '部署失败';
+    });
 
     onMounted(() => {
       loadPosts();
@@ -838,10 +933,13 @@ createApp({
       searchKeyword, filterCategory, filterTag,
       showCategories, showTags,
       editingFilename, editForm, editorContainer,
-      showDeleteModal, deleteTarget, showDeployModal, deploying, deployLog,
+      showDeleteModal, deleteTarget,
+      showDeployModal, deploying, deployProgress, deployStage,
+      deployResult, deployElapsed, cancelling, deployLogText, deployTitle,
       toast,
       loadPosts, resetFilters, newPost, editPost, backToList,
-      toggleCategory, toggleTag, savePost, confirmDelete, doDelete, deploy
+      toggleCategory, toggleTag, savePost, confirmDelete, doDelete,
+      deploy, cancelDeploy, closeDeployModal
     };
   }
 }).mount('#app');
